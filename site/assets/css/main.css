@@ -1,0 +1,250 @@
+/* Design tokens — Figma « Abri Toi » (charte graphique) */
+:root {
+  --brown-900: #3f261d;
+  --brown-700: #6b4a3c;
+  --brown-500: #8c7266;
+  --orange-100: #fbe3cf;
+  --orange-500: #ec7c26;
+  --orange-600: #c9611a;
+  --orange-700: #a84f12;
+  --sage-500: #5d6b4c;
+  --cream: #f4eee5;
+  --paper: #fbf8f3;
+  --sand: #e9dfd1;
+  --line: #ddd1c2;
+  --white: #fff;
+
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'Instrument Sans', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+
+  --page-max: 1440px;
+  --gutter: 80px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--brown-900);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Section wrapper : 1440 de large, 80 de marge latérale dans la maquette */
+.section {
+  width: 100%;
+  padding-inline: max(var(--gutter), calc((100% - var(--page-max)) / 2 + var(--gutter)));
+}
+
+/* Typo — styles Figma */
+.display-h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 52px;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+}
+
+.display-h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.display-h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+}
+
+.body-l {
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+.body-m {
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.label-mono {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --gutter: 40px;
+  }
+
+  .display-h2 {
+    font-size: 42px;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --gutter: 20px;
+  }
+
+  .display-h2 {
+    font-size: 34px;
+  }
+
+  .display-h3 {
+    font-size: 26px;
+  }
+}
+
+/* Animations — reprises de brickwiseai.com */
+:root {
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js [data-reveal][data-revealed] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Lévitation douce des cartes posées sur les visuels */
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-0.5rem) scale(1.01);
+  }
+}
+
+/* Reflet qui balaie un mot */
+.shimmer {
+  background-image: linear-gradient(90deg, currentColor 40%, var(--orange-500) 50%, currentColor 60%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3.2s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 150% 0;
+  }
+  100% {
+    background-position: -50% 0;
+  }
+}
+
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@keyframes ring-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(236, 124, 38, 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 0.625rem rgba(236, 124, 38, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .shimmer {
+    -webkit-text-fill-color: currentColor;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

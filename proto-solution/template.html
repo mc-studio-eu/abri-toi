@@ -1,0 +1,164 @@
+<title>Abri Toi Anatomie</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500&family=Geist+Mono:wght@500&family=Instrument+Sans:wght@400;500&display=swap">
+<style>
+/* Layout : section Solution de la homepage, colonne de couches qui défile à gauche, illustration collante à droite. Charte Abri Toi, volontairement claire. */
+:root{
+  --terre:#3F261D; --orange:#EC7C26; --orange-dk:#A84F12; --sauge:#5D6B4C;
+  --creme:#F4EEE5; --creme-2:#FBF8F3; --texte:#6B4A3C; --trait:#DDD1C2;
+  --accent:var(--orange); --accent-dk:var(--orange-dk);
+  --f-titre:"Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --f-texte:"Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono:"Geist Mono", ui-monospace, Menlo, monospace;
+  color-scheme:light;
+}
+body{background:var(--creme);color:var(--terre);font-family:var(--f-texte);font-size:16px;line-height:1.55}
+[data-gamme="fotos"]{--accent:var(--sauge);--accent-dk:var(--sauge)}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.bandeau{background:var(--terre);color:var(--creme-2);font-family:var(--f-mono);font-size:12px;letter-spacing:.04em}
+.bandeau .wrap{padding-block:10px;display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between}
+.bandeau b{color:var(--orange);font-weight:500}
+header.sol{padding-block:96px 40px;text-align:center;display:grid;gap:20px;justify-items:center}
+h1{font-family:var(--f-titre);font-weight:500;font-size:clamp(36px,5.2vw,64px);line-height:1.06;letter-spacing:-.02em;margin:0;text-wrap:balance;max-width:16ch}
+.chapo{margin:0;max-width:52ch;color:var(--texte);font-size:17px;text-wrap:balance}
+
+/* Sélecteur à deux options */
+.choix{display:grid;justify-items:center;gap:18px;padding-block:8px 64px}
+.seg{display:inline-flex;gap:6px;padding:6px;border:1px solid var(--trait);border-radius:999px;background:var(--creme-2);max-width:100%}
+.opt{appearance:none;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;gap:14px;padding:8px 26px 8px 8px;border-radius:999px;color:var(--terre);text-align:left;transition:background-color .35s ease,color .35s ease,transform .25s ease;min-width:0}
+.opt:hover{transform:scale(1.02)}
+.opt:focus-visible{outline:2px solid var(--terre);outline-offset:3px}
+.opt img{width:48px;height:48px;border-radius:50%;object-fit:cover;filter:grayscale(1);transition:filter .35s ease;flex:none}
+.opt .nom{display:block;font-family:var(--f-titre);font-weight:500;font-size:21px;line-height:1.1}
+.opt .tag{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.opt[aria-pressed="true"]{background:var(--accent);color:#fff}
+.opt[aria-pressed="true"] img{filter:none;box-shadow:0 0 0 2px #fff}
+.desc{margin:0;color:var(--texte);font-size:17px;text-align:center;max-width:56ch}
+.lien{color:var(--accent);font-weight:500;text-decoration:none}
+.lien:hover{text-decoration:underline}
+
+/* Scrollytelling */
+.anat{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:56px;padding-block:0 140px}
+.couches{display:grid}
+.couche{min-height:78vh;display:flex;flex-direction:column;justify-content:center;gap:14px;padding-left:24px;border-left:2px solid var(--trait);opacity:.3;transition:opacity .5s ease,border-color .5s ease;cursor:pointer}
+.couche.vue{opacity:.55;border-color:var(--accent)}
+.couche.active{opacity:1;border-color:var(--accent)}
+.num{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:var(--accent-dk);text-transform:uppercase}
+.couche h3{font-family:var(--f-titre);font-weight:500;font-size:clamp(26px,2.6vw,34px);line-height:1.15;margin:0;text-wrap:balance}
+.couche h3 em{font-style:normal;color:var(--accent)}
+.couche p{margin:0;color:var(--texte);max-width:46ch}
+.scene{position:sticky;top:calc(env(safe-area-inset-top, 0px) + 6vh);align-self:start;height:88vh;max-height:820px;display:flex;flex-direction:column;gap:14px}
+.cadre{position:relative;flex:1;min-height:0;border-radius:8px;overflow:hidden;background:var(--creme-2);border:1px solid var(--trait)}
+.cadre img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transform:scale(.985);transition:opacity .7s ease,transform .7s ease}
+.cadre img.on{opacity:1;transform:none}
+.cadre img[data-g="galileo"]{z-index:1}
+.progres{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;color:var(--texte)}
+.pastilles{display:flex;gap:6px}
+.pastilles button{width:30px;height:6px;border-radius:3px;border:0;background:var(--trait);cursor:pointer;padding:0;transition:background-color .4s ease}
+.pastilles button.on{background:var(--accent)}
+.pastilles button:focus-visible{outline:2px solid var(--terre);outline-offset:2px}
+.fin{padding-block:0 96px;text-align:center;color:var(--texte);font-family:var(--f-mono);font-size:12px;letter-spacing:.06em}
+
+@media (max-width:820px){
+  header.sol{padding-block:56px 28px}
+  .opt{padding:6px 14px 6px 6px;gap:10px}
+  .opt img{width:38px;height:38px}
+  .opt .nom{font-size:18px}
+  .opt .tag{display:none}
+  .anat{grid-template-columns:minmax(0,1fr);gap:0}
+  .scene{order:-1;top:env(safe-area-inset-top, 0px);height:auto;z-index:2;background:var(--creme);padding-block:8px}
+  .cadre{flex:none;aspect-ratio:720/760;max-height:52vh;max-width:100%;width:100%;margin:0 auto}
+  .couche{min-height:62vh}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="bandeau"><div class="wrap"><span><b>PROTOTYPE</b> · Homepage v6 · section Solution</span><span>Faites défiler pour voir les 4 étapes</span></div></div>
+
+<main data-gamme="galileo" id="app">
+  <div class="wrap">
+    <header class="sol">
+      <h1>L'ombre à échelle humaine, vraiment efficace.</h1>
+      <p class="chapo">Deux choix s'offrent à vous. Deux gammes conçues à Lyon et fabriquées en France, pour deux façons de rafraîchir vos espaces.</p>
+    </header>
+
+    <section class="choix" aria-label="Choix de la gamme">
+      <div class="seg" role="group" aria-label="Gamme">
+        <button class="opt" id="opt-galileo" data-g="galileo" aria-pressed="true">
+          <img src="__THUMB_G__" alt="">
+          <span><span class="nom">Galiléo</span><span class="tag">Ombrage immédiat · brumisation</span></span>
+        </button>
+        <button class="opt" id="opt-fotos" data-g="fotos" aria-pressed="false">
+          <img src="__THUMB_F__" alt="">
+          <span><span class="nom">Fotos</span><span class="tag">Végétal · déplaçable · eau de pluie</span></span>
+        </button>
+      </div>
+      <p class="desc" id="desc"></p>
+      <a class="lien" id="lien" href="#app">Découvrir la gamme Galiléo →</a>
+    </section>
+
+    <section class="anat" aria-label="Vue éclatée">
+      <div class="couches" id="couches"></div>
+      <div class="scene">
+        <div class="cadre" id="cadre"></div>
+        <div class="progres"><div class="pastilles" id="pastilles"></div><span id="etape">ÉTAPE 1 / 4</span></div>
+      </div>
+    </section>
+  </div>
+  <p class="fin">Fin de la section · sur le site, la page continue avec le process</p>
+</main>
+
+<script>
+const IMG={galileo:["__G1__","__G2__","__G3__","__G4__"],fotos:["__F1__","__F2__","__F3__","__F4__"]};
+const DATA={
+  galileo:{nom:"Galiléo",desc:"Ancré au sol et relié au réseau d'eau, Galiléo brumise l'air pour rafraîchir dès la pose.",
+    couches:[
+      ["01 · Commun aux deux gammes","<em>Structure.</em> Aluminium thermolaqué, fabriqué en France.","Légère, très résistante et composée d'au moins 40 % de matière recyclée. Thermolaquée, elle ne s'oxyde pas, même en bord de mer."],
+      ["02 · Commun aux deux gammes","<em>Toiture.</em> L'ombre là où il faut, quand il faut.","Nous vous accompagnons avec une étude d'ensoleillement pour orienter la toiture et maximiser l'ombre sous l'abri, aux heures où vous en avez besoin."],
+      ["03 · Galiléo","<em>Brumisation.</em> Jusqu'à –8 °C sous l'abri.","Brumisation haute pression à 70 bars avec BRO Brumisation : eau potable filtrée et traitée aux UV, temporisation pilotée pour maîtriser chaque litre."],
+      ["04 · Galiléo","<em>Ancré au sol.</em> Efficace dès la pose.","Fixé sur une dalle béton et raccordé au réseau d'eau par le sol : une installation pérenne, rafraîchissante dès le premier jour."]]},
+  fotos:{nom:"Fotos",desc:"Sans ancrage et déplaçable, Fotos récupère l'eau de pluie pour faire pousser son ombre végétale.",
+    couches:[
+      ["01 · Commun aux deux gammes","<em>Structure.</em> Aluminium thermolaqué, fabriqué en France.","Légère, très résistante et composée d'au moins 40 % de matière recyclée. Thermolaquée, elle ne s'oxyde pas, même en bord de mer."],
+      ["02 · Commun aux deux gammes","<em>Toiture.</em> L'ombre là où il faut, quand il faut.","Nous vous accompagnons avec une étude d'ensoleillement pour orienter la toiture et maximiser l'ombre sous l'abri, aux heures où vous en avez besoin."],
+      ["03 · Fotos","<em>Végétation.</em> L'ombre prend vie.","Plantes grimpantes sur un filet issu de filets de pêche recyclés, plantées dans un bac de 1 m³ de terre. Un filet en fibre de coco les guide le temps qu'elles poussent."],
+      ["04 · Fotos","<em>Autonome</em> et déplaçable.","Un réservoir de 120 L recueille l'eau de pluie et arrose les plantes par capillarité. Les 900 kg de terre servent de lest : pas de béton, l'abri se déplace au chariot élévateur."]]}
+};
+const app=document.getElementById("app"), couchesEl=document.getElementById("couches"), cadre=document.getElementById("cadre"), past=document.getElementById("pastilles"), etapeEl=document.getElementById("etape");
+let gamme="galileo", step=0;
+
+// images: toutes chargées une fois, on alterne la visibilité
+const imgs={};
+for(const g of ["galileo","fotos"]){ imgs[g]=IMG[g].map((src,i)=>{const im=new Image(); im.src=src; im.alt=`Vue éclatée ${DATA[g].nom}, étape ${i+1} sur 4`; im.dataset.g=g; cadre.appendChild(im); return im;}); }
+for(let i=0;i<4;i++){const b=document.createElement("button"); b.type="button"; b.setAttribute("aria-label",`Aller à l'étape ${i+1}`); b.addEventListener("click",()=>goTo(i)); past.appendChild(b);}
+
+function renderCouches(){
+  couchesEl.innerHTML="";
+  DATA[gamme].couches.forEach(([n,t,p],i)=>{
+    const a=document.createElement("article"); a.className="couche"; a.dataset.i=i; a.tabIndex=0;
+    a.innerHTML=`<span class="num">${n}</span><h3>${t}</h3><p>${p}</p>`;
+    a.addEventListener("click",()=>goTo(i));
+    a.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();goTo(i);}});
+    couchesEl.appendChild(a); io.observe(a);
+  });
+}
+function paint(){
+  for(const g in imgs) imgs[g].forEach((im,i)=>im.classList.toggle("on", g===gamme && i===step));
+  couchesEl.querySelectorAll(".couche").forEach((c,i)=>{c.classList.toggle("active",i===step); c.classList.toggle("vue",i<step);});
+  past.querySelectorAll("button").forEach((b,i)=>b.classList.toggle("on",i<=step));
+  etapeEl.textContent=`ÉTAPE ${step+1} / 4 · ${DATA[gamme].nom.toUpperCase()}`;
+}
+function goTo(i){ const c=couchesEl.children[i]; if(c) c.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"}); step=i; paint(); }
+const io=new IntersectionObserver(es=>{ for(const e of es) if(e.isIntersecting){ step=+e.target.dataset.i; paint(); } },{rootMargin:"-45% 0px -45% 0px"});
+
+function setGamme(g){
+  gamme=g; app.dataset.gamme=g;
+  document.querySelectorAll(".opt").forEach(o=>o.setAttribute("aria-pressed", String(o.dataset.g===g)));
+  document.getElementById("desc").textContent=DATA[g].desc;
+  document.getElementById("lien").textContent=`Découvrir la gamme ${DATA[g].nom} →`;
+  io.disconnect(); renderCouches(); paint();
+}
+document.querySelectorAll(".opt").forEach(o=>o.addEventListener("click",()=>{ if(o.dataset.g!==gamme){ const keep=step; setGamme(o.dataset.g); step=keep; paint(); } }));
+setGamme("galileo");
+</script>
