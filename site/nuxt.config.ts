@@ -2,6 +2,18 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-10-01',
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
+  runtimeConfig: {
+    // Jeton d'écriture Sanity, côté serveur uniquement : enregistre les demandes envoyées depuis le site.
+    sanityWriteToken: '',
+    public: {
+      // Sans projectId, le site affiche le contenu de référence (dossier content/).
+      sanity: {
+        projectId: '',
+        dataset: 'production',
+        apiVersion: '2026-10-01',
+      },
+    },
+  },
   app: {
     head: {
       htmlAttrs: { lang: 'fr' },
@@ -17,6 +29,11 @@ export default defineNuxtConfig({
         },
       ],
       link: [
+        // Logo carré repris de abritoi.com
+        { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
+        { rel: 'icon', type: 'image/png', href: '/favicon-32.png', sizes: '32x32' },
+        { rel: 'icon', type: 'image/png', href: '/favicon-192.png', sizes: '192x192' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {

@@ -1,28 +1,22 @@
 <script setup lang="ts">
-const stats = [
-  { value: '24,9 °C', text: 'Température moyenne record du mois de juillet 2026.' },
-  { value: '53 jours', text: 'De canicule en France entre le 1er juin et le 31 août 2026.' },
-  { value: '7 824', text: 'Décès liés à la canicule entre juin et août 2026.' },
-]
+const page = await usePageAccueil()
+const probleme = computed(() => page.value.probleme)
 </script>
 
 <template>
   <section class="problem section">
     <header v-reveal class="problem__header">
       <h2 class="display-h2 problem__title">
-        L’année de tous les records.<br />
-        Vos places, cours et parcs deviennent invivables.
+        {{ probleme.titre }}<br />
+        {{ probleme.titreSuite }}
       </h2>
-      <p class="body-l problem__text">
-        Sédentarité dans intérieurs climatisés, liens sociaux s’effilochent, parcs désertés au soleil. Seniors et
-        enfants, publics fragiles, sont les premiers touchés.
-      </p>
+      <p class="body-l problem__text">{{ probleme.texte }}</p>
     </header>
 
     <dl class="problem__stats">
-      <div v-for="(stat, i) in stats" :key="stat.value" v-reveal="i * 120" class="stat">
-        <dt class="display-h2 stat__value">{{ stat.value }}</dt>
-        <dd class="body-m stat__text">{{ stat.text }}</dd>
+      <div v-for="(stat, i) in probleme.chiffres" :key="stat.valeur" v-reveal="i * 120" class="stat">
+        <dt class="display-h2 stat__value"><UiCountUp :value="stat.valeur" :delay="i * 120" /></dt>
+        <dd class="body-m stat__text">{{ stat.texte }}</dd>
       </div>
     </dl>
   </section>

@@ -1,34 +1,8 @@
 <script setup lang="ts">
 // Bandeaux en noir et blanc, qui s'ouvrent et passent en couleur au survol.
-const installations = [
-  {
-    title: 'Fotos — premier banc installé',
-    range: 'Gamme Fotos',
-    src: '/images/bandeau-hover-fotos-premier-banc-installe.jpg',
-    to: '#fotos',
-  },
-  {
-    title: 'Galiléo blanc — banc brumisé',
-    range: 'Gamme Galiléo',
-    src: '/images/bandeau-galileo-blanc-banc-brumise.jpg',
-    to: '#galileo',
-  },
-  {
-    title: 'Galiléo — premiers usagers',
-    range: 'Gamme Galiléo',
-    src: '/images/bandeau-galileo-premiers-usagers.jpg',
-    to: '#galileo',
-  },
-  { title: 'Fotos — vue de face', range: 'Gamme Fotos', src: '/images/bandeau-fotos-vue-de-face.png', to: '#fotos' },
-]
-
-const gallery = [
-  { src: '/images/photo-structure-aluminium-brun.jpg', caption: 'Structure aluminium brun' },
-  { src: '/images/photo-une-pause-a-lombre.jpg', caption: 'Une pause à l’ombre' },
-  { src: '/images/photo-grimpantes-et-fleurs.jpg', caption: 'Grimpantes et fleurs' },
-  { src: '/images/photo-la-pergola-vue-den-bas.jpg', caption: 'La pergola, vue d’en bas' },
-  { src: '/images/photo-assise-en-bois-kebony.jpg', caption: 'Assise en bois Kebony' },
-]
+const page = await usePageAccueil()
+const installations = computed(() => page.value.installations)
+const gammes = await useGammes()
 
 const open = ref(0)
 </script>
@@ -37,45 +11,42 @@ const open = ref(0)
   <section id="realisations" class="installs section">
     <header v-reveal class="installs__header">
       <div class="installs__intro">
-        <h2 class="display-h2 installs__title">Nos premières installations.</h2>
-        <p class="body-l installs__text">
-          Abri Toi est une jeune entreprise : Voici nos prototypes, tests et projets en cours. Les premières installations
-          en usage arrivent.
-        </p>
+        <h2 class="display-h2 installs__title">{{ installations.titre }}</h2>
+        <p class="body-l installs__text">{{ installations.texte }}</p>
       </div>
-      <UiLink tone="dark" label="Toutes les réalisations" to="#realisations" />
+      <UiLink tone="dark" label="Toutes les réalisations" to="/realisations" />
     </header>
 
     <ul v-reveal="100" class="bands">
       <li
-        v-for="(item, i) in installations"
-        :key="item.title"
+        v-for="(item, i) in installations.bandeaux"
+        :key="item.titre"
         class="band"
         :class="{ 'band--open': open === i }"
         @mouseenter="open = i"
         @focusin="open = i"
       >
-        <img :src="item.src" alt="" class="band__img" />
+        <img :src="img(item.image, 1600)" alt="" class="band__img" />
         <div class="band__shade" />
         <div class="band__content">
-          <h3 class="display-h3 band__title">{{ item.title }}</h3>
+          <h3 class="display-h3 band__title">{{ item.titre }}</h3>
           <div class="band__actions">
-            <span class="band__tag">{{ item.range }}</span>
-            <UiLink tone="dark" :to="item.to" />
+            <span class="band__tag">Gamme {{ gammes[item.gamme as 'galileo' | 'fotos']?.nom }}</span>
+            <UiLink tone="dark" :to="item.produit ? `/produits/${item.produit}` : '/produits'" />
           </div>
         </div>
       </li>
     </ul>
 
     <div class="gallery">
-      <p v-reveal class="gallery__label">FOTOS · EN DÉTAIL</p>
+      <p v-reveal class="gallery__label">{{ installations.labelGalerie }}</p>
       <ul class="gallery__grid">
-        <li v-for="(photo, i) in gallery" :key="photo.src" v-reveal="(i % 4) * 90">
+        <li v-for="(photo, i) in installations.galerie" :key="i" v-reveal="(i % 4) * 90">
           <figure class="gallery__item">
             <div class="gallery__frame">
-              <img :src="photo.src" :alt="photo.caption" loading="lazy" />
+              <img :src="img(photo.image, 800)" :alt="photo.legende" loading="lazy" />
             </div>
-            <figcaption>{{ photo.caption }}</figcaption>
+            <figcaption>{{ photo.legende }}</figcaption>
           </figure>
         </li>
       </ul>
@@ -212,6 +183,7 @@ const open = ref(0)
   font-weight: 500;
   font-size: 12px;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: #e8ded1;
 }
 

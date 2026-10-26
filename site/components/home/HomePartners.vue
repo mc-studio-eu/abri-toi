@@ -1,11 +1,6 @@
 <script setup lang="ts">
-const logos = [
-  { src: '/images/logo-dargaisse.png', alt: 'Dargaisse', w: 136, h: 52 },
-  { src: '/images/logo-kebony.png', alt: 'Kebony', w: 46, h: 76 },
-  { src: '/images/logo-larbaletier.png', alt: 'Larbaletier', w: 187, h: 36 },
-  { src: '/images/logo-bro-brumisation.png', alt: 'B.R.O Brumisation', w: 112, h: 58 },
-  { src: '/images/logo-filae.png', alt: 'Filae', w: 164, h: 44 },
-]
+const parametres = await useParametres()
+const logos = computed(() => parametres.value.partenaires ?? [])
 </script>
 
 <template>
@@ -15,13 +10,13 @@ const logos = [
     <!-- Défilement continu façon Brickwise : la liste est doublée pour boucler sans saut. -->
     <div class="marquee">
       <ul v-for="copy in 2" :key="copy" class="marquee__track" :aria-hidden="copy === 2 ? 'true' : undefined">
-        <li v-for="logo in logos" :key="logo.alt">
+        <li v-for="logo in logos" :key="logo.nom">
           <img
-            :src="logo.src"
-            :alt="copy === 1 ? logo.alt : ''"
-            :width="logo.w"
-            :height="logo.h"
-            :style="{ width: `${logo.w}px`, height: `${logo.h}px` }"
+            :src="img(logo.logo, 400)"
+            :alt="copy === 1 ? logo.nom : ''"
+            :width="logo.largeur"
+            :height="logo.hauteur"
+            :style="{ width: `${logo.largeur}px`, height: `${logo.hauteur}px` }"
           />
         </li>
       </ul>

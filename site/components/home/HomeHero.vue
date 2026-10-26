@@ -1,47 +1,25 @@
 <script setup lang="ts">
-const nav = [
-  { label: 'Accueil', to: '/' },
-  { label: 'Produits', to: '#solution' },
-  { label: 'Réalisations', to: '#realisations' },
-  { label: 'Articles', to: '#articles' },
-  { label: 'À propos', to: '#fondateur' },
-]
+const page = await usePageAccueil()
+const hero = computed(() => page.value.hero)
 </script>
 
 <template>
   <section class="hero">
-    <img class="hero__photo" src="/images/hero-v5-photo-plein-fond.png" alt="Des habitants assis à l’ombre d’un abri Galiléo" />
+    <img class="hero__photo" :src="img(hero.photo, 2400)" :alt="alt(hero.photo)" />
     <div class="hero__shade" aria-hidden="true" />
 
-    <header class="hero__nav">
-      <div class="hero__nav-left">
-        <NuxtLink to="/" aria-label="Abri Toi — accueil">
-          <img src="/images/logo-blanc.png" alt="Abri Toi" width="130" height="23" class="hero__logo" />
-        </NuxtLink>
-        <nav aria-label="Navigation principale">
-          <ul class="hero__menu">
-            <li v-for="item in nav" :key="item.label">
-              <NuxtLink :to="item.to">{{ item.label }}</NuxtLink>
-            </li>
-          </ul>
-        </nav>
-      </div>
-      <NuxtLink to="#contact" class="hero__nav-cta">Prendre rendez-vous</NuxtLink>
-    </header>
+    <AppNav class="hero__nav" />
 
     <div class="hero__content">
-      <p class="hero__eyebrow">Bureau d’études à Lyon · Fabrication en France</p>
+      <p class="hero__eyebrow">{{ hero.surtitre }}</p>
       <h1 class="hero__title">
-        Reconquérir l’extérieur,<br />
-        même en pleine <span class="shimmer">canicule.</span>
+        {{ hero.titre }}<br />
+        {{ hero.titreSuite }} <span class="shimmer">{{ hero.titreAccent }}</span>
       </h1>
-      <p class="hero__lead">
-        Des solutions d’ombrage et de fraîcheur durables, conçues pour améliorer le confort en extérieur par forte
-        chaleur et créer des espaces conviviaux toute l’année.
-      </p>
+      <p class="hero__lead">{{ hero.texte }}</p>
       <div class="hero__ctas">
         <UiButton />
-        <UiButton variant="outline" label="Découvrez nos produits" to="#solution" />
+        <UiButton variant="outline" :label="hero.boutonProduits" to="/produits" />
       </div>
     </div>
   </section>
@@ -73,53 +51,6 @@ const nav = [
     rgba(18, 11, 8, 0.45) 22.695%,
     rgba(18, 11, 8, 0) 47.757%
   );
-}
-
-.hero__nav {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 44px;
-}
-
-.hero__nav-left {
-  display: flex;
-  align-items: center;
-  gap: 48px;
-}
-
-.hero__logo {
-  width: 130px;
-  height: 23px;
-  object-fit: contain;
-}
-
-.hero__menu {
-  display: flex;
-  gap: 30px;
-  font-weight: 500;
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.92);
-}
-
-.hero__menu a:hover {
-  color: var(--white);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.hero__nav-cta {
-  background: var(--orange-500);
-  padding: 12px 18px;
-  border-radius: 4px;
-  font-weight: 500;
-  font-size: 15px;
-  transition: background-color 0.2s;
-}
-
-.hero__nav-cta:hover {
-  background: var(--orange-600);
 }
 
 .hero__content {
@@ -211,10 +142,6 @@ const nav = [
     padding-bottom: 80px;
   }
 
-  .hero__menu {
-    display: none;
-  }
-
   .hero__title {
     font-size: 64px;
   }
@@ -223,10 +150,6 @@ const nav = [
 @media (max-width: 640px) {
   .hero__title {
     font-size: 44px;
-  }
-
-  .hero__nav-cta {
-    display: none;
   }
 
   .hero__shade {

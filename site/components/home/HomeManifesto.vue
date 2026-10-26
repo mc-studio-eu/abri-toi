@@ -1,27 +1,20 @@
 <script setup lang="ts">
 // Révélation mot à mot au scroll façon Brickwise : chaque mot passe de flou/estompé à net.
-type Part = { text: string; em?: boolean } | { img: string; width: number }
-
-const parts: Part[] = [
-  { text: 'Chaque été,' },
-  { img: '/images/image-pill.jpg', width: 132 },
-  { text: 'nos places' },
-  { text: 'se vident.', em: true },
-  { text: 'Alors nous dessinons' },
-  { img: '/images/image-pill1.jpg', width: 112 },
-  { text: 'des abris' },
-  { text: 'où l’on reste' },
-  { img: '/images/image-pill2.jpg', width: 150 },
-  { text: 'dehors,' },
-  { text: 'ensemble.', em: true },
-]
+const page = await usePageAccueil()
+const manifeste = computed(() => page.value.manifeste)
 
 // Chaque mot et chaque pastille reçoit un rang dans l'ordre de lecture.
-let rank = 0
-const tokens = parts.map((part) =>
-  'img' in part ? { ...part, rank: rank++ } : { ...part, words: part.text.split(' ').map((w) => ({ w, rank: rank++ })) },
-)
-const total = rank
+const decoupage = computed(() => {
+  let rank = 0
+  const tokens = manifeste.value.morceaux.map((part) =>
+    'image' in part
+      ? { img: img(part.image, 400), width: part.largeur, rank: rank++ }
+      : { em: part.accent, words: part.texte.split(' ').map((w) => ({ w, rank: rank++ })) },
+  )
+  return { tokens, total: rank }
+})
+const tokens = computed(() => decoupage.value.tokens)
+const total = computed(() => decoupage.value.total)
 
 const textEl = ref<HTMLElement | null>(null)
 const shown = ref(0)
@@ -34,7 +27,7 @@ function update() {
   // 0 quand le haut du texte entre à 90 % de l'écran, 1 quand son bas atteint 75 % :
   // la phrase est entièrement lisible avant que la signature n'apparaisse.
   const progress = (vh * 0.9 - top) / (height + vh * 0.15)
-  shown.value = Math.round(Math.min(Math.max(progress, 0), 1) * total)
+  shown.value = Math.round(Math.min(Math.max(progress, 0), 1) * total.value)
 }
 
 let frame = 0
@@ -45,7 +38,7 @@ const onScroll = () => {
 
 onMounted(() => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    shown.value = total
+    shown.value = total.value
     return
   }
   update()
@@ -83,8 +76,8 @@ onBeforeUnmount(() => {
     <div class="manifesto__signature" :class="{ 'is-on': shown >= total }">
       <img src="/images/ellipse.png" alt="" width="48" height="48" />
       <div>
-        <p class="manifesto__name">Paul Saraceno</p>
-        <p class="manifesto__role">Fondateur &amp; designer industriel · Lyon</p>
+        <p class="manifesto__name">{{ manifeste.signatureNom }}</p>
+        <p class="manifesto__role">{{ manifeste.signatureRole }}</p>
       </div>
     </div>
   </section>

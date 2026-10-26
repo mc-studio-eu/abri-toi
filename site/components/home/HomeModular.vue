@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const page = await usePageAccueil()
 const ranges = [
   {
     name: 'Gamme Galiléo',
@@ -22,12 +23,8 @@ const ranges = [
 <template>
   <section class="modular section">
     <header v-reveal class="modular__header">
-      <h2 class="display-h2 modular__title">Assemblez vos abris comme des briques.</h2>
-      <p class="modular__text">
-        Chaque gamme se combine avec elle-même.<br />
-        Deux modules de 3 places forment un espace de 6 places et 12 m² d’ombre : banquettes, bancs, tables ou gradins
-        chez Galiléo, bancs et tables sous une arche végétale chez Fotos.
-      </p>
+      <h2 class="display-h2 modular__title">{{ page.modulaire.titre }}</h2>
+      <p class="modular__text">{{ page.modulaire.texte }}</p>
     </header>
 
     <div>

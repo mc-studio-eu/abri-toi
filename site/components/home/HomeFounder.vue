@@ -1,21 +1,19 @@
+<script setup lang="ts">
+const page = await usePageAccueil()
+const fondateur = computed(() => page.value.fondateur)
+</script>
+
 <template>
   <section id="fondateur" class="founder section">
-    <img src="/images/process-visuel01-contact.png" alt="Paul Saraceno, fondateur d’Abri Toi" v-reveal class="founder__portrait" />
+    <img :src="img(fondateur.portrait, 1000)" :alt="alt(fondateur.portrait)" v-reveal class="founder__portrait" />
     <div v-reveal="150" class="founder__body">
-      <blockquote class="display-h3 founder__quote">
-        « Pouvoir s’asseoir à l’ombre le plus longtemps possible dans la journée.<br />
-        C’est pour ça que j’ai créé Abri Toi. »
-      </blockquote>
-      <p class="body-l founder__text">
-        Designer industriel, j’ai passé plus de cinq ans à concevoir du mobilier urbain. Chaque été, je voyais les mêmes
-        bancs brûlants et les mêmes places désertes. Abri Toi est né à Lyon en 2025 pour redonner aux habitants des lieux
-        où se retrouver, même au cœur de l’été.
-      </p>
+      <blockquote class="display-h3 founder__quote">{{ fondateur.citation }}</blockquote>
+      <p class="body-l founder__text">{{ fondateur.texte }}</p>
       <div class="founder__sign">
         <span class="founder__dash" aria-hidden="true" />
         <div>
-          <p class="founder__name">Paul Saraceno</p>
-          <p class="founder__role">Fondateur &amp; designer industriel</p>
+          <p class="founder__name">{{ fondateur.nom }}</p>
+          <p class="founder__role">{{ fondateur.role }}</p>
         </div>
       </div>
     </div>

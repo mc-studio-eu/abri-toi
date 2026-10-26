@@ -1,4 +1,8 @@
 <script setup lang="ts">
+const page = await usePageAccueil()
+const process = computed(() => page.value.process)
+const etape = (i: number) => process.value.etapes?.[i] ?? { titre: '', texte: '' }
+
 // Positions reprises de la règle Figma (1280 px de large)
 const temps = [
   { value: '38°', label: 'Ressenti au soleil', left: 90, color: '#b8321a' },
@@ -17,10 +21,10 @@ const proposalRows = [
 <template>
   <section class="process section">
     <header v-reveal class="process__header">
-      <h2 class="process__title">De votre premier appel<br />à l’inauguration.</h2>
+      <h2 class="process__title">{{ process.titre }}<br />{{ process.titreSuite }}</h2>
       <p class="process__total">
-        <span class="process__weeks">8 semaines</span>
-        <span class="label-mono process__note">au total*</span>
+        <span class="process__weeks">{{ process.duree }}</span>
+        <span class="label-mono process__note">{{ process.note }}</span>
       </p>
     </header>
 
@@ -41,10 +45,10 @@ const proposalRows = [
     <ol class="steps">
       <li class="step">
         <div class="step__visual">
-          <img src="/images/process-visuel01-contact.png" alt="" class="step__photo" />
+          <img :src="img(process.photoContact, 800)" alt="" class="step__photo" />
         </div>
-        <h3 class="step__title">Prise de contact</h3>
-        <p class="step__text">On échange sur votre site, vos usages et vos contraintes : budget, calendrier, marché public.</p>
+        <h3 class="step__title">{{ etape(0).titre }}</h3>
+        <p class="step__text">{{ etape(0).texte }}</p>
       </li>
 
       <li class="step">
@@ -57,8 +61,8 @@ const proposalRows = [
           <span class="solar__txt solar__txt--muted" style="left: 19%; top: 45.5%">OMBRE 9H</span>
           <span class="solar__txt solar__txt--muted" style="left: 62.33%; top: 45.5%">OMBRE 17H</span>
         </div>
-        <h3 class="step__title">Étude d’ensoleillement</h3>
-        <p class="step__text">Nous analysons la course du soleil et les flux pour placer l’ombre au bon endroit, aux bonnes heures.</p>
+        <h3 class="step__title">{{ etape(1).titre }}</h3>
+        <p class="step__text">{{ etape(1).texte }}</p>
       </li>
 
       <li class="step">
@@ -80,20 +84,17 @@ const proposalRows = [
             <span class="proposal__file">Fiche technique.pdf</span>
           </div>
         </div>
-        <h3 class="step__title">Proposition sur-mesure</h3>
-        <p class="step__text">Configuration, implantation 3D, chiffrage et fiches techniques prêtes pour vos instances.</p>
+        <h3 class="step__title">{{ etape(2).titre }}</h3>
+        <p class="step__text">{{ etape(2).texte }}</p>
       </li>
 
       <li class="step">
         <div class="step__visual">
-          <img src="/images/installe-usagers-a-lombre.jpg" alt="" class="step__photo step__photo--plain" />
+          <img :src="img(process.photoPose, 800)" alt="" class="step__photo step__photo--plain" />
           <div class="step__tint" />
         </div>
-        <h3 class="step__title">Fabrication, pose… et fraîcheur</h3>
-        <p class="step__text">
-          Fabrication chez nos partenaires industriels en France, installation sur site. Vos habitants retrouvent l’ombre
-          et l’extérieur.
-        </p>
+        <h3 class="step__title">{{ etape(3).titre }}</h3>
+        <p class="step__text">{{ etape(3).texte }}</p>
       </li>
     </ol>
   </section>

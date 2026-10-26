@@ -4,8 +4,6 @@ export type TypeLieu = 'collectivite' | 'ecole' | 'entreprise' | 'particulier'
 
 export interface Realisation {
   nom: string
-  lieu: string
-  annee: string
   gamme: GammeCle
   typeLieu: TypeLieu
   description: string
@@ -23,8 +21,6 @@ export const typesLieu: { cle: TypeLieu; label: string }[] = [
 export const realisations: Realisation[] = [
   {
     nom: 'Square des Tilleuls',
-    lieu: 'Lyon 7e (69)',
-    annee: '2025',
     gamme: 'galileo',
     typeLieu: 'collectivite',
     description: 'Deux Banquettes brumisées face à l’aire de jeux.',
@@ -32,8 +28,6 @@ export const realisations: Realisation[] = [
   },
   {
     nom: 'Cour de l’école des Platanes',
-    lieu: 'Villeurbanne (69)',
-    annee: '2025',
     gamme: 'fotos',
     typeLieu: 'ecole',
     description: 'Un Banc Fotos végétalisé, à l’ombre de la glycine.',
@@ -41,8 +35,6 @@ export const realisations: Realisation[] = [
   },
   {
     nom: 'Campus Les Érables',
-    lieu: 'Écully (69)',
-    annee: '2025',
     gamme: 'galileo',
     typeLieu: 'entreprise',
     description: 'Une Table / Gradin pour déjeuner dehors en équipe.',
@@ -50,8 +42,6 @@ export const realisations: Realisation[] = [
   },
   {
     nom: 'Place du Marché',
-    lieu: 'Annonay (07)',
-    annee: '2024',
     gamme: 'galileo',
     typeLieu: 'collectivite',
     description: 'Un salon brumisé au cœur du marché du samedi.',
@@ -59,8 +49,6 @@ export const realisations: Realisation[] = [
   },
   {
     nom: 'Jardin partagé du Rondeau',
-    lieu: 'Grenoble (38)',
-    annee: '2024',
     gamme: 'fotos',
     typeLieu: 'collectivite',
     description: 'Une pergola Fotos où grimpent jasmin et houblon.',
@@ -68,8 +56,6 @@ export const realisations: Realisation[] = [
   },
   {
     nom: 'Résidence Les Charmilles',
-    lieu: 'Vienne (38)',
-    annee: '2024',
     gamme: 'fotos',
     typeLieu: 'collectivite',
     description: 'Un banc à l’ombre pour la promenade des résidents.',
@@ -77,8 +63,6 @@ export const realisations: Realisation[] = [
   },
   {
     nom: 'Terrasse Le Comptoir',
-    lieu: 'Lyon 2e (69)',
-    annee: '2024',
     gamme: 'galileo',
     typeLieu: 'entreprise',
     description: 'Une banquette brumisée pour la terrasse d’été.',
@@ -86,8 +70,6 @@ export const realisations: Realisation[] = [
   },
   {
     nom: 'Base de loisirs',
-    lieu: 'Miribel (01)',
-    annee: '2024',
     gamme: 'fotos',
     typeLieu: 'collectivite',
     description: 'Trois Tables Fotos en pique-nique au bord du lac.',
@@ -95,8 +77,6 @@ export const realisations: Realisation[] = [
   },
   {
     nom: 'Jardin privé',
-    lieu: 'Caluire (69)',
-    annee: '2023',
     gamme: 'fotos',
     typeLieu: 'particulier',
     description: 'Un Banc Fotos en fond de jardin, à l’abri des regards.',

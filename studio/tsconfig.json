@@ -10,7 +10,8 @@
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "types": ["node"]
   },
   "include": ["**/*.ts", "**/*.tsx", "../site/content/**/*.ts"],
   "exclude": ["node_modules", "dist"]

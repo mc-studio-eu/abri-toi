@@ -78,25 +78,17 @@ export const pageRealisations = {
     ancres: [
       { label: 'À la une ↓', cible: '#a-la-une', point: 'orange' },
       { label: 'Les projets ↓', cible: '#projets' },
-      { label: 'Témoignages ↓', cible: '#temoignages' },
     ],
   } as Hero,
   aLaUne: {
     titre: 'Un jardin public rafraîchi dès le premier été.',
-    intro:
-      'Quand la commune nous a contactés, le square se vidait dès 11 h en juillet. Trois modules Galiléo plus tard, c’est devenu le point de rendez-vous du quartier.',
     photo: { src: '/images/realisations/square-des-tilleuls.jpg' } as Img,
     label: 'Fiche projet',
     nomProjet: 'Square des Tilleuls',
     infos: [
-      { label: 'Client', valeur: 'Ville de Lyon — Direction des espaces verts' },
       { label: 'Gamme', valeur: 'Galiléo blanc, brumisation' },
       { label: 'Configuration', valeur: '2 Banquettes + 1 Table / Gradin en vis-à-vis' },
-      { label: 'Pose', valeur: '2 jours · juin 2025' },
     ] as Ligne[],
-    citation:
-      '« Les familles restent maintenant tout l’après-midi. On nous demande déjà le même abri pour l’école d’à côté. »',
-    auteur: 'Claire M. · Adjointe au cadre de vie',
     lien: { label: 'Lire l’étude de cas', url: '' },
     galerie: [
       { src: '/images/image-pill1.jpg', alt: 'Brume au repos' },
@@ -110,35 +102,6 @@ export const pageRealisations = {
     intro:
       'Communes, écoles, entreprises ou particuliers : filtrez par gamme ou par type de lieu pour trouver un projet proche du vôtre.',
     boutonPlus: 'Voir plus de réalisations',
-  },
-  temoignages: {
-    titre: 'Ceux qui s’y assoient en parlent mieux que nous.',
-    chiffres: [
-      { valeur: '40+', libelle: 'Abris installés depuis 2023' },
-      { valeur: '25', libelle: 'Communes et établissements équipés' },
-      { valeur: '≈ 8 sem.', libelle: 'De la commande à la pose' },
-      { valeur: '100 %', libelle: 'Conçus à Lyon, fabriqués en France' },
-    ],
-    items: [
-      {
-        citation:
-          '« Les enfants se battaient pour le seul coin d’ombre de la cour. Aujourd’hui, la récré se passe sous le Fotos, et la glycine a déjà fait le tour. »',
-        nom: 'Directrice d’école',
-        role: 'École · Villeurbanne (69)',
-      },
-      {
-        citation:
-          '« Installé en deux jours, sans travaux de voirie. La brumisation a changé nos marchés d’été : les gens restent, et les commerçants aussi. »',
-        nom: 'Responsable des services techniques',
-        role: 'Commune · Annonay (07)',
-      },
-      {
-        citation:
-          '« Nos équipes déjeunent dehors de mai à septembre. C’est devenu l’endroit où les idées circulent, bien plus que la salle de pause. »',
-        nom: 'Responsable RSE',
-        role: 'Entreprise · Écully (69)',
-      },
-    ],
   },
 }
 

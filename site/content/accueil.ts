@@ -37,7 +37,7 @@ export const pageAccueil = {
     texte:
       'Sédentarité dans intérieurs climatisés, liens sociaux s’effilochent, parcs désertés au soleil. Seniors et enfants, publics fragiles, sont les premiers touchés.',
     chiffres: [
-      { valeur: '24,9 °C', texte: 'Température moyenne record du mois de juillet 2026.' },
+      { valeur: '41 °C', texte: 'Relevés un 6 septembre dans une ville française.' },
       { valeur: '53 jours', texte: 'De canicule en France entre le 1er juin et le 31 août 2026.' },
       { valeur: '7 824', texte: 'Décès liés à la canicule entre juin et août 2026.' },
     ],
@@ -64,7 +64,7 @@ export const pageAccueil = {
       legende: 'Ancré au sol et relié au réseau d’eau, Galiléo brumise l’air pour rafraîchir dès la pose.',
       etapes: [
         {
-          titre: 'Brumisation. Jusqu’à –8 °C sous l’abri.',
+          titre: 'Brumisation. Jusqu’à –8 °C sous l’abri.',
           texte:
             'Brumisation haute pression à 70 bars avec BRO Brumisation : eau potable filtrée et traitée aux UV, temporisation pilotée pour maîtriser chaque litre.',
         },

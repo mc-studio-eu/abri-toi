@@ -4,14 +4,14 @@
       <HomeHero />
       <HomePartners />
       <HomeManifesto />
+      <HomeProblem />
       <HomeSolution />
       <HomeModular />
-      <HomeProblem />
       <HomeProcess />
       <HomeInstallations />
       <HomeFaq />
       <HomeFounder />
-      <HomeContact />
+      <ContactCta />
       <HomeArticles />
     </main>
     <AppFooter />

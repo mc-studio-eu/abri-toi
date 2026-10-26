@@ -1,7 +1,26 @@
 <script setup lang="ts">
+const parametres = await useParametres()
+const tel = computed(() => `tel:+33${parametres.value.telephone?.replace(/\D/g, '').replace(/^0/, '')}`)
+
 const columns = [
-  { title: 'Produits', links: ['Gamme Galiléo', 'Gamme Fotos', 'Sur-mesure', 'Fiches techniques'] },
-  { title: 'Abri Toi', links: ['Réalisations', 'Notre démarche', 'À propos', 'Articles'] },
+  {
+    title: 'Produits',
+    links: [
+      { label: 'Gamme Galiléo', to: '/produits#galileo' },
+      { label: 'Gamme Fotos', to: '/produits#fotos' },
+      { label: 'Comparer les gammes', to: '/produits#comparatif' },
+      { label: 'Sur-mesure', to: '/contact' },
+    ],
+  },
+  {
+    title: 'Abri Toi',
+    links: [
+      { label: 'Réalisations', to: '/realisations' },
+      { label: 'À propos', to: '/a-propos' },
+      { label: 'Articles', to: '/articles' },
+      { label: 'Contact', to: '/contact' },
+    ],
+  },
 ]
 </script>
 
@@ -10,32 +29,32 @@ const columns = [
     <div class="footer__top">
       <div class="footer__brand">
         <img src="/images/logo-blanc.png" alt="Abri Toi" width="160" height="28" class="footer__logo" />
-        <p class="body-m footer__pitch">Des espaces d’ombrage et de fraîcheur qui rassemblent. Conçus à Lyon, fabriqués en France.</p>
+        <p class="body-m footer__pitch">{{ parametres.pitch }}</p>
       </div>
 
       <div class="footer__cols">
         <nav v-for="col in columns" :key="col.title" class="footer__col" :aria-label="col.title">
           <p class="label-mono footer__head">{{ col.title }}</p>
           <ul>
-            <li v-for="link in col.links" :key="link">
-              <NuxtLink to="#">{{ link }}</NuxtLink>
+            <li v-for="link in col.links" :key="link.label">
+              <NuxtLink :to="link.to">{{ link.label }}</NuxtLink>
             </li>
           </ul>
         </nav>
         <div class="footer__col">
           <p class="label-mono footer__head">Contact</p>
           <ul>
-            <li><a href="tel:+33648205238">06 48 20 52 38</a></li>
-            <li><a href="mailto:collaborer@abritoi.com">collaborer@abritoi.com</a></li>
-            <li><a href="#">LinkedIn</a></li>
-            <li><a href="#">YouTube</a></li>
+            <li><a :href="tel">{{ parametres.telephone }}</a></li>
+            <li><a :href="`mailto:${parametres.email}`">{{ parametres.email }}</a></li>
+            <li v-if="parametres.linkedin"><a :href="parametres.linkedin" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li v-if="parametres.youtube"><a :href="parametres.youtube" target="_blank" rel="noopener">YouTube</a></li>
           </ul>
         </div>
       </div>
     </div>
 
     <div class="label-mono footer__bottom">
-      <p>© 2026 ABRI TOI SAS · SIREN 992 306 621</p>
+      <p>{{ parametres.mentions }}</p>
       <p class="footer__legal">Mentions légales · Cookies · Plan du site</p>
     </div>
   </footer>

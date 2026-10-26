@@ -12,36 +12,14 @@ interface Layer {
   drop?: number
 }
 
-const common = [
-  {
-    title: 'Structure. Aluminium thermolaqué, fabriqué en France.',
-    text: 'Légère, très résistante et composée d’au moins 40 % de matière recyclée. Thermolaquée, elle ne s’oxyde pas, même en bord de mer.',
-  },
-  {
-    title: 'Toiture. L’ombre là où il faut, quand il faut.',
-    text: 'Nous vous accompagnons avec une étude d’ensoleillement pour orienter la toiture et maximiser l’ombre sous l’abri, aux heures où vous en avez besoin.',
-  },
-]
+// Textes éditables dans Sanity (page Accueil → Solution) ; les couches de la vue éclatée restent ici.
+const page = await usePageAccueil()
+const solution = computed(() => page.value.solution)
+const noms = await useGammes()
 
-const gammes = {
+const visuels = {
   galileo: {
-    name: 'Galiléo',
-    tags: 'Ombrage immédiat · Brumisation',
     thumb: '/images/vignette.png',
-    caption: 'Ancré au sol et relié au réseau d’eau, Galiléo brumise l’air pour rafraîchir dès la pose.',
-    steps: [
-      ...common,
-      {
-        title: 'Brumisation. Jusqu’à –8 °C sous l’abri.',
-        text: 'Brumisation haute pression à 70 bars avec BRO Brumisation : eau potable filtrée et traitée aux UV, temporisation pilotée pour maîtriser chaque litre.',
-      },
-      {
-        title: 'Ancré au sol. Efficace dès la pose.',
-        text: 'Fixé sur une dalle béton et raccordé au réseau d’eau par le sol : une installation pérenne, rafraîchissante dès le premier jour.',
-      },
-    ],
-    labels: ['Structure aluminium', 'Toiture perforée', 'Brumisation 70 bars', 'Platines ancrées au sol'],
-    badge: 'Ancré sur dalle béton · Eau par le sol',
     layers: [
       { src: '/images/couche0-sol-ombre-portee.svg', from: 0 },
       { src: '/images/couche4-b-assise-bois.svg', from: 0 },
@@ -51,23 +29,7 @@ const gammes = {
     ] as Layer[],
   },
   fotos: {
-    name: 'Fotos',
-    tags: 'Végétal · Déplaçable · Eau de pluie',
     thumb: '/images/vignette1.png',
-    caption: 'Sans ancrage et déplaçable, Fotos récupère l’eau de pluie pour faire pousser son ombre végétale.',
-    steps: [
-      ...common,
-      {
-        title: 'Végétation. L’ombre prend vie.',
-        text: 'Plantes grimpantes sur un filet issu de filets de pêche recyclés, plantées dans un bac de 1 m³ de terre. Un filet en fibre de coco les guide le temps qu’elles poussent.',
-      },
-      {
-        title: 'Autonome et déplaçable.',
-        text: 'Un réservoir de 120 L recueille l’eau de pluie et arrose les plantes par capillarité. Les 900 kg de terre servent de lest : pas de béton, l’abri se déplace au chariot élévateur.',
-      },
-    ],
-    labels: ['Structure aluminium', 'Toiture perforée', 'Filet de grimpe recyclé', 'Bac 1 m³ & réservoir 120 L'],
-    badge: 'Sans ancrage · Déplaçable au chariot · Réservoir 120 L',
     layers: [
       { src: '/images/couche0-sol-ombre-portee.svg', from: 0 },
       { src: '/images/fotos-couche4-bac-vegetalise.svg', from: 4, drop: -6 },
@@ -79,6 +41,26 @@ const gammes = {
   },
 }
 
+const gammes = computed(() =>
+  Object.fromEntries(
+    (['galileo', 'fotos'] as GammeId[]).map((id) => {
+      const textes = solution.value[id]
+      return [
+        id,
+        {
+          ...visuels[id],
+          name: noms.value[id].nom,
+          tags: textes.tags,
+          caption: textes.legende,
+          steps: [...(solution.value.communes ?? []), ...(textes.etapes ?? [])],
+          labels: (textes.etiquettes ?? []).slice(0, markers.length),
+          badge: textes.badge,
+        },
+      ]
+    }),
+  ) as Record<GammeId, typeof visuels.galileo & { name: string; tags: string; caption: string; steps: { titre: string; texte: string }[]; labels: string[]; badge: string }>,
+)
+
 // Repères de la maquette (720 × 760) : trait + pastille, et position de l'étiquette associée.
 const markers = [
   { line: 'M425 479L480.7 443.4H494.7', dot: [425, 479], tag: [495, 427] },
@@ -88,7 +70,7 @@ const markers = [
 ]
 
 const gammeId = ref<GammeId>('galileo')
-const gamme = computed(() => gammes[gammeId.value])
+const gamme = computed(() => gammes.value[gammeId.value])
 const step = ref(1)
 const progress = ref(0)
 const track = ref<HTMLElement>()
@@ -150,11 +132,8 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
 <template>
   <section id="solution" class="solution section" :class="`solution--${gammeId}`">
     <header v-reveal class="solution__header">
-      <h2 class="display-h2">L’ombre à échelle humaine,<br />vraiment efficace.</h2>
-      <p class="body-l solution__intro">
-        Deux choix s’offrent à vous. Deux gammes conçues à Lyon et fabriquées en France, pour deux façons de rafraîchir
-        vos espaces.
-      </p>
+      <h2 class="display-h2">{{ solution.titre }}<br />{{ solution.titreSuite }}</h2>
+      <p class="body-l solution__intro">{{ solution.intro }}</p>
     </header>
 
     <div id="fotos" v-reveal="100" class="selector">
@@ -183,29 +162,29 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
 
     <div ref="track" class="anatomy-track">
       <div class="anatomy">
-        <ol class="anatomy__layers">
-          <li
-            v-for="(s, i) in gamme.steps"
-            :key="i"
-            class="anatomy__layer"
-            :class="`anatomy__layer--${stepState(i + 1)}`"
-            :style="{ '--fill': fill(i + 1) }"
-            :aria-current="step === i + 1 ? 'step' : undefined"
-            @click="goTo(i + 1)"
-          >
-            <span class="label-mono anatomy__num">
-              0{{ i + 1 }} · {{ i < 2 ? 'Commun aux deux gammes' : gamme.name }}
-            </span>
-            <Transition name="swap" mode="out-in">
-              <div :key="gammeId" class="anatomy__copy">
-                <h3 class="display-h3 anatomy__title">{{ s.title }}</h3>
-                <div class="anatomy__text-wrap">
-                  <p class="body-m anatomy__text">{{ s.text }}</p>
+        <div class="anatomy__steps">
+          <ol class="anatomy__layers" :style="{ '--fill': fill(step) }" aria-live="polite">
+            <li
+              v-for="(s, i) in gamme.steps"
+              :key="i"
+              class="anatomy__layer"
+              :class="`anatomy__layer--${stepState(i + 1)}`"
+              :aria-current="step === i + 1 ? 'step' : undefined"
+              :aria-hidden="step !== i + 1"
+            >
+              <span class="label-mono anatomy__num">
+                0{{ i + 1 }} · {{ i < 2 ? 'Commun aux deux gammes' : gamme.name }}
+              </span>
+              <Transition name="swap" mode="out-in">
+                <div :key="gammeId" class="anatomy__copy">
+                  <h3 class="display-h3 anatomy__title">{{ s.titre }}</h3>
+                  <p class="body-m anatomy__text">{{ s.texte }}</p>
                 </div>
-              </div>
-            </Transition>
-          </li>
-        </ol>
+              </Transition>
+            </li>
+          </ol>
+
+        </div>
 
         <figure class="anatomy__view" :aria-label="`Vue éclatée de l’abri ${gamme.name}, étape ${step} sur 4`">
           <img class="anatomy__img" src="/images/grille.svg" alt="" width="720" height="760" />
@@ -417,56 +396,64 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
   height: 100svh;
 }
 
-.anatomy__layers {
+.anatomy__steps {
   flex: 1 1 0;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 40px;
+}
+
+/* Les étapes partagent la même cellule : une seule est visible à la fois, comme un diaporama piloté par le défilement */
+.anatomy__layers {
+  position: relative;
+  display: grid;
   margin: 0;
-  padding: 0;
+  padding: 0 0 0 28px;
   list-style: none;
 }
 
-.anatomy__layer {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 4px 0 4px 24px;
-  cursor: pointer;
-  opacity: 0.3;
-  transition: opacity 0.5s var(--ease-out);
-}
-
-/* Filet gris + remplissage à la couleur de la gamme, au rythme du défilement */
-.anatomy__layer::before,
-.anatomy__layer::after {
+/* Filet vertical : gris, rempli à la couleur de la gamme au rythme du défilement de l'étape */
+.anatomy__layers::before,
+.anatomy__layers::after {
   content: '';
   position: absolute;
   left: 0;
-  top: 0;
-  bottom: 0;
+  top: 4px;
+  bottom: 4px;
   width: 2px;
   background: var(--line);
 }
 
-.anatomy__layer::after {
+.anatomy__layers::after {
   background: var(--accent);
   transform: scaleY(var(--fill, 0));
   transform-origin: top;
 }
 
+.anatomy__layer {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  opacity: 0;
+  transform: translateY(24px);
+  pointer-events: none;
+  transition:
+    opacity 0.45s var(--ease-out),
+    transform 0.6s var(--ease-out);
+}
+
+/* Les étapes passées sortent par le haut, les suivantes arrivent par le bas */
 .anatomy__layer--done {
-  opacity: 0.55;
+  transform: translateY(-24px);
 }
 
 .anatomy__layer--active {
   opacity: 1;
-}
-
-.anatomy__layer:hover {
-  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition-delay: 0.1s;
 }
 
 .anatomy__num {
@@ -477,29 +464,22 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
 .anatomy__copy {
   display: flex;
   flex-direction: column;
+  gap: 18px;
 }
 
 .anatomy__title {
-  max-width: 470px;
+  max-width: 520px;
+  font-size: 44px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
   color: var(--accent-text);
   transition: color 0.35s;
 }
 
-/* Le texte ne se déplie que pour l'étape active, pour que la liste tienne à l'écran */
-.anatomy__text-wrap {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.5s var(--ease-out);
-}
-
-.anatomy__layer--active .anatomy__text-wrap {
-  grid-template-rows: 1fr;
-}
-
 .anatomy__text {
-  overflow: hidden;
-  max-width: 450px;
-  padding-top: 12px;
+  max-width: 470px;
+  font-size: 18px;
+  line-height: 1.55;
   color: var(--brown-700);
 }
 
@@ -651,12 +631,12 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
 }
 
 @media (max-height: 820px) and (min-width: 901px) {
-  .anatomy__layers {
-    gap: 20px;
+  .anatomy__title {
+    font-size: 34px;
   }
 
-  .anatomy__title {
-    font-size: 26px;
+  .anatomy__text {
+    font-size: 16px;
   }
 }
 
@@ -678,22 +658,14 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
     align-self: center;
   }
 
-  .anatomy__layers {
+  .anatomy__steps {
     flex: 0 0 auto;
     align-self: stretch;
-    display: grid;
-    gap: 0;
+    gap: 16px;
   }
 
-  .anatomy__layer {
-    grid-area: 1 / 1;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .anatomy__layer--active {
-    opacity: 1;
-    pointer-events: auto;
+  .anatomy__layers {
+    padding-left: 20px;
   }
 
   .anatomy__title {
