@@ -386,7 +386,9 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
 }
 
 .anatomy {
-  --view-w: min(720px, calc((100svh - 64px) * 720 / 760), 52vw);
+  /* Place réservée en haut pour la barre de navigation flottante (12 px + 64 px + marge) */
+  --nav-h: 96px;
+  --view-w: min(720px, calc((100svh - var(--nav-h) - 40px) * 720 / 760), 52vw);
 
   position: sticky;
   top: 0;
@@ -394,6 +396,8 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
   align-items: center;
   gap: 56px;
   height: 100svh;
+  padding-top: var(--nav-h);
+  padding-bottom: 24px;
 }
 
 .anatomy__steps {
@@ -647,7 +651,7 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
   }
 
   .anatomy {
-    --view-w: min(100%, calc(52svh * 720 / 760));
+    --view-w: min(100%, calc(46svh * 720 / 760));
 
     flex-direction: column-reverse;
     justify-content: center;

@@ -6,7 +6,7 @@ defineProps<{ hero: Hero; large?: boolean }>()
 
 <template>
   <section class="page-hero section">
-    <AppNav />
+    <AppNav class="page-hero__nav" />
     <div class="page-hero__contenu">
       <h1 class="page-hero__titre" :class="{ 'page-hero__titre--large': large }">{{ hero.titre }}</h1>
       <div class="page-hero__droite" :class="{ 'page-hero__droite--etroite': large }">
@@ -31,10 +31,15 @@ defineProps<{ hero: Hero; large?: boolean }>()
   display: flex;
   flex-direction: column;
   gap: 96px;
-  padding-top: 20px;
+  padding-top: 28px;
   padding-bottom: 112px;
   background: var(--brown-900);
   color: var(--cream);
+}
+
+/* Même position que la nav de l'accueil (marges de 90 px au lieu de 80 px pour les sections) */
+.page-hero__nav {
+  margin-inline: 10px;
 }
 
 .page-hero__contenu {
@@ -119,6 +124,10 @@ defineProps<{ hero: Hero; large?: boolean }>()
 }
 
 @media (max-width: 1024px) {
+  .page-hero__nav {
+    margin-inline: 0;
+  }
+
   .page-hero {
     gap: 64px;
     padding-bottom: 72px;

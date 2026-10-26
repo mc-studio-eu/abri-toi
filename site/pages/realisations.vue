@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { typesLieu, type TypeLieu } from '~/content/realisations'
 import type { GammeCle } from '~/content/commun'
 
 const page = await usePageRealisations()
@@ -13,14 +12,11 @@ const une = computed(() => page.value.aLaUne)
 // Filtres et pagination côté navigateur
 const PAR_PAGE = 9
 const filtreGamme = ref<GammeCle | ''>('')
-const filtreLieu = ref<TypeLieu | ''>('')
 const affiches = ref(PAR_PAGE)
-watch([filtreGamme, filtreLieu], () => (affiches.value = PAR_PAGE))
+watch(filtreGamme, () => (affiches.value = PAR_PAGE))
 
 const filtrees = computed(() =>
-  realisations.value.filter(
-    (r) => (!filtreGamme.value || r.gamme === filtreGamme.value) && (!filtreLieu.value || r.typeLieu === filtreLieu.value),
-  ),
+  realisations.value.filter((r) => !filtreGamme.value || r.gamme === filtreGamme.value),
 )
 const visibles = computed(() => filtrees.value.slice(0, affiches.value))
 </script>
@@ -76,20 +72,6 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
               @click="filtreGamme = cle"
             >
               {{ gammes[cle].nom }}
-            </button>
-          </div>
-          <div class="filtres__groupe" role="group" aria-label="Filtrer par type de lieu">
-            <span class="label-mono filtres__label">Lieu</span>
-            <button type="button" class="filtre" :aria-pressed="!filtreLieu" @click="filtreLieu = ''">Tous</button>
-            <button
-              v-for="t in typesLieu"
-              :key="t.cle"
-              type="button"
-              class="filtre"
-              :aria-pressed="filtreLieu === t.cle"
-              @click="filtreLieu = t.cle"
-            >
-              {{ t.label }}
             </button>
           </div>
           <p class="label-mono filtres__compte" aria-live="polite">

@@ -93,7 +93,7 @@ export const pageRealisations = {
     galerie: [
       { src: '/images/image-pill1.jpg', alt: 'Brume au repos' },
       { src: '/images/image-pill2.jpg', alt: 'Premiers usagers' },
-      { src: '/images/fiches/galileo-banquette-plan.jpg', alt: 'Vue depuis l’allée' },
+      { src: '/images/fiches/galileo-banc-plan.jpg', alt: 'Détail de l’assise' },
       { src: '/images/installe-usagers-a-lombre.jpg', alt: 'À l’ombre, 15 h' },
     ] as Img[],
   },

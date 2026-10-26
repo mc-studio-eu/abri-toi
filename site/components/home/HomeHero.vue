@@ -80,6 +80,11 @@ const hero = computed(() => page.value.hero)
   animation: hero-rise 0.9s var(--ease-out) both;
 }
 
+/* Pas de remplissage après l'animation : une transformation conservée piègerait la barre fixe */
+.hero__nav {
+  animation-fill-mode: backwards;
+}
+
 .hero__content > :nth-child(1) {
   animation-delay: 0.15s;
 }

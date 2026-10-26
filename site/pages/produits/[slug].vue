@@ -51,7 +51,7 @@ async function demanderDoc() {
   <div>
     <main>
       <section class="entete section">
-        <AppNav />
+        <AppNav class="entete__nav" />
       </section>
 
       <section class="hero section">
@@ -154,9 +154,20 @@ async function demanderDoc() {
 
 <style scoped>
 .entete {
-  padding-top: 20px;
+  padding-top: 28px;
   padding-bottom: 20px;
   background: var(--brown-900);
+}
+
+/* Même position que la nav de l'accueil */
+.entete__nav {
+  margin-inline: 10px;
+}
+
+@media (max-width: 1024px) {
+  .entete__nav {
+    margin-inline: 0;
+  }
 }
 
 .hero {

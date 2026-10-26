@@ -46,7 +46,7 @@ export const lienProduit = (p?: Pick<Produit, 'slug' | 'lienVers'>) =>
 export const useRealisations = () =>
   useContenu(
     'realisations',
-    `*[_type == "realisation"] | order(ordre asc){ nom, gamme, typeLieu, description, photo }`,
+    `*[_type == "realisation"] | order(ordre asc){ nom, gamme, description, photo }`,
     realisations,
   )
 

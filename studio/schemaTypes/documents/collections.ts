@@ -1,6 +1,5 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 import { categories, fondsCouverture } from '../../../site/content/articles'
-import { typesLieu } from '../../../site/content/realisations'
 import { gammeChamp, image, liste, lignes, objet, paragraphe, texte } from '../champs'
 
 const slug = (source: string) =>
@@ -149,15 +148,12 @@ export const realisation = defineType({
   fields: [
     texte('nom', 'Nom du projet', { validation: (r: any) => r.required() }),
     gammeChamp(),
-    texte('typeLieu', 'Type de lieu', {
-      options: { list: typesLieu.map((t) => ({ title: t.label, value: t.cle })) },
-    }),
     paragraphe('description', 'Description courte'),
     image('photo', 'Photo', { validation: (r: any) => r.required() }),
     defineField({ name: 'ordre', title: 'Ordre d’affichage', type: 'number' }),
   ],
   orderings: [{ title: 'Ordre d’affichage', name: 'ordre', by: [{ field: 'ordre', direction: 'asc' }] }],
-  preview: { select: { title: 'nom', subtitle: 'typeLieu', media: 'photo' } },
+  preview: { select: { title: 'nom', subtitle: 'gamme', media: 'photo' } },
 })
 
 export const article = defineType({

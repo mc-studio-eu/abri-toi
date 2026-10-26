@@ -90,7 +90,7 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 56px;
   padding-top: 120px;
-  padding-bottom: 60px;
+  padding-bottom: 120px;
   padding-inline: max(120px, calc((100% - var(--page-max)) / 2 + 120px));
 }
 
@@ -211,6 +211,7 @@ onBeforeUnmount(() => {
 @media (max-width: 640px) {
   .manifesto {
     padding-top: 80px;
+    padding-bottom: 80px;
   }
 
   .manifesto__text {
