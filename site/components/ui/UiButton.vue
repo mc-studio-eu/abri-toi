@@ -24,11 +24,11 @@ const classes = computed(() => ['btn', `btn--${props.variant}`, { 'btn--pill': p
 
 <template>
   <button v-if="submit" type="submit" :class="classes" :disabled="disabled">
-    <span>{{ label }}</span>
+    <UiTextSlide :text="label" />
     <img v-if="showIcon" :src="arrow" alt="" width="16" height="16" class="btn__icon" />
   </button>
   <NuxtLink v-else :to="to" :class="classes">
-    <span>{{ label }}</span>
+    <UiTextSlide :text="label" />
     <img v-if="showIcon" :src="arrow" alt="" width="16" height="16" class="btn__icon" />
   </NuxtLink>
 </template>

@@ -2,9 +2,15 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-10-01',
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
+  // Ancienne adresse du site WordPress
+  routeRules: { '/politique-de-cookies-ue': { redirect: '/politique-de-cookies' } },
   runtimeConfig: {
     // Jeton d'écriture Sanity, côté serveur uniquement : enregistre les demandes envoyées depuis le site.
     sanityWriteToken: '',
+    // Clé Resend côté serveur : envoi des demandes du formulaire vers la boîte de contact.
+    resendApiKey: '',
+    contactEmail: 'contact@mc-studio.eu',
+    emailFrom: '',
     public: {
       // Sans projectId, le site affiche le contenu de référence (dossier content/).
       sanity: {

@@ -14,7 +14,7 @@ const hero = computed(() => page.value.hero)
       <p class="hero__eyebrow">{{ hero.surtitre }}</p>
       <h1 class="hero__title">
         {{ hero.titre }}<br />
-        {{ hero.titreSuite }} <span class="shimmer">{{ hero.titreAccent }}</span>
+        <span class="shimmer">{{ hero.titreSuite }}</span>
       </h1>
       <p class="hero__lead">{{ hero.texte }}</p>
       <div class="hero__ctas">

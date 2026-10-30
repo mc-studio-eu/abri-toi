@@ -5,13 +5,13 @@ type MorceauManifeste = { texte: string; accent?: boolean } | { image: Img; larg
 export const pageAccueil = {
   hero: {
     photo: { src: '/images/hero-v5-photo-plein-fond.png', alt: 'Des habitants assis à l’ombre d’un abri Galiléo' } as Img,
-    surtitre: 'Bureau d’études à Lyon · Fabrication en France',
-    titre: 'Reconquérir l’extérieur,',
-    titreSuite: 'même en pleine',
+    surtitre: 'Bureau d’études design · Conçu à Lyon, fabriqué en France',
+    titre: 'Reconquérir les espaces',
+    titreSuite: 'extérieurs',
     // Mot animé (reflet orange) en fin de titre
-    titreAccent: 'canicule.',
+    titreAccent: '',
     texte:
-      'Des solutions d’ombrage et de fraîcheur durables, conçues pour améliorer le confort en extérieur par forte chaleur et créer des espaces conviviaux toute l’année.',
+      'Plus que des abris contre le soleil : des espaces de fraîcheur en extérieur où l’on a envie de passer du temps.',
     boutonProduits: 'Découvrez nos produits',
   },
   manifeste: {
@@ -32,12 +32,12 @@ export const pageAccueil = {
     signatureRole: 'Fondateur & designer industriel · Lyon',
   },
   probleme: {
-    titre: 'L’année de tous les records.',
+    titre: '2026, l’année de tous les records.',
     titreSuite: 'Vos places, cours et parcs deviennent invivables.',
     texte:
-      'Sédentarité dans intérieurs climatisés, liens sociaux s’effilochent, parcs désertés au soleil. Seniors et enfants, publics fragiles, sont les premiers touchés.',
+      'La chaleur pousse les habitants à rester à l’intérieur, dans des espaces climatisés. Les lieux publics se vident et les occasions de se retrouver diminuent, surtout pour les publics fragiles.',
     chiffres: [
-      { valeur: '41 °C', texte: 'Relevés un 6 septembre dans une ville française.' },
+      { valeur: '40,3 °C', texte: 'Record de température mesuré à Lavaur (Tarn) le 6 septembre 2026.' },
       { valeur: '53 jours', texte: 'De canicule en France entre le 1er juin et le 31 août 2026.' },
       { valeur: '7 824', texte: 'Décès liés à la canicule entre juin et août 2026.' },
     ],
@@ -84,22 +84,22 @@ export const pageAccueil = {
         {
           titre: 'Végétation. L’ombre prend vie.',
           texte:
-            'Plantes grimpantes sur un filet issu de filets de pêche recyclés, plantées dans un bac de 1 m³ de terre. Un filet en fibre de coco les guide le temps qu’elles poussent.',
+            'Plantes grimpantes sur un filet issu de filets de pêche recyclés, plantées dans une jardinière de près de 800 kg de terre. Un filet en fibre de coco les guide le temps qu’elles poussent.',
         },
         {
           titre: 'Autonome et déplaçable.',
           texte:
-            'Un réservoir de 120 L recueille l’eau de pluie et arrose les plantes par capillarité. Les 900 kg de terre servent de lest : pas de béton, l’abri se déplace au chariot élévateur.',
+            'Un réservoir de 120 L recueille l’eau de pluie et arrose les plantes par capillarité. Les quelque 800 kg de terre servent de lest : pas de béton, l’abri se déplace au chariot élévateur.',
         },
       ],
-      etiquettes: ['Structure aluminium', 'Toiture perforée', 'Filet de grimpe recyclé', 'Bac 1 m³ & réservoir 120 L'],
+      etiquettes: ['Structure aluminium', 'Toiture perforée', 'Filet de grimpe recyclé', 'Jardinière 800 kg & réservoir 120 L'],
       badge: 'Sans ancrage · Déplaçable au chariot · Réservoir 120 L',
     },
   },
   modulaire: {
-    titre: 'Assemblez vos abris comme des briques.',
+    titre: 'Des abris combinables et modulables.',
     texte:
-      'Chaque gamme se combine avec elle-même. Deux modules de 3 places forment un espace de 6 places et 12 m² d’ombre : banquettes, bancs, tables ou gradins chez Galiléo, bancs et tables sous une arche végétale chez Fotos.',
+      'Chaque gamme se combine avec elle-même. Les configurations peuvent accueillir jusqu’à 8 personnes et créer jusqu’à 12 m² d’ombre : banquettes, bancs, tables ou gradins chez Galiléo, bancs et tables sous une arche végétale chez Fotos.',
   },
   process: {
     titre: 'De votre premier appel',
@@ -129,18 +129,18 @@ export const pageAccueil = {
     photoPose: { src: '/images/installe-usagers-a-lombre.jpg' } as Img,
   },
   installations: {
-    titre: 'Nos premières installations.',
+    titre: 'Nos premières réalisations.',
     texte:
-      'Abri Toi est une jeune entreprise : Voici nos prototypes, tests et projets en cours. Les premières installations en usage arrivent.',
+      'Voici nos premières réalisations Galiléo et Fotos, dans des espaces de vie réels.',
     bandeaux: [
       {
-        titre: 'Fotos — premier banc installé',
+        titre: 'Fotos · Jardin de copropriété · Six-Fours (83)',
         gamme: 'fotos',
         image: { src: '/images/bandeau-hover-fotos-premier-banc-installe.jpg' } as Img,
         produit: 'banc-fotos',
       },
       {
-        titre: 'Galiléo blanc — banc brumisé',
+        titre: 'Galiléo · Terrasse d’un particulier · Sanary (83)',
         gamme: 'galileo',
         image: { src: '/images/bandeau-galileo-blanc-banc-brumise.jpg' } as Img,
         produit: 'banc-galileo',
@@ -194,12 +194,12 @@ export const pageAccueil = {
       {
         question: 'Quelle garantie et quelle durée de vie ?',
         reponse:
-          'Les abris sont pensés pour durer : structure en aluminium recyclé à 40 % minimum et thermolaqué, assise en bois Kebony classe 4, toiture en tôle d’aluminium perforée. Les conditions et durées de garantie de chaque élément sont précisées dans votre proposition sur-mesure.',
+          'Les abris sont pensés pour durer : structure en aluminium recyclé à 40 % minimum et thermolaqué, assise en bois Kebony classe 4, toiture en tôle d’aluminium perforée. Le bois Kebony est garanti 30 ans contre les champignons et la pourriture, la structure aluminium 5 ans et le système de brumisation 2 ans, à compter de la livraison. Le bois demande un simple brossage à sec mensuel, la brumisation une maintenance avant et après l’été.',
       },
       {
         question: 'Comment l’abri est-il fixé ? Résiste-t-il au vent ?',
         reponse:
-          'Cela dépend de la gamme. Galiléo est ancré au sol sur une fondation béton, avec une arrivée d’eau qui passe par le sol. Fotos ne nécessite aucun ancrage : son bac de 1 m³ de terre pèse environ 900 kg et le leste naturellement. Il peut être posé en pleine terre ou rester déplaçable au chariot élévateur. Les caractéristiques de résistance figurent dans les fiches techniques.',
+          'Cela dépend de la gamme. Galiléo est ancré au sol sur une fondation béton, avec une arrivée d’eau qui passe par le sol. Fotos ne nécessite aucun ancrage : sa jardinière contient près de 800 kg de terre qui la lestent naturellement. Il peut être posé en pleine terre ou rester déplaçable au chariot élévateur. Les caractéristiques de résistance figurent dans les fiches techniques.',
       },
       {
         question: 'Que se passe-t-il en hiver ?',
@@ -218,7 +218,7 @@ export const pageAccueil = {
     citation:
       '« Pouvoir s’asseoir à l’ombre le plus longtemps possible dans la journée. C’est pour ça que j’ai créé Abri Toi. »',
     texte:
-      'Designer industriel, j’ai passé plus de cinq ans à concevoir du mobilier urbain. Chaque été, je voyais les mêmes bancs brûlants et les mêmes places désertes. Abri Toi est né à Lyon en 2025 pour redonner aux habitants des lieux où se retrouver, même au cœur de l’été.',
+      'J’ai toujours aimé observer la ville et les lieux où l’on se retrouve au quotidien. Après cinq années dans l’aménagement urbain chez Pro Urba, j’ai fondé Abri Toi à Lyon, en octobre 2025, pour rendre les espaces urbains plus confortables, plus vivants et plus durables. Une envie guide ce projet : permettre à chacun de s’asseoir à l’ombre et de profiter plus longtemps de la ville.',
     nom: 'Paul Saraceno',
     role: 'Fondateur & designer industriel',
   },

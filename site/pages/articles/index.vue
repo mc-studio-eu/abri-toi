@@ -63,7 +63,7 @@ const liste = computed(() =>
         <p v-else class="body-m tous__vide">Pas encore d’article sur ce thème.</p>
 
         <div v-if="liste.length > affiches" class="tous__plus">
-          <button type="button" class="plus" @click="affiches += PAR_PAGE">{{ page.boutonPlus }}</button>
+          <button type="button" class="plus" @click="affiches += PAR_PAGE"><UiTextSlide :text="page.boutonPlus" /></button>
         </div>
       </section>
 

@@ -28,21 +28,21 @@ onBeforeUnmount(() => window.removeEventListener('scroll', surveiller))
   <div class="nav-place">
     <header class="nav" :class="{ 'nav--ouvert': ouvert, 'nav--flottante': flottante }">
       <div class="nav__gauche">
-        <NuxtLink to="/" aria-label="Abri Toi — accueil">
+        <a href="/" aria-label="Abri Toi — accueil">
           <img src="/images/logo-blanc.png" alt="Abri Toi" width="130" height="23" class="nav__logo" />
-        </NuxtLink>
+        </a>
         <nav id="menu-principal" aria-label="Navigation principale">
           <ul class="nav__menu">
             <li v-for="lien in liens" :key="lien.to">
-              <NuxtLink :to="lien.to" :class="{ 'nav__lien--actif': actif(lien.to) }" :aria-current="actif(lien.to) ? 'page' : undefined">
+              <a :href="lien.to" :class="{ 'nav__lien--actif': actif(lien.to) }" :aria-current="actif(lien.to) ? 'page' : undefined">
                 {{ lien.label }}
-              </NuxtLink>
+              </a>
             </li>
           </ul>
         </nav>
       </div>
       <div class="nav__droite">
-        <NuxtLink to="/contact" class="nav__cta">{{ parametres.boutonNav }}</NuxtLink>
+        <a href="/contact" class="nav__cta"><UiTextSlide :text="parametres.boutonNav" /></a>
         <button
           type="button"
           class="nav__burger"

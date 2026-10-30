@@ -57,7 +57,14 @@ export const gamme = defineType({
       name: 'documentation',
       title: 'Documentation technique (PDF)',
       type: 'file',
-      description: 'Envoyée après saisie de l’e-mail sur les fiches produits de la gamme.',
+      description: 'Documentation commerciale, proposée après saisie de l’e-mail sur les fiches produits de la gamme.',
+      options: { accept: 'application/pdf' },
+    }),
+    defineField({
+      name: 'ficheTechnique',
+      title: 'Fiches techniques (PDF)',
+      type: 'file',
+      description: 'Proposées avec la documentation, après saisie de l’e-mail.',
       options: { accept: 'application/pdf' },
     }),
     liste(
@@ -270,4 +277,40 @@ export const demande = defineType({
       subtitle: [type === 'documentation' ? 'Documentation' : 'Contact', organisation].filter(Boolean).join(' · '),
     }),
   },
+})
+
+// Mentions légales, politique de confidentialité, politique de cookies
+export const pageLegale = defineType({
+  name: 'pageLegale',
+  title: 'Page légale',
+  type: 'document',
+  fields: [
+    texte('titre', 'Titre', { validation: (r: any) => r.required() }),
+    defineField({
+      name: 'slug',
+      title: 'Adresse de la page',
+      type: 'slug',
+      description: 'Ne pas modifier : les liens du pied de page pointent vers cette adresse.',
+      readOnly: true,
+    }),
+    paragraphe('chapo', 'Texte d’introduction'),
+    defineField({ name: 'misAJour', title: 'Dernière mise à jour', type: 'date' }),
+    defineField({
+      name: 'corps',
+      title: 'Texte',
+      description: 'Les intertitres sont numérotés automatiquement.',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'block',
+          styles: [
+            { title: 'Paragraphe', value: 'normal' },
+            { title: 'Intertitre', value: 'h2' },
+          ],
+          lists: [{ title: 'Liste à puces', value: 'bullet' }],
+        }),
+      ],
+    }),
+  ],
+  preview: { select: { title: 'titre', subtitle: 'slug.current' } },
 })

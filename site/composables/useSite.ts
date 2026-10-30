@@ -2,6 +2,7 @@
 import { pageAccueil } from '~/content/accueil'
 import { articles, type Article } from '~/content/articles'
 import { gammes, parametres, type GammeCle } from '~/content/commun'
+import { pagesLegales } from '~/content/legal'
 import { ficheProduit, pageAPropos, pageArticles, pageContact, pageProduits, pageRealisations } from '~/content/pages'
 import { produits, type Produit } from '~/content/produits'
 import { realisations } from '~/content/realisations'
@@ -14,16 +15,21 @@ export const useParametres = () => page('parametres', parametres)
 export async function useGammes() {
   const data = await useContenu(
     'gammes',
-    `*[_type == "gamme"]{ ..., "documentation": documentation.asset->url }`,
+    `*[_type == "gamme"]{ ..., "documentation": documentation.asset->url, "ficheTechnique": ficheTechnique.asset->url }`,
     [] as (typeof gammes.galileo)[],
   )
-  return computed(() => {
-    const parCle = Object.fromEntries(data.value.map((g) => [g.cle, g]))
-    return { galileo: parCle.galileo ?? gammes.galileo, fotos: parCle.fotos ?? gammes.fotos } as Record<
-      GammeCle,
-      typeof gammes.galileo
-    >
-  })
+  // Sans PDF dans Sanity, on garde ceux livrés avec le site (public/docs).
+  // Retourner le record directement permet aux templates de l'utiliser uniformément.
+  const avecSecours = (cle: GammeCle) => {
+    const g = data.value.find((d) => d.cle === cle)
+    if (!g) return gammes[cle]
+    return {
+      ...g,
+      documentation: g.documentation || gammes[cle].documentation,
+      ficheTechnique: g.ficheTechnique || gammes[cle].ficheTechnique,
+    }
+  }
+  return computed(() => ({ galileo: avecSecours('galileo'), fotos: avecSecours('fotos') }))
 }
 
 export const useProduits = () =>
@@ -81,6 +87,10 @@ export const usePageRealisations = () => page('pageRealisations', pageRealisatio
 export const usePageAPropos = () => page('pageAPropos', pageAPropos)
 export const usePageArticles = () => page('pageArticles', pageArticles, `..., "aLaUne": aLaUne->slug.current`)
 export const usePageContact = () => page('pageContact', pageContact)
+
+// Mentions légales, confidentialité, cookies (document « legal-<adresse> »)
+export const usePageLegale = (slug: string) =>
+  page(`legal-${slug}`, pagesLegales.find((l) => l.slug === slug) ?? null, `..., "slug": slug.current`)
 
 // Libellés
 export const labelCategorie = (cle: string) =>

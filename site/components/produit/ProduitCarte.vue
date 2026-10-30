@@ -27,12 +27,6 @@ defineProps<{ titre: string; description?: string; visuel?: Img; to: string }>()
   border: 1px solid var(--line);
   border-radius: 16px;
   background: var(--paper);
-  transition: box-shadow 0.3s, transform 0.3s;
-}
-
-.carte:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 32px rgba(63, 38, 29, 0.08);
 }
 
 .carte__visuel {

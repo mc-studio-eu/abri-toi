@@ -77,7 +77,7 @@ export const pageAccueil = page('pageAccueil', 'Accueil', [
     texte('titreSuite', 'Titre (2e ligne)'),
     texte('duree', 'Durée totale'),
     texte('note', 'Note'),
-    liste('etapes', 'Étapes (4)', [texte('titre', 'Titre'), paragraphe('texte', 'Texte')], { title: 'titre' }),
+    liste('etapes', 'Étapes (5)', [texte('titre', 'Titre'), paragraphe('texte', 'Texte')], { title: 'titre' }),
     image('photoContact', 'Photo de l’étape 01'),
     image('photoPose', 'Photo de l’étape 04'),
   ]),
@@ -131,6 +131,10 @@ export const pageAccueil = page('pageAccueil', 'Accueil', [
 export const pageProduits = page('pageProduits', 'Page Produits', [
   hero(true),
   objet('collection', 'Toute la collection', titreIntro),
+  objet('usages', 'Usages par gamme', [
+    listeTextes('galileo', 'Usages Galiléo'),
+    listeTextes('fotos', 'Usages Fotos'),
+  ]),
   objet('surMesure', 'Carte « Sur mesure »', [
     texte('label', 'Surtitre'),
     texte('titre', 'Titre'),
@@ -198,12 +202,13 @@ export const pageAPropos = page('pageAPropos', 'Page À propos', [
       'Engagements',
       [
         texte('numero', 'Numéro de l’ODD'),
+        image('icone', 'Pictogramme de l’ODD'),
         texte('label', 'Surtitre'),
         texte('titre', 'Titre'),
         paragraphe('texte', 'Texte'),
         listeTextes('preuves', 'Preuves'),
       ],
-      { title: 'titre', subtitle: 'label' },
+      { title: 'titre', subtitle: 'label', media: 'icone' },
     ),
   ]),
   objet('partenaires', 'Nos partenaires', [

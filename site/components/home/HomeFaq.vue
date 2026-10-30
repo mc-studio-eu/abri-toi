@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Réponses rédigées à partir des docs commerciales (voir BRIEF.md) ; garanties à relire avec Paul.
+// Réponses rédigées à partir des docs commerciales et des fiches techniques (voir BRIEF.md).
 const page = await usePageAccueil()
 const faq = computed(() => page.value.faq)
 

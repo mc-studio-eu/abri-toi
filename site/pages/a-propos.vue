@@ -43,7 +43,8 @@ useHead({ title: 'À propos — Abri Toi' })
         </header>
         <ul class="engagements__grille">
           <li v-for="(e, i) in page.engagements.items" :key="e.titre" v-reveal="i * 120" class="engagement">
-            <span class="display-h4 engagement__odd">{{ e.numero }}</span>
+            <img v-if="e.icone" :src="img(e.icone, 400)" :alt="alt(e.icone) || e.label" class="engagement__icone" />
+            <span v-else class="display-h4 engagement__odd">{{ e.numero }}</span>
             <p class="label-mono engagement__label">{{ e.label }}</p>
             <h3 class="display-h3">{{ e.titre }}</h3>
             <p class="engagement__texte">{{ e.texte }}</p>
@@ -249,6 +250,12 @@ useHead({ title: 'À propos — Abri Toi' })
   border-radius: 8px;
   background: var(--brown-900);
   color: var(--cream);
+}
+
+.engagement__icone {
+  width: 128px;
+  height: 128px;
+  border-radius: 8px;
 }
 
 .engagement__label {

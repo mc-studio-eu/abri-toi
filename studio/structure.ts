@@ -3,6 +3,10 @@ import type { StructureBuilder, StructureResolver } from 'sanity/structure'
 const unique = (S: StructureBuilder, type: string, titre: string) =>
   S.listItem().title(titre).id(type).child(S.document().schemaType(type).documentId(type).title(titre))
 
+// Pages légales : une par adresse, à identifiant fixe
+const legale = (S: StructureBuilder, slug: string, titre: string) =>
+  S.listItem().title(titre).id(`legal-${slug}`).child(S.document().schemaType('pageLegale').documentId(`legal-${slug}`).title(titre))
+
 export const structure: StructureResolver = (S) =>
   S.list()
     .title('Contenu du site')
@@ -20,6 +24,10 @@ export const structure: StructureResolver = (S) =>
               unique(S, 'pageAPropos', 'À propos'),
               unique(S, 'pageArticles', 'Articles'),
               unique(S, 'pageContact', 'Contact'),
+              S.divider(),
+              legale(S, 'mentions-legales', 'Mentions légales'),
+              legale(S, 'politique-de-confidentialite', 'Politique de confidentialité'),
+              legale(S, 'politique-de-cookies', 'Politique de cookies'),
             ]),
         ),
       S.divider(),

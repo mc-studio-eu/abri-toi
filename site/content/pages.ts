@@ -2,7 +2,7 @@ import type { Hero, Img, Ligne } from './commun'
 
 export const pageProduits = {
   hero: {
-    titre: 'Deux abris pour reconquérir l’extérieur.',
+    titre: 'Deux gammes de mobilier abrité pour valoriser vos extérieurs.',
     chapo:
       'Galiléo rafraîchit dès la pose grâce à la brumisation. Fotos fait pousser son ombre avec l’eau de pluie. Même structure, deux réponses à la chaleur.',
     ancres: [
@@ -14,12 +14,16 @@ export const pageProduits = {
   collection: {
     titre: 'Cinq modèles, sept espaces, à combiner selon vos lieux.',
     intro:
-      'Chaque modèle est un module de 3 places. Placés en vis-à-vis, deux modules forment un espace de 6 places et 12 m² d’ombre.',
+      'Un module seul ou deux modules combinés en vis-à-vis ou dos à dos : créez des espaces qui accueillent jusqu’à 8 personnes et offrent jusqu’à 12 m² d’ombre.',
+  },
+  usages: {
+    galileo: ['Places publiques', 'Cours d’école', 'Campus universitaires', 'Esplanades piétonnes', 'EHPAD', 'Aires de jeux et de sport', 'Gares et aéroports'],
+    fotos: ['Terrasses', 'Parcs et places publiques', 'Cours et campus', 'Espaces d’entreprise', 'Aires de détente', 'Bords de piscine'],
   },
   surMesure: {
     label: 'Sur mesure',
-    titre: 'Un espace particulier à équiper ?',
-    texte: 'Nous étudions l’ensoleillement de votre site et composons la bonne combinaison de modules.',
+    titre: 'Un projet d’ombrage spécifique ?',
+    texte: 'Aucune combinaison ne répond exactement à votre besoin ? Nous étudions votre site et construisons une solution sur mesure. Parlons-en.',
     bouton: 'Prendre rendez-vous',
   },
   comparatif: {
@@ -40,12 +44,9 @@ export const pageProduits = {
         galileo: 'Réseau d’eau potable, canalisations par le sol',
         fotos: 'Eau de pluie : réservoir de 120 L, arrosage par capillarité',
       },
-      { label: 'Pose', galileo: 'Ancré sur dalle béton', fotos: 'Sans ancrage : 1 m³ de terre (≈ 900 kg) sert de lest' },
-      {
-        label: 'Déplaçable',
-        galileo: 'Non, installation pérenne',
-        fotos: 'Oui, au chariot élévateur (ou version pleine terre, fixe)',
-      },
+      { label: 'Pose', galileo: 'Ancré sur dalle béton', fotos: 'Sans ancrage : près de 800 kg de terre servent de lest' },
+      { label: 'Déplaçable', galileo: '✕ Non', fotos: '✓ Oui, au chariot élévateur' },
+      { label: 'Ombrage immédiat', galileo: '✓ Oui', fotos: '✕ Non, l’ombre grandit avec les plantes' },
       { label: 'Modèles', galileo: 'Banquette, Banc, Table / Gradin', fotos: 'Banc, Table' },
       { label: 'Teintes', galileo: 'Blanc, olive, orange, bleu', fotos: 'Brun' },
       {
@@ -113,14 +114,14 @@ export const pageAPropos = {
   } as Hero,
   histoire: {
     portrait: { src: '/images/process-visuel01-contact.png', alt: 'Paul Saraceno, fondateur d’Abri Toi' } as Img,
-    titre: 'Tout est parti d’un banc brûlant.',
+    titre: 'Tout est parti d’une envie simple : s’asseoir à l’ombre.',
     paragraphes: [
-      'Designer industriel, Paul Saraceno a passé plus de cinq ans à concevoir du mobilier urbain. Chaque été, il retrouvait les mêmes bancs brûlants et les mêmes places désertes dès la fin de matinée.',
-      'En 2025, il fonde Abri Toi à Lyon avec une conviction : l’ombre est un équipement public à part entière. Pas un parasol ni un voile tendu, mais un abri pensé pour durer, où l’on s’assoit et où l’on se retrouve.',
-      'Aujourd’hui, notre bureau d’études conçoit deux gammes, Galiléo et Fotos, fabriquées en France avec des partenaires que nous avons choisis un à un.',
+      'J’ai toujours aimé observer la ville : ce lieu que l’on pratique au quotidien, pour retrouver des amis au parc, faire quelques courses ou profiter d’une soirée au restaurant. Elle façonne nos modes de vie, nos rencontres et notre bien-être. Contribuer à son évolution me semble essentiel.',
+      'Après cinq années dans le secteur de l’aménagement urbain chez Pro Urba, j’ai fondé Abri Toi à Lyon, en octobre 2025. Une entreprise portée par une volonté : rendre les espaces urbains plus confortables, plus vivants et plus durables.',
+      'Aujourd’hui, notre bureau d’études conçoit deux gammes, Galiléo et Fotos, fabriquées en France avec des partenaires que nous avons choisis un à un. La ville nourrit mon travail ; les sports outdoor, en mer comme en montagne, sont deux autres lieux d’inspiration et une source de créativité inépuisable.',
     ],
     nom: 'Paul Saraceno',
-    role: 'Fondateur & designer industriel',
+    role: 'Fondateur d’Abri Toi',
   },
   chiffres: {
     titre: 'Une jeune entreprise, des engagements mesurables.',
@@ -138,6 +139,7 @@ export const pageAPropos = {
     items: [
       {
         numero: '13',
+        icone: { src: '/images/odd/odd-13.png', alt: 'ODD 13 : mesures relatives à la lutte contre les changements climatiques' } as Img,
         label: 'ODD 13 · Lutte contre le changement climatique',
         titre: 'Innovation & durabilité',
         texte: 'Des matériaux choisis pour leur faible impact et leur longévité, et l’eau de pluie mise à profit.',
@@ -150,6 +152,7 @@ export const pageAPropos = {
       },
       {
         numero: '11',
+        icone: { src: '/images/odd/odd-11.png', alt: 'ODD 11 : villes et communautés durables' } as Img,
         label: 'ODD 11 · Villes et communautés durables',
         titre: 'Convivialité & lien social',
         texte: 'Des abris pensés comme des lieux de rencontre, où l’on s’assoit face à face plutôt que côte à côte.',
@@ -161,6 +164,7 @@ export const pageAPropos = {
       },
       {
         numero: '9',
+        icone: { src: '/images/odd/odd-9.png', alt: 'ODD 9 : industrie, innovation et infrastructure' } as Img,
         label: 'ODD 9 · Industrie, innovation et infrastructure',
         titre: 'Savoir-faire français',
         texte: 'Conçus par notre bureau d’études à Lyon, fabriqués avec nos partenaires industriels français.',
@@ -216,7 +220,7 @@ export const pageAPropos = {
     ],
   },
   terrain: {
-    titre: 'Nos premiers abris, déjà adoptés.',
+    titre: 'Nos premières réalisations.',
     bouton: 'Voir les réalisations',
     photos: [
       { image: { src: '/images/photo-une-pause-a-lombre.jpg' } as Img, legende: 'Une pause à l’ombre' },
@@ -250,8 +254,8 @@ export const pageContact = {
   formulaire: {
     titre: 'Votre demande',
     sousTitre: 'Les champs marqués * sont obligatoires.',
-    typesClient: ['Collectivité', 'Entreprise', 'EHPAD', 'Syndic de copropriété', 'Autre'],
-    gammes: ['Galiléo · brumisation', 'Fotos · végétation', 'Je ne sais pas encore'],
+    typesClient: ['Collectivité', 'Architecte / paysagiste', 'Entreprise privée', 'Particulier', 'Autre'],
+    gammes: ['Galiléo · brumisation', 'Fotos · végétation', 'Les deux gammes', 'Je ne sais pas encore'],
     echeances: ['Avant l’été 2027', 'Dans l’année', 'Pas de date précise'],
     consentement:
       'J’accepte qu’Abri Toi utilise ces informations pour me recontacter. Aucune donnée n’est transmise à des tiers.',
@@ -269,9 +273,11 @@ export const pageContact = {
   etapes: {
     titre: 'Et ensuite ?',
     items: [
-      'Paul vous rappelle sous 48 h pour comprendre votre lieu.',
-      'Nous réalisons une étude d’ensoleillement de votre site.',
-      'Vous recevez une proposition. Comptez environ 8 semaines de la commande à la pose.',
+      'Premier échange sous 48 h pour comprendre votre lieu et vos besoins.',
+      'Étude d’ensoleillement et conception d’une implantation 3D.',
+      'Proposition détaillée, chiffrage et validation de la commande.',
+      'Fabrication des modules auprès de nos partenaires en France.',
+      'Installation sur site : comptez environ 8 semaines après la commande.',
     ],
   },
 }

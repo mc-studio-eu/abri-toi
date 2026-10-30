@@ -1,4 +1,4 @@
-import { article, demande, gamme, parametres, produit, realisation } from './documents/collections'
+import { article, demande, gamme, pageLegale, parametres, produit, realisation } from './documents/collections'
 import {
   ficheProduit,
   pageAccueil,
@@ -22,6 +22,7 @@ export const schemaTypes = [
   produit,
   realisation,
   article,
+  pageLegale,
   demande,
 ]
 

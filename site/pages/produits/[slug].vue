@@ -27,22 +27,26 @@ const similaires = computed(() =>
   }),
 )
 
-// Demande de documentation : e-mail obligatoire, puis téléchargement si un PDF est en ligne
+// Demande de documentation : e-mail obligatoire, puis accès aux PDF de la gamme.
+// Les PDF restent proposés si l'enregistrement de la demande échoue (Sanity non branché, réseau…).
 const email = ref('')
 const etat = ref<'' | 'envoi' | 'ok' | 'erreur'>('')
-const lienDoc = ref('')
+const pdfs = computed(() =>
+  [
+    { label: `Documentation ${gamme.value.nom}`, url: gamme.value.documentation },
+    { label: `Fiches techniques ${gamme.value.nom}`, url: gamme.value.ficheTechnique },
+  ].filter((p) => p.url),
+)
 async function demanderDoc() {
   etat.value = 'envoi'
   try {
-    const res = await $fetch<{ documentation?: string }>('/api/demande', {
+    await $fetch('/api/demande', {
       method: 'POST',
       body: { type: 'documentation', email: email.value, produit: fiche.value.titre, gamme: produit.value!.gamme },
     })
-    lienDoc.value = res.documentation || ''
     etat.value = 'ok'
-    if (lienDoc.value) window.open(lienDoc.value, '_blank', 'noopener')
   } catch {
-    etat.value = 'erreur'
+    etat.value = pdfs.value.length ? 'ok' : 'erreur'
   }
 }
 </script>
@@ -124,13 +128,17 @@ async function demanderDoc() {
               L’envoi n’a pas abouti. Écrivez-nous à {{ parametres.email }}.
             </p>
           </template>
-          <p v-else class="doc__message" role="status">
-            <template v-if="lienDoc">
-              Merci ! Le téléchargement a démarré.
-              <a :href="lienDoc" target="_blank" rel="noopener">Ouvrir la documentation</a>
+          <div v-else class="doc__message" role="status">
+            <template v-if="pdfs.length">
+              <p>Merci ! Vos documents sont prêts :</p>
+              <ul class="doc__pdfs">
+                <li v-for="p in pdfs" :key="p.url">
+                  <a :href="p.url" target="_blank" rel="noopener" download>{{ p.label }} (PDF)</a>
+                </li>
+              </ul>
             </template>
-            <template v-else>Merci ! Nous vous envoyons la documentation par e-mail très vite.</template>
-          </p>
+            <p v-else>Merci ! Nous vous envoyons la documentation par e-mail très vite.</p>
+          </div>
         </form>
       </section>
 
@@ -390,6 +398,13 @@ async function demanderDoc() {
 .doc__message a {
   color: var(--orange-500);
   text-decoration: underline;
+}
+
+.doc__pdfs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .similaires {

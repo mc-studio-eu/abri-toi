@@ -22,6 +22,12 @@ const columns = [
     ],
   },
 ]
+
+const legal = [
+  { label: 'Mentions légales', to: '/mentions-legales' },
+  { label: 'Confidentialité', to: '/politique-de-confidentialite' },
+  { label: 'Cookies', to: '/politique-de-cookies' },
+]
 </script>
 
 <template>
@@ -55,7 +61,12 @@ const columns = [
 
     <div class="label-mono footer__bottom">
       <p>{{ parametres.mentions }}</p>
-      <p class="footer__legal">Mentions légales · Cookies · Plan du site</p>
+      <p class="footer__legal">
+        <template v-for="(lien, i) in legal" :key="lien.to">
+          <template v-if="i"> · </template>
+          <NuxtLink :to="lien.to">{{ lien.label }}</NuxtLink>
+        </template>
+      </p>
     </div>
   </footer>
 </template>
@@ -139,6 +150,10 @@ const columns = [
 
 .footer__legal {
   text-transform: none;
+}
+
+.footer__legal a:hover {
+  color: var(--orange-500);
 }
 
 @media (max-width: 1024px) {

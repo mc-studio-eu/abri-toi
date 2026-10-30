@@ -31,7 +31,7 @@ export const parametres = {
   telephone: '06 48 20 52 38',
   email: 'collaborer@abritoi.com',
   adresse: '16 rue Fénelon, 69006 Lyon',
-  pitch: 'Des espaces d’ombrage et de fraîcheur qui rassemblent. Conçus à Lyon, fabriqués en France.',
+  pitch: 'Plus que des abris contre le soleil : des espaces de fraîcheur en extérieur où l’on a envie de passer du temps.',
   linkedin: '',
   youtube: '',
   mentions: '© 2026 ABRI TOI SAS · SIREN 992 306 621',
@@ -44,7 +44,7 @@ export const parametres = {
   ],
   // Bloc orange « Un projet d'ombrage… » en bas de la plupart des pages
   contact: {
-    titre: 'Un projet d’ombrage pour votre commune ?',
+    titre: 'Un projet d’ombrage spécifique ?',
     texte: 'Parlons de votre site. Nous revenons vers vous sous 48 h avec une première orientation.',
     bouton: 'Prendre rendez-vous',
   },
@@ -57,8 +57,9 @@ export const gammes = {
     cle: 'galileo' as GammeCle,
     nom: 'Galiléo',
     tag: 'Ombrage et brumisation · 4 teintes',
-    labelEspaces: 'Espaces en vis-à-vis · 6 places, 12 m² d’ombre',
-    documentation: '',
+    labelEspaces: 'Jusqu’à 8 personnes · 12 m² d’ombre',
+    documentation: '/docs/abri-toi-galileo-documentation.pdf',
+    ficheTechnique: '/docs/abri-toi-galileo-fiches-techniques.pdf',
     reassurance: [
       {
         icone: { src: '/images/icones/eurocodes.svg' } as Img,
@@ -81,8 +82,9 @@ export const gammes = {
     cle: 'fotos' as GammeCle,
     nom: 'Fotos',
     tag: 'Ombrage et végétation · teinte brun',
-    labelEspaces: 'Espaces en vis-à-vis',
-    documentation: '',
+    labelEspaces: 'Jusqu’à 8 personnes · 12 m² d’ombre',
+    documentation: '/docs/abri-toi-fotos-documentation.pdf',
+    ficheTechnique: '/docs/abri-toi-fotos-fiches-techniques.pdf',
     reassurance: [
       {
         icone: { src: '/images/icones/reservoir.svg' } as Img,

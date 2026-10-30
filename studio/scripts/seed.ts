@@ -7,6 +7,7 @@ import { basename, resolve } from 'node:path'
 import { getCliClient } from 'sanity/cli'
 import { pageAccueil } from '../../site/content/accueil'
 import { articles } from '../../site/content/articles'
+import { pagesLegales } from '../../site/content/legal'
 import { gammes, parametres } from '../../site/content/commun'
 import {
   ficheProduit,
@@ -34,6 +35,16 @@ async function upload(src: string) {
     console.log(`  image envoyée : ${src}`)
   }
   return assets.get(src)!
+}
+
+// PDF de site/public/docs, envoyés comme fichiers Sanity
+async function uploadPdf(src: string) {
+  if (!src) return undefined
+  const file = resolve(publicDir, src.replace(/^\//, ''))
+  if (!existsSync(file)) throw new Error(`PDF introuvable : ${file}`)
+  const asset = await client.assets.upload('file', createReadStream(file), { filename: basename(file) })
+  console.log(`  PDF envoyé : ${src}`)
+  return { _type: 'file', asset: { _type: 'reference', _ref: asset._id } }
 }
 
 let n = 0
@@ -102,7 +113,15 @@ async function main() {
   console.log(`Projet ${client.config().projectId} · jeu de données ${client.config().dataset}`)
 
   await unique('parametres', 'parametres', parametres)
-  for (const g of Object.values(gammes)) await unique(`gamme-${g.cle}`, 'gamme', { ...g, documentation: undefined })
+  for (const g of Object.values(gammes)) {
+    if (!force && (await existe(`gamme-${g.cle}`))) {
+      console.log(`= gamme-${g.cle} existe déjà`)
+      continue
+    }
+    const pdfs = { documentation: await uploadPdf(g.documentation), ficheTechnique: await uploadPdf(g.ficheTechnique) }
+    await client.createOrReplace({ _id: `gamme-${g.cle}`, _type: 'gamme', ...((await convertir(g)) as object), ...pdfs })
+    console.log(`✓ gamme-${g.cle}`)
+  }
 
   // Produits : création, puis liens entre produits une fois les identifiants connus
   const idsProduits = await collection('produit', produits, (p) => p.slug, async (p, i) =>
@@ -140,7 +159,6 @@ async function main() {
   const idsArticles = await collection('article', articles, (a) => a.slug, async (a) =>
     convertir({ ...a, slug: slug(a.slug) }) as Promise<object>,
   )
-
   // Pages
   const manifeste = pageAccueil.manifeste.morceaux.map((m) =>
     'image' in m ? { _type: 'morceauImage', ...m } : { _type: 'morceauTexte', ...m },
@@ -163,6 +181,7 @@ async function main() {
   await unique('pageAPropos', 'pageAPropos', pageAPropos)
   await unique('pageArticles', 'pageArticles', { ...pageArticles, aLaUne: ref(idsArticles.get(pageArticles.aLaUne)!) })
   await unique('pageContact', 'pageContact', pageContact)
+  for (const l of pagesLegales) await unique(`legal-${l.slug}`, 'pageLegale', { ...l, slug: slug(l.slug) })
 
   console.log('Terminé.')
 }

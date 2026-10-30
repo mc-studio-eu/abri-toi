@@ -12,12 +12,12 @@ export default defineConfig({
   plugins: [structureTool({ structure }), visionTool()],
   schema: {
     types: schemaTypes,
-    // Pas de « Créer » pour les pages uniques ni pour les gammes
-    templates: (templates) => templates.filter((t) => !SINGLETONS.includes(t.schemaType) && t.schemaType !== 'gamme'),
+    // Pas de « Créer » pour les pages uniques, les gammes ni les pages légales
+    templates: (templates) => templates.filter((t) => !SINGLETONS.includes(t.schemaType) && !['gamme', 'pageLegale'].includes(t.schemaType)),
   },
   document: {
     actions: (actions, { schemaType }) =>
-      SINGLETONS.includes(schemaType) || schemaType === 'gamme'
+      SINGLETONS.includes(schemaType) || ['gamme', 'pageLegale'].includes(schemaType)
         ? actions.filter((a) => !['duplicate', 'delete', 'unpublish'].includes(a.action ?? ''))
         : actions,
   },

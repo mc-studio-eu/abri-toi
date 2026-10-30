@@ -19,6 +19,7 @@ const filtrees = computed(() =>
   realisations.value.filter((r) => !filtreGamme.value || r.gamme === filtreGamme.value),
 )
 const visibles = computed(() => filtrees.value.slice(0, affiches.value))
+
 </script>
 
 <template>
@@ -92,7 +93,7 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
 
         <div v-if="filtrees.length > affiches" class="projets__plus">
           <button type="button" class="plus" @click="affiches += PAR_PAGE">
-            {{ page.liste.boutonPlus }}
+            <UiTextSlide :text="page.liste.boutonPlus" />
             <img src="/images/arrow-brown-900.svg" alt="" width="16" height="16" />
           </button>
         </div>

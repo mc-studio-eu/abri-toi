@@ -43,6 +43,11 @@ const collection = (gamme: GammeCle, categorie: 'modele' | 'espace') =>
             </li>
           </ul>
 
+          <div class="usages" v-reveal>
+            <h4 class="usages__titre">Des usages pour vos espaces</h4>
+            <ul><li v-for="usage in page.usages[cle]" :key="usage">{{ usage }}</li></ul>
+          </div>
+
           <div class="espaces">
             <p v-reveal class="label-mono espaces__label">{{ gammes[cle].labelEspaces }}</p>
             <ul class="grille" :class="collection(cle, 'espace').length > 3 ? 'grille--4' : 'grille--3'">
@@ -53,6 +58,8 @@ const collection = (gamme: GammeCle, categorie: 'modele' | 'espace') =>
           </div>
         </div>
       </section>
+
+      <HomeModular />
 
       <section id="comparatif" class="comparatif section">
         <h2 v-reveal class="display-h2 comparatif__titre">{{ page.comparatif.titre }}</h2>
@@ -144,6 +151,10 @@ const collection = (gamme: GammeCle, categorie: 'modele' | 'espace') =>
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.usages { display:flex; flex-wrap:wrap; align-items:center; gap:16px; padding:20px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.usages__titre { font-size:14px; font-weight:500; white-space:nowrap; }
+.usages ul { display:flex; flex-wrap:wrap; gap:8px; margin:0; padding:0; list-style:none; }
+.usages li { padding:6px 10px; border-radius:999px; background:var(--cream); color:var(--brown-700); font-size:12px; }
 .espaces {
   display: flex;
   flex-direction: column;

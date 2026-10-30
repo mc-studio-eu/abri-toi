@@ -3,12 +3,12 @@
     <main>
       <HomeHero />
       <HomePartners />
-      <HomeManifesto />
       <HomeProblem />
+      <HomeManifesto />
       <HomeSolution />
-      <HomeModular />
       <HomeProcess />
       <HomeInstallations />
+      <HomeIdeas />
       <HomeFaq />
       <HomeFounder />
       <ContactCta />

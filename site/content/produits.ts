@@ -28,9 +28,22 @@ export interface Produit {
 const v = (fichier: string): Img => ({ src: `/images/produits/${fichier}.jpg` })
 const f = (fichier: string): Img => ({ src: `/images/fiches/${fichier}.jpg` })
 
-const structure = { label: 'Structure', valeur: 'Aluminium 6060T6 thermolaqué, finition texture fine' }
-const toiture = { label: 'Toiture', valeur: 'Tôle d’aluminium brut perforée et vibrée' }
-const normes = { label: 'Normes', valeur: 'Conforme aux Eurocodes en vigueur' }
+// Repris des fiches techniques Abri Toi (octobre 2026)
+const structure = { label: 'Structure', valeur: 'Tube aluminium 6060T6 thermolaqué, finition texture fine, coloris RAL sur demande' }
+const toiture = { label: 'Toiture', valeur: 'Tôle d’aluminium perforée, brute et vibrée' }
+const normes = { label: 'Normes', valeur: 'Conforme aux Eurocodes' }
+const ancrage = { label: 'Fixation au sol', valeur: 'Chevilles d’ancrage, sur dalle ou longrine béton' }
+const autostable = { label: 'Fixation au sol', valeur: 'Aucune : installation autostable, sur sol plan ou en pleine terre' }
+const jardiniere = { label: 'Jardinière', valeur: 'Tôle d’aluminium thermolaquée ou brute vibrée' }
+const eauxPluviales = { label: 'Option', valeur: 'Toile de récupération des eaux pluviales' }
+const entretien = { label: 'Entretien', valeur: 'Bois : nettoyage doux ou brossage à sec une fois par mois' }
+const entretienBrume = {
+  label: 'Entretien',
+  valeur: 'Bois : nettoyage doux ou brossage à sec une fois par mois. Brumisation : maintenance avant et après l’été',
+}
+const garanties = { label: 'Garanties', valeur: 'Bois Kebony 30 ans · structure aluminium 5 ans' }
+const garantiesBrume = { label: 'Garanties', valeur: 'Bois Kebony 30 ans · structure aluminium 5 ans · brumisation 2 ans' }
+const kebony = (pieces: string) => ({ label: pieces, valeur: 'Bois Kebony Clear FSC / PEFC (classe 4)' })
 
 export const produits: Produit[] = [
   {
@@ -39,30 +52,35 @@ export const produits: Produit[] = [
     gamme: 'galileo',
     categorie: 'modele',
     carte: {
-      description: 'Une assise avec dossier, à l’ombre et brumisée, pour s’installer longtemps.',
+      description: 'Une assise à l’ombre, brumisée en option, pour une pause dans l’espace public.',
       visuel: v('galileo-banquette'),
     },
     fiche: {
       titre: 'Banquette Galiléo',
-      sousTitre: 'Avec brumisation',
+      sousTitre: 'Brumisation et végétation en option',
       description:
         'Un abri-banquette inspiré des torii japonais, avec une brumisation qui rafraîchit l’espace alentour. Pensé pour une pause courte et spontanée dans l’espace public.',
       galerie: [v('espace-echange'), f('galileo-banquette-2'), f('galileo-banquette-3'), f('galileo-banquette-plan')],
       caracteristiques: [
-        { label: 'Référence', valeur: 'AT_GAL10_BRO' },
+        { label: 'Référence', valeur: 'AT_GAL10' },
+        { label: 'Déclinaisons', valeur: 'AT_GAL10_VEGE (végétation) · AT_GAL10_BRO_VEGE (brumisation et végétation)' },
         { label: 'Emprise au sol', valeur: '175 × 89 cm' },
         { label: 'Hauteur', valeur: '240 cm' },
         { label: 'Masse', valeur: '130 kg' },
         { label: 'Capacité', valeur: '3 personnes' },
         { label: 'Surface d’ombrage', valeur: '6 m²' },
-        { label: 'Assise', valeur: '3 planches en bois Kebony Clear (classe 4)' },
-        { label: 'Brumisation', valeur: 'Incluse · 6 buses sur les montants verticaux' },
+        kebony('Assise'),
+        { label: 'Brumisation', valeur: 'Option · 6 buses sur les montants verticaux, raccord à l’eau et à l’électricité' },
+        { label: 'Végétation', valeur: 'Option · filet de pêche recyclé Filae ou câbles inox' },
         structure,
         toiture,
+        ancrage,
         normes,
+        garantiesBrume,
+        entretienBrume,
       ],
       similaires: [
-        { titre: 'Banquette', description: 'La même banquette Galiléo, sans brumisation.', produit: 'banquette-galileo' },
+        { titre: 'Table / Gradin', description: 'La version table d’appoint ou gradin, sous la même toiture.', produit: 'table-gradin-galileo' },
         {
           titre: 'Banc végétalisé',
           description: 'Le banc Galiléo avec brumisation et végétation grimpante à l’arrière.',
@@ -82,7 +100,7 @@ export const produits: Produit[] = [
     gamme: 'galileo',
     categorie: 'modele',
     carte: {
-      description: 'Un banc simple sous ombrière brumisée, pour les places et les cours d’école.',
+      description: 'Un banc avec dossier sous ombrière, brumisée en option, pour les places et les cours d’école.',
       visuel: v('galileo-banc'),
     },
     fiche: {
@@ -92,15 +110,20 @@ export const produits: Produit[] = [
         'Un banc en alcôve inspiré des torii japonais : une posture enveloppante, un dossier rassurant et une toiture qui fait de l’ombre aux heures les plus chaudes.',
       galerie: [v('espace-salon'), f('galileo-banc-2'), f('galileo-banc-3'), f('galileo-banc-plan')],
       caracteristiques: [
-        { label: 'Référence', valeur: 'AT_GAL10_DOS_BRO_VEGE' },
+        { label: 'Référence', valeur: 'AT_GAL10_DOS' },
+        {
+          label: 'Déclinaisons',
+          valeur: 'AT_GAL10_DOS_VEGE (végétation) · AT_GAL10_DOS_BRO_VEGE (brumisation et végétation)',
+        },
         structure,
-        { label: 'Assise et dossier', valeur: '3 planches en bois Kebony Clear (classe 4)' },
-        { label: 'Toiture', valeur: 'Tôle d’aluminium brut perforée et vibrée, 6 m²' },
-        { label: 'Brumisation', valeur: 'Option · 6 buses sur les montants verticaux, orientées vers l’extérieur' },
-        { label: 'Végétation', valeur: 'Option · grimpantes à l’arrière de l’assise, filets recyclés (Filae)' },
+        kebony('Assise et dossier'),
+        { label: 'Toiture', valeur: 'Tôle d’aluminium perforée, brute et vibrée, 6 m²' },
+        { label: 'Brumisation', valeur: 'Option · 6 buses sur les montants verticaux, raccord à l’eau et à l’électricité' },
+        { label: 'Végétation', valeur: 'Option · grimpantes à l’arrière de l’assise, filet de pêche recyclé Filae ou câbles inox' },
+        ancrage,
         normes,
-        { label: 'Dimensions', valeur: 'À compléter' },
-        { label: 'Poids', valeur: 'À compléter' },
+        garantiesBrume,
+        entretienBrume,
       ],
       similaires: [
         {
@@ -110,8 +133,8 @@ export const produits: Produit[] = [
         },
         {
           titre: 'Banquette',
-          description: 'La banquette Galiléo avec brumisation, pour s’installer longtemps à l’ombre.',
-          produit: 'espace-echange',
+          description: 'La banquette Galiléo, sans dossier, brumisée en option.',
+          produit: 'banquette-galileo',
         },
         {
           titre: 'Espace Récréation',
@@ -148,16 +171,19 @@ export const produits: Produit[] = [
         { label: 'Masse', valeur: '130 kg' },
         { label: 'Capacité', valeur: '3 personnes' },
         { label: 'Surface d’ombrage', valeur: '6 m²' },
-        { label: 'Bois', valeur: 'Kebony Clear (classe 4)' },
+        kebony('Assise et table'),
         structure,
         toiture,
+        ancrage,
         normes,
+        garanties,
+        entretien,
       ],
       similaires: [
         { titre: 'Banc', description: 'Le banc Galiléo, pour les places et les cours d’école.', produit: 'banc-galileo' },
         {
           titre: 'Banquette',
-          description: 'Une assise avec dossier, pour s’installer longtemps à l’ombre.',
+          description: 'Une assise à l’ombre, brumisée en option.',
           produit: 'banquette-galileo',
         },
         {
@@ -175,7 +201,7 @@ export const produits: Produit[] = [
     categorie: 'espace',
     lienVers: 'banquette-galileo',
     carte: {
-      description: 'Deux banquettes en vis-à-vis : 6 places et 12 m² d’ombre brumisée pour se retrouver.',
+      description: 'Deux banquettes en vis-à-vis : jusqu’à 8 personnes et 12 m² d’ombre brumisée pour se retrouver.',
       visuel: v('espace-echange'),
     },
   },
@@ -228,16 +254,20 @@ export const produits: Produit[] = [
         'Une assise inspirée des pergolas méditerranéennes, pensée comme un îlot de verdure dans l’espace public : pour une pause, un échange ou un moment de détente.',
       galerie: [v('fotos-banc'), f('fotos-banc-2'), f('fotos-banc-3'), f('fotos-banc-plan')],
       caracteristiques: [
-        { label: 'Référence', valeur: 'AT_FOT11' },
+        { label: 'Référence', valeur: 'AT_FOT10_D (déplaçable)' },
+        { label: 'Déclinaison', valeur: 'AT_FOT10_D_ACC (avec accoudoirs en aluminium thermolaqué)' },
         { label: 'Emprise au sol', valeur: '95 × 159 cm' },
         { label: 'Hauteur', valeur: '250 cm' },
         { label: 'Masse', valeur: '180 kg (sans terre)' },
         { label: 'Surface d’ombrage', valeur: '6 m²' },
         structure,
-        { label: 'Jardinière', valeur: 'Tôle d’aluminium brut vibrée, thermolaquée selon le projet' },
-        { label: 'Bois', valeur: 'Kebony Clear (classe 4)' },
+        jardiniere,
+        kebony('Assise et dossier'),
         { label: 'Toiture', valeur: 'Végétalisée, charpente ajourée pour plantes grimpantes' },
-        { label: 'Pose', valeur: 'Autostable, sans ancrage au sol' },
+        eauxPluviales,
+        autostable,
+        garanties,
+        entretien,
       ],
       similaires: [
         { titre: 'Table', description: 'La table d’appoint Fotos, sous la même pergola végétale.', produit: 'table-fotos' },
@@ -270,16 +300,19 @@ export const produits: Produit[] = [
         'Une table de jardin ombragée, inspirée des pergolas méditerranéennes : un point de repos vert dans l’espace public.',
       galerie: [v('fotos-table'), f('fotos-table-2'), f('fotos-table-3'), f('fotos-table-plan')],
       caracteristiques: [
-        { label: 'Référence', valeur: 'AT_FOT11_TAB' },
+        { label: 'Référence', valeur: 'AT_FOT10_D_TAB (déplaçable)' },
         { label: 'Emprise au sol', valeur: '160 × 159 cm' },
         { label: 'Hauteur', valeur: '250 cm' },
         { label: 'Masse', valeur: '220 kg (sans terre)' },
         { label: 'Surface d’ombrage', valeur: '6 m²' },
         structure,
-        { label: 'Jardinière', valeur: 'Tôle d’aluminium brut vibrée, thermolaquée selon le projet' },
-        { label: 'Bois', valeur: 'Kebony Clear (classe 4)' },
+        jardiniere,
+        kebony('Assise, dossier et table'),
         { label: 'Toiture', valeur: 'Végétalisée, charpente ajourée pour plantes grimpantes' },
-        { label: 'Pose', valeur: 'Autostable, sans ancrage au sol' },
+        eauxPluviales,
+        autostable,
+        garanties,
+        entretien,
       ],
       similaires: [
         { titre: 'Banc', description: 'Le banc Fotos, un îlot de verdure pour faire une pause.', produit: 'banc-fotos' },

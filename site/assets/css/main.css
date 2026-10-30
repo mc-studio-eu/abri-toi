@@ -209,6 +209,35 @@ ul {
   }
 }
 
+/* Texte des boutons qui défile au survol (UiTextSlide) — repris de mc-studio.eu */
+.text-slide {
+  display: inline-block;
+}
+
+.text-slide__box {
+  display: block;
+  height: 1.2em;
+  overflow: hidden;
+}
+
+.text-slide__wrap {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.text-slide__text {
+  display: block;
+  height: 1.2em;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+:is(a, button):hover .text-slide__wrap,
+:is(a, button):focus-visible .text-slide__wrap {
+  transform: translateY(-50%);
+}
+
 @keyframes soft-pulse {
   0%,
   100% {

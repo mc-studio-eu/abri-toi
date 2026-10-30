@@ -73,6 +73,8 @@ const gammeId = ref<GammeId>('galileo')
 const gamme = computed(() => gammes.value[gammeId.value])
 const step = ref(1)
 const progress = ref(0)
+const rotation = ref(0)
+const drag = ref<{ pointerId: number; startX: number; startRotation: number } | null>(null)
 const track = ref<HTMLElement>()
 
 const STEPS = 4
@@ -127,6 +129,22 @@ function goTo(n: number) {
 // Remplissage du filet de l'étape active (0 → 1 pendant sa tranche de défilement).
 const fill = (n: number) => Math.min(Math.max(progress.value - (n - 1), 0), 1)
 const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ? 'done' : 'next')
+
+function startRotation(event: PointerEvent) {
+  if (!event.isPrimary || event.button !== 0) return
+  drag.value = { pointerId: event.pointerId, startX: event.clientX, startRotation: rotation.value }
+  ;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
+}
+
+function updateRotation(event: PointerEvent) {
+  if (!drag.value || drag.value.pointerId !== event.pointerId) return
+  rotation.value = Math.max(-32, Math.min(32, drag.value.startRotation + (event.clientX - drag.value.startX) * 0.12))
+}
+
+function stopRotation(event: PointerEvent) {
+  if (!drag.value || drag.value.pointerId !== event.pointerId) return
+  drag.value = null
+}
 </script>
 
 <template>
@@ -136,7 +154,7 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
       <p class="body-l solution__intro">{{ solution.intro }}</p>
     </header>
 
-    <div id="fotos" v-reveal="100" class="selector">
+    <div id="choix-gamme" v-reveal="100" class="selector">
       <div class="selector__options" role="tablist" aria-label="Choisir une gamme">
         <button
           v-for="(g, id) in gammes"
@@ -186,7 +204,17 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
 
         </div>
 
-        <figure class="anatomy__view" :aria-label="`Vue éclatée de l’abri ${gamme.name}, étape ${step} sur 4`">
+        <figure
+          class="anatomy__view"
+          :class="{ 'anatomy__view--dragging': drag }"
+          :style="{ '--rotation': `${rotation}deg` }"
+          :aria-label="`Vue éclatée de l’abri ${gamme.name}, étape ${step} sur 4. Faites glisser horizontalement pour faire pivoter la vue.`"
+          @pointerdown="startRotation"
+          @pointermove="updateRotation"
+          @pointerup="stopRotation"
+          @pointercancel="stopRotation"
+          @lostpointercapture="stopRotation"
+        >
           <img class="anatomy__img" src="/images/grille.svg" alt="" width="720" height="760" />
           <Transition name="fade" mode="out-in">
             <div :key="gammeId" class="anatomy__scene">
@@ -237,7 +265,7 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
 
           <figcaption class="label-mono anatomy__legend">
             <span>Vue éclatée · {{ gamme.name }}</span>
-            <span class="anatomy__counter">0{{ step }} / 04</span>
+            <span class="anatomy__rotate-hint">↻ Glissez pour faire pivoter</span>
           </figcaption>
         </figure>
       </div>
@@ -497,6 +525,14 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
   border-radius: 8px;
   background: var(--paper);
   container-type: inline-size;
+  perspective: 1200px;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.anatomy__view--dragging {
+  cursor: grabbing;
 }
 
 .anatomy__img,
@@ -505,6 +541,18 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
   inset: 0;
   width: 100%;
   height: 100%;
+}
+
+.anatomy__scene,
+.anatomy__markers {
+  transform: perspective(1200px) rotateY(var(--rotation, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 0.18s ease-out;
+}
+
+.anatomy__view--dragging .anatomy__scene,
+.anatomy__view--dragging .anatomy__markers {
+  transition: none;
 }
 
 /* Chaque couche se pose depuis le haut avec un léger rebond, comme dans l'animation Figma */
@@ -608,9 +656,9 @@ const stepState = (n: number) => (n === step.value ? 'active' : n < step.value ?
   color: var(--brown-700);
 }
 
-.anatomy__counter {
+.anatomy__rotate-hint {
   color: var(--accent-num);
-  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
 }
 
 /* Transitions de changement de gamme */

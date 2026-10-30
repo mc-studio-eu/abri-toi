@@ -51,12 +51,13 @@ const ranges = [
             />
             <figcaption>
               <span class="range__label">{{ range.space.label }}</span>
-              <span class="range__meta">6 places en vis-à-vis · 12 m² d’ombre</span>
+              <span class="range__meta">Jusqu’à 8 personnes · 12 m² d’ombre</span>
             </figcaption>
           </figure>
         </div>
       </article>
     </div>
+
   </section>
 </template>
 
