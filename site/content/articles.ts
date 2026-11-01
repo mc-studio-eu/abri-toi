@@ -155,7 +155,6 @@ export const articles: Article[] = [
     extrait: '',
     couverture: { src: '/images/bandeau-galileo-blanc-banc-brumise.jpg', alt: 'Banc Galiléo avec brumisation' },
     couvertureFond: '#dde3d3',
-    couvertureInset: true,
     auteur: paul,
     intro: '',
     corps: enCours,

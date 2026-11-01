@@ -145,18 +145,6 @@ export const pageAccueil = {
         image: { src: '/images/bandeau-galileo-blanc-banc-brumise.jpg' } as Img,
         produit: 'banc-galileo',
       },
-      {
-        titre: 'Galiléo — premiers usagers',
-        gamme: 'galileo',
-        image: { src: '/images/bandeau-galileo-premiers-usagers.jpg' } as Img,
-        produit: 'banquette-galileo',
-      },
-      {
-        titre: 'Fotos — vue de face',
-        gamme: 'fotos',
-        image: { src: '/images/bandeau-fotos-vue-de-face.png' } as Img,
-        produit: 'table-fotos',
-      },
     ],
     labelGalerie: 'Fotos · en détail',
     galerie: [

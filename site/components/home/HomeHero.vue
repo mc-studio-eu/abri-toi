@@ -116,11 +116,17 @@ const hero = computed(() => page.value.hero)
 }
 
 .hero__title {
+  max-width: 100%;
   font-family: var(--font-display);
   font-weight: 500;
   font-size: 96px;
   line-height: 1;
   letter-spacing: -0.035em;
+}
+
+.hero__title .shimmer {
+  display: inline-block;
+  padding-right: 0.08em;
 }
 
 .hero__lead {

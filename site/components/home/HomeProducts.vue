@@ -17,6 +17,7 @@ const gammes = [
     href: '/produits/banc-fotos',
   },
 ]
+
 </script>
 
 <template>

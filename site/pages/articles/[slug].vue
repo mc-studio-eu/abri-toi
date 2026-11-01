@@ -55,7 +55,7 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
       </PageHero>
 
       <section class="couverture section">
-        <ArticleCouverture :article="a" :image="a.illustration" class="couverture__visuel" :class="{ 'couverture__visuel--illu': a.illustration }" />
+        <ArticleCouverture :article="a" :image="a.illustration" :full-width="slug === 'brumisation-haute-pression'" class="couverture__visuel" :class="{ 'couverture__visuel--illu': a.illustration }" />
         <p v-if="a.legendeIllustration" class="label-mono couverture__legende">{{ a.legendeIllustration }}</p>
       </section>
 
@@ -131,12 +131,16 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
   height: 560px;
 }
 
-/* Illustration centrée dans le cadre (inset 3.57 % 17.89 % dans la maquette) */
+.couverture__visuel--illu {
+  height: auto;
+}
+
 .couverture__visuel--illu :deep(.couv__illu) {
-  inset: 3.57% 17.89%;
-  width: 64.22%;
-  height: 92.86%;
-  object-fit: contain;
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
 }
 
 .couverture__legende {

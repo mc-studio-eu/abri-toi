@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import type { Article } from '~/content/articles'
 
-defineProps<{ article: Pick<Article, 'couverture' | 'couvertureFond' | 'couvertureInset'>; image?: Article['illustration'] }>()
+defineProps<{
+  article: Pick<Article, 'couverture' | 'couvertureFond' | 'couvertureInset'>
+  image?: Article['illustration']
+  fullWidth?: boolean
+}>()
 </script>
 
 <template>
@@ -10,7 +14,7 @@ defineProps<{ article: Pick<Article, 'couverture' | 'couvertureFond' | 'couvertu
       :src="img(image || article.couverture, 1400)"
       :alt="alt(image || article.couverture)"
       class="couv__illu"
-      :class="{ 'couv__illu--inset': article.couvertureInset && !image }"
+      :class="{ 'couv__illu--inset': article.couvertureInset && !image && !fullWidth }"
     />
   </div>
 </template>
