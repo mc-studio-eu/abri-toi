@@ -18,9 +18,10 @@ export default defineNuxtConfig({
       seoSiteUrl: 'https://abritoi.com',
       // Aperçu local de la maquette sans remplacer les contenus publiés dans Sanity.
       contentSource: 'sanity',
-      // Sans projectId, le site affiche le contenu de référence (dossier content/).
+      // Projet public Abri Toi : lecture du CMS même sans variable d'environnement Vercel.
+      // Le mode maquette reste disponible via contentSource: 'reference'.
       sanity: {
-        projectId: '',
+        projectId: 'h1ih7r41',
         dataset: 'production',
         apiVersion: '2026-10-01',
       },
