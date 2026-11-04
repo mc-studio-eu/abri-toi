@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   let catalogue: Produit[] | undefined
   let articles: Article[] | undefined
   if (config.public.contentSource !== 'reference' && config.public.sanity.projectId) {
-    const client = createClient({ ...config.public.sanity, perspective: 'published', useCdn: true, timeout: 8000 })
+    const client = createClient({ ...config.public.sanity, perspective: 'published', useCdn: false, timeout: 8000 })
     // Chaque collection retrouve son propre secours, comme useAsyncData dans les pages.
     const resultats = await Promise.allSettled([
       client.fetch<Produit[]>(REQUETE_PRODUITS),

@@ -7,7 +7,8 @@ let client: SanityClient | null = null
 export function sanityClient() {
   const { projectId, dataset, apiVersion } = useRuntimeConfig().public.sanity
   if (!projectId) return null
-  client ||= createClient({ projectId, dataset, apiVersion, useCdn: true, perspective: 'published' })
+  // Lire la version publiée directement, sans délai d'invalidation du CDN Sanity.
+  client ||= createClient({ projectId, dataset, apiVersion, useCdn: false, perspective: 'published' })
   return client
 }
 
