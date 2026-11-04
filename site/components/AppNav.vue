@@ -78,10 +78,10 @@ onBeforeUnmount(() => window.removeEventListener('scroll', surveiller))
 
 .nav--flottante {
   position: fixed;
-  top: 12px;
-  left: max(8px, calc(max(var(--gutter), (100% - var(--page-max)) / 2 + var(--gutter)) - 20px));
-  right: max(8px, calc(max(var(--gutter), (100% - var(--page-max)) / 2 + var(--gutter)) - 20px));
-  height: 64px;
+  top: var(--nav-floating-top);
+  left: max(8px, calc(var(--gutter) - 20px), calc((100% - var(--page-max)) / 2 + var(--gutter) - 20px));
+  right: max(8px, calc(var(--gutter) - 20px), calc((100% - var(--page-max)) / 2 + var(--gutter) - 20px));
+  height: var(--nav-floating-height);
   padding: 0 12px 0 20px;
   border-radius: 14px;
   /* Verre dépoli : le fond laisse voir la page, le flou garde le texte lisible */

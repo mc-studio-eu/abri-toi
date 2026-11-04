@@ -3,7 +3,8 @@ import type { GammeCle, Img, Ligne } from './commun'
 export interface Similaire {
   titre: string
   description: string
-  // Slug du produit visé ; son visuel de carte et sa fiche sont repris automatiquement.
+  visuel?: Img
+  variante?: 'sans-brumisation'
   produit: string
 }
 
@@ -13,7 +14,7 @@ export interface Produit {
   gamme: GammeCle
   categorie: 'modele' | 'espace'
   carte: { description: string; visuel: Img }
-  // Espaces : fiche produit vers laquelle pointe la carte (ils n'ont pas de fiche propre).
+  // Ancien lien Sanity : conservé pour reconnaître les espaces à migrer.
   lienVers?: string
   fiche?: {
     titre: string
@@ -25,338 +26,231 @@ export interface Produit {
   }
 }
 
-const v = (fichier: string): Img => ({ src: `/images/produits/${fichier}.jpg` })
-const f = (fichier: string): Img => ({ src: `/images/fiches/${fichier}.jpg` })
-
-// Repris des fiches techniques Abri Toi (octobre 2026)
-const structure = { label: 'Structure', valeur: 'Tube aluminium 6060T6 thermolaqué, finition texture fine, coloris RAL sur demande' }
-const toiture = { label: 'Toiture', valeur: 'Tôle d’aluminium perforée, brute et vibrée' }
-const normes = { label: 'Normes', valeur: 'Conforme aux Eurocodes' }
-const ancrage = { label: 'Fixation au sol', valeur: 'Chevilles d’ancrage, sur dalle ou longrine béton' }
-const autostable = { label: 'Fixation au sol', valeur: 'Aucune : installation autostable, sur sol plan ou en pleine terre' }
-const jardiniere = { label: 'Jardinière', valeur: 'Tôle d’aluminium thermolaquée ou brute vibrée' }
-const eauxPluviales = { label: 'Option', valeur: 'Toile de récupération des eaux pluviales' }
-const entretien = { label: 'Entretien', valeur: 'Bois : nettoyage doux ou brossage à sec une fois par mois' }
-const entretienBrume = {
-  label: 'Entretien',
-  valeur: 'Bois : nettoyage doux ou brossage à sec une fois par mois. Brumisation : maintenance avant et après l’été',
-}
-const garanties = { label: 'Garanties', valeur: 'Bois Kebony 30 ans · structure aluminium 5 ans' }
-const garantiesBrume = { label: 'Garanties', valeur: 'Bois Kebony 30 ans · structure aluminium 5 ans · brumisation 2 ans' }
-const kebony = (pieces: string) => ({ label: pieces, valeur: 'Bois Kebony Clear FSC / PEFC (classe 4)' })
+// Une image est affectée à la configuration qu’elle représente réellement.
+const v = (fichier: string, alt: string): Img => ({ src: `/images/figma-products/${fichier}.png`, alt })
+const structure: Ligne = { label: 'Structure', valeur: 'Tube aluminium 6060T6 thermolaqué, finition texture fine, coloris RAL sur demande' }
+const toiture: Ligne = { label: 'Toiture', valeur: 'Tôle d’aluminium perforée, brute et vibrée' }
+const normes: Ligne = { label: 'Normes', valeur: 'Conforme aux Eurocodes' }
+const ancrage: Ligne = { label: 'Fixation au sol', valeur: 'Chevilles d’ancrage, sur dalle ou longrine béton' }
+const autostable: Ligne = { label: 'Fixation au sol', valeur: 'Sans ancrage, jardinière remplie de terre. Installation sur sol plan, selon la configuration choisie' }
+const jardiniere: Ligne = { label: 'Jardinière', valeur: 'Tôle d’aluminium thermolaquée ou brute vibrée' }
+const eauxPluviales: Ligne = { label: 'Gestion de l’eau', valeur: 'Réservoir intégré à la jardinière de la version déplaçable ; toile de récupération des eaux pluviales en option. Version pleine terre adaptée au sol naturel' }
+const entretien: Ligne = { label: 'Entretien', valeur: 'Bois : nettoyage doux ou brossage à sec mensuel' }
+const entretienBrume: Ligne = { label: 'Entretien', valeur: 'Bois : nettoyage doux ou brossage à sec mensuel. Brumisation : maintenance avant et après l’été' }
+const garanties: Ligne = { label: 'Garanties', valeur: 'Bois Kebony : 30 ans contre champignons et pourriture ; structure aluminium : 5 ans, selon les conditions de garantie' }
+const garantiesOption: Ligne = { label: 'Garantie de l’option brumisation', valeur: '2 ans si le système est installé, selon les conditions de garantie' }
+const brumeOption: Ligne = { label: 'Brumisation', valeur: 'En option, avec raccordement à l’eau et à l’électricité' }
+const vegetationOption: Ligne = { label: 'Végétation', valeur: 'En option, avec support en filet de pêche recyclé Filae ou câbles inox' }
+const kebony = (pieces: string): Ligne => ({ label: pieces, valeur: 'Bois Kebony Clear FSC / PEFC (classe 4)' })
+// Dimensions lues sur les plans des fiches techniques livrées avec le site.
+const dimensionsGalileo: Ligne[] = [
+  { label: 'Structure au sol', valeur: '174 × 89 cm (largeur × profondeur)' },
+  { label: 'Toiture', valeur: '286,2 × 197,8 cm (largeur × profondeur), aluminium perforé brut et vibré' },
+  { label: 'Hauteur totale', valeur: '243,2 cm' },
+  { label: 'Surface d’ombrage', valeur: '6 m² par module ; implantation à définir par l’étude d’ensoleillement' },
+]
+const baseGalileo = (pieces: string): Ligne[] => [structure, kebony(pieces), ancrage, normes, garanties]
+const optionsGalileo: Ligne[] = [brumeOption, vegetationOption, garantiesOption, { label: 'Entretien', valeur: 'Bois : nettoyage doux ou brossage à sec mensuel. Si brumisation : maintenance avant et après l’été' }]
+const baseFotos = (pieces: string): Ligne[] => [
+  structure, jardiniere, kebony(pieces),
+  { label: 'Ombrage', valeur: 'Plantes grimpantes sur la charpente ; densité d’ombre selon la croissance et l’implantation' },
+  eauxPluviales, autostable,
+  { label: 'Implantation', valeur: 'Version déplaçable sur sol artificiel ; version fixe en pleine terre. Déplacement au chariot élévateur pour la version déplaçable' },
+  garanties, entretien,
+]
+const implantation: Ligne = { label: 'Dimensions de l’ensemble', valeur: 'À définir selon l’écartement des modules et le site d’implantation' }
+const similaire = (produit: string, titre: string, description: string): Similaire => ({ produit, titre, description })
 
 export const produits: Produit[] = [
   {
-    slug: 'banquette-galileo',
-    nom: 'Banquette',
-    gamme: 'galileo',
-    categorie: 'modele',
+    slug: 'banquette-galileo', nom: 'Banquette', gamme: 'galileo', categorie: 'modele',
     carte: {
-      description: 'Une assise à l’ombre, brumisée en option, pour une pause dans l’espace public.',
-      visuel: v('galileo-banquette'),
+      description: 'Une banquette sans dossier sous une toiture d’ombrage. Brumisation et végétation en option.',
+      visuel: v('cfb10', 'Banquette Galiléo sans dossier, structure verte, sans brumisation'),
     },
     fiche: {
-      titre: 'Banquette Galiléo',
-      sousTitre: 'Brumisation et végétation en option',
-      description:
-        'Un abri-banquette inspiré des torii japonais, avec une brumisation qui rafraîchit l’espace alentour. Pensé pour une pause courte et spontanée dans l’espace public.',
-      galerie: [v('espace-echange'), f('galileo-banquette-2'), f('galileo-banquette-3'), f('galileo-banquette-plan')],
-      caracteristiques: [
-        { label: 'Référence', valeur: 'AT_GAL10' },
-        { label: 'Déclinaisons', valeur: 'AT_GAL10_VEGE (végétation) · AT_GAL10_BRO_VEGE (brumisation et végétation)' },
-        { label: 'Emprise au sol', valeur: '175 × 89 cm' },
-        { label: 'Hauteur', valeur: '240 cm' },
-        { label: 'Masse', valeur: '130 kg' },
-        { label: 'Capacité', valeur: '3 personnes' },
-        { label: 'Surface d’ombrage', valeur: '6 m²' },
-        kebony('Assise'),
-        { label: 'Brumisation', valeur: 'Option · 6 buses sur les montants verticaux, raccord à l’eau et à l’électricité' },
-        { label: 'Végétation', valeur: 'Option · filet de pêche recyclé Filae ou câbles inox' },
-        structure,
-        toiture,
-        ancrage,
-        normes,
-        garantiesBrume,
-        entretienBrume,
-      ],
+      titre: 'Banquette Galiléo', sousTitre: 'Une assise sans dossier à l’ombre',
+      description: 'Une banquette sans dossier sous une toiture en aluminium perforé, pour une pause dans l’espace public. Le modèle présenté est sans brumisation et sans végétation ; ces équipements sont disponibles en option.',
+      galerie: [v('cfb10', 'Banquette Galiléo sans dossier, structure verte, sans brumisation')],
+      caracteristiques: [{ label: 'Référence', valeur: 'AT_GAL10' }, ...dimensionsGalileo, ...baseGalileo('Assise'), ...optionsGalileo],
       similaires: [
-        { titre: 'Table / Gradin', description: 'La version table d’appoint ou gradin, sous la même toiture.', produit: 'table-gradin-galileo' },
-        {
-          titre: 'Banc végétalisé',
-          description: 'Le banc Galiléo avec brumisation et végétation grimpante à l’arrière.',
-          produit: 'banc-galileo',
-        },
-        {
-          titre: 'Espace Récréation',
-          description: 'Deux modules en vis-à-vis : 12 m² d’ombre pour les cours d’école.',
-          produit: 'espace-recreation',
-        },
+        similaire('espace-echange', 'Échange', 'La configuration avec brumisation, sur une banquette sans dossier.'),
+        similaire('banc-galileo', 'Banc', 'Une assise avec dossier sous une toiture Galiléo.'),
+        similaire('table-gradin-galileo', 'Table / Gradin', 'Un module avec table pour déjeuner ou travailler dehors.'),
       ],
     },
   },
   {
-    slug: 'banc-galileo',
-    nom: 'Banc',
-    gamme: 'galileo',
-    categorie: 'modele',
+    slug: 'banc-galileo', nom: 'Banc', gamme: 'galileo', categorie: 'modele',
     carte: {
-      description: 'Un banc avec dossier sous ombrière, brumisée en option, pour les places et les cours d’école.',
-      visuel: v('galileo-banc'),
+      description: 'Un banc avec dossier sous une toiture d’ombrage. Brumisation et végétation en option.',
+      visuel: v('46842', 'Banc Galiléo avec dossier, structure orange, sans brumisation ni végétation'),
     },
     fiche: {
-      titre: 'Banc Galiléo',
-      sousTitre: 'Végétalisé, avec brumisation',
-      description:
-        'Un banc en alcôve inspiré des torii japonais : une posture enveloppante, un dossier rassurant et une toiture qui fait de l’ombre aux heures les plus chaudes.',
-      galerie: [v('espace-salon'), f('galileo-banc-2'), f('galileo-banc-3'), f('galileo-banc-plan')],
-      caracteristiques: [
-        { label: 'Référence', valeur: 'AT_GAL10_DOS' },
-        {
-          label: 'Déclinaisons',
-          valeur: 'AT_GAL10_DOS_VEGE (végétation) · AT_GAL10_DOS_BRO_VEGE (brumisation et végétation)',
-        },
-        structure,
-        kebony('Assise et dossier'),
-        { label: 'Toiture', valeur: 'Tôle d’aluminium perforée, brute et vibrée, 6 m²' },
-        { label: 'Brumisation', valeur: 'Option · 6 buses sur les montants verticaux, raccord à l’eau et à l’électricité' },
-        { label: 'Végétation', valeur: 'Option · grimpantes à l’arrière de l’assise, filet de pêche recyclé Filae ou câbles inox' },
-        ancrage,
-        normes,
-        garantiesBrume,
-        entretienBrume,
-      ],
-      similaires: [
-        {
-          titre: 'Table / Gradin',
-          description: 'Une table d’appoint ou un gradin à l’ombre, pour déjeuner ou faire classe dehors.',
-          produit: 'table-gradin-galileo',
-        },
-        {
-          titre: 'Banquette',
-          description: 'La banquette Galiléo, sans dossier, brumisée en option.',
-          produit: 'banquette-galileo',
-        },
-        {
-          titre: 'Espace Récréation',
-          description: 'Deux gradins en vis-à-vis : 12 m² d’ombre pour les cours d’école.',
-          produit: 'espace-recreation',
-        },
-      ],
-    },
-  },
-  {
-    slug: 'table-gradin-galileo',
-    nom: 'Table / Gradin',
-    gamme: 'galileo',
-    categorie: 'modele',
-    carte: {
-      description: 'Une table ou un gradin à l’ombre, pour déjeuner, travailler ou faire classe dehors.',
-      visuel: v('galileo-table-gradin'),
-    },
-    fiche: {
-      titre: 'Table / Gradin',
-      sousTitre: 'Galiléo · table d’appoint ou gradin',
-      description:
-        'Une table d’appoint inspirée des torii japonais, qui sert aussi de gradin. Assez large pour un pique-nique à trois ou pour travailler dehors.',
+      titre: 'Banc Galiléo', sousTitre: 'Une assise avec dossier à l’ombre',
+      description: 'Un banc avec dossier et une toiture en aluminium perforé pour s’installer à l’ombre. Le modèle présenté est sans brumisation et sans végétation ; ces équipements sont disponibles en option.',
       galerie: [
-        v('galileo-table-gradin'),
-        f('galileo-table-gradin-2'),
-        f('galileo-table-gradin-3'),
-        f('galileo-table-gradin-plan'),
+        v('46842', 'Banc Galiléo avec dossier, structure orange, sans brumisation ni végétation'),
+        v('7150e', 'Banc Galiléo avec dossier dans une autre teinte, sans brumisation ni végétation'),
+        v('d40d8', 'Détail de l’assise en bois et de la structure du banc Galiléo'),
       ],
-      caracteristiques: [
-        { label: 'Référence', valeur: 'AT_GAL10_TAB' },
-        { label: 'Emprise au sol', valeur: '175 × 89 cm' },
-        { label: 'Hauteur', valeur: '240 cm' },
-        { label: 'Masse', valeur: '130 kg' },
-        { label: 'Capacité', valeur: '3 personnes' },
-        { label: 'Surface d’ombrage', valeur: '6 m²' },
-        kebony('Assise et table'),
-        structure,
-        toiture,
-        ancrage,
-        normes,
-        garanties,
-        entretien,
-      ],
+      caracteristiques: [{ label: 'Référence', valeur: 'AT_GAL10_DOS' }, ...dimensionsGalileo, ...baseGalileo('Assise et dossier'), ...optionsGalileo],
       similaires: [
-        { titre: 'Banc', description: 'Le banc Galiléo, pour les places et les cours d’école.', produit: 'banc-galileo' },
-        {
-          titre: 'Banquette',
-          description: 'Une assise à l’ombre, brumisée en option.',
-          produit: 'banquette-galileo',
-        },
-        {
-          titre: 'Espace Banquet',
-          description: 'Deux tables en vis-à-vis : 12 m² d’ombre pour déjeuner à six.',
-          produit: 'espace-banquet',
-        },
+        similaire('espace-salon', 'Salon', 'Le banc avec végétation et brumisation.'),
+        similaire('banquette-galileo', 'Banquette', 'Une assise sans dossier sous une toiture Galiléo.'),
+        similaire('espace-recreation', 'Récréation', 'Deux modules table / gradin en vis-à-vis.'),
       ],
     },
   },
   {
-    slug: 'espace-echange',
-    nom: 'Échange',
-    gamme: 'galileo',
-    categorie: 'espace',
-    lienVers: 'banquette-galileo',
+    slug: 'table-gradin-galileo', nom: 'Table / Gradin', gamme: 'galileo', categorie: 'modele',
     carte: {
-      description: 'Deux banquettes en vis-à-vis : jusqu’à 8 personnes et 12 m² d’ombre brumisée pour se retrouver.',
-      visuel: v('espace-echange'),
-    },
-  },
-  {
-    slug: 'espace-salon',
-    nom: 'Salon',
-    gamme: 'galileo',
-    categorie: 'espace',
-    lienVers: 'banc-galileo',
-    carte: {
-      description: 'Deux bancs face à face pour un coin salon à l’ombre, au cœur de la place.',
-      visuel: v('espace-salon'),
-    },
-  },
-  {
-    slug: 'espace-banquet',
-    nom: 'Banquet',
-    gamme: 'galileo',
-    categorie: 'espace',
-    lienVers: 'table-gradin-galileo',
-    carte: {
-      description: 'Deux tables en vis-à-vis pour déjeuner à six, à l’ombre et au frais.',
-      visuel: v('espace-banquet'),
-    },
-  },
-  {
-    slug: 'espace-recreation',
-    nom: 'Récréation',
-    gamme: 'galileo',
-    categorie: 'espace',
-    lienVers: 'table-gradin-galileo',
-    carte: {
-      description: 'Deux gradins en vis-à-vis : 12 m² d’ombre pour les cours d’école.',
-      visuel: v('espace-recreation'),
-    },
-  },
-  {
-    slug: 'banc-fotos',
-    nom: 'Banc',
-    gamme: 'fotos',
-    categorie: 'modele',
-    carte: {
-      description: 'Un banc sous une arche végétale, avec son bac de terre et sa réserve d’eau de pluie.',
-      visuel: v('fotos-banc'),
+      description: 'Une assise et une table sous une toiture d’ombrage, pour déjeuner, travailler ou faire classe dehors.',
+      visuel: v('2838e', 'Table / Gradin Galiléo, un module bleu avec assise et table'),
     },
     fiche: {
-      titre: 'Banc Fotos',
-      sousTitre: 'Un îlot de verdure, sans ancrage',
-      description:
-        'Une assise inspirée des pergolas méditerranéennes, pensée comme un îlot de verdure dans l’espace public : pour une pause, un échange ou un moment de détente.',
-      galerie: [v('fotos-banc'), f('fotos-banc-2'), f('fotos-banc-3'), f('fotos-banc-plan')],
-      caracteristiques: [
-        { label: 'Référence', valeur: 'AT_FOT10_D (déplaçable)' },
-        { label: 'Déclinaison', valeur: 'AT_FOT10_D_ACC (avec accoudoirs en aluminium thermolaqué)' },
-        { label: 'Emprise au sol', valeur: '95 × 159 cm' },
-        { label: 'Hauteur', valeur: '250 cm' },
-        { label: 'Masse', valeur: '180 kg (sans terre)' },
-        { label: 'Surface d’ombrage', valeur: '6 m²' },
-        structure,
-        jardiniere,
-        kebony('Assise et dossier'),
-        { label: 'Toiture', valeur: 'Végétalisée, charpente ajourée pour plantes grimpantes' },
-        eauxPluviales,
-        autostable,
-        garanties,
-        entretien,
+      titre: 'Table / Gradin Galiléo', sousTitre: 'Une assise et une table à l’ombre',
+      description: 'Un module Galiléo associant une assise et une table sous une toiture en aluminium perforé. Il permet de déjeuner, de travailler dehors ou de former un gradin selon l’usage choisi.',
+      galerie: [
+        v('2838e', 'Table / Gradin Galiléo, un module bleu avec assise et table'),
+        v('971d0', 'Table / Gradin Galiléo bleu vu de face'),
+        v('16a08', 'Table / Gradin Galiléo bleu vu de côté'),
+        v('a2fce', 'Table / Gradin Galiléo bleu vu du dessus'),
       ],
+      caracteristiques: [{ label: 'Référence', valeur: 'AT_GAL10_TAB' }, ...dimensionsGalileo, ...baseGalileo('Assise et table'), brumeOption, garantiesOption, { label: 'Entretien', valeur: 'Bois : nettoyage doux ou brossage à sec mensuel. Si brumisation : maintenance avant et après l’été' }],
       similaires: [
-        { titre: 'Table', description: 'La table d’appoint Fotos, sous la même pergola végétale.', produit: 'table-fotos' },
-        {
-          titre: 'Espace Séquoia',
-          description: 'Deux modules Fotos en vis-à-vis : un îlot de verdure.',
-          produit: 'espace-sequoia',
-        },
-        {
-          titre: 'Espace Babylone',
-          description: 'Une arche végétale formée par deux modules Fotos.',
-          produit: 'espace-babylone',
-        },
+        similaire('espace-banquet', 'Banquet', 'Deux modules table / gradin en vis-à-vis pour partager un repas.'),
+        similaire('espace-recreation', 'Récréation', 'Deux modules table / gradin pour se réunir dehors.'),
+        similaire('banquette-galileo', 'Banquette', 'Une assise sans dossier, sans table, à l’ombre.'),
       ],
     },
   },
   {
-    slug: 'table-fotos',
-    nom: 'Table',
-    gamme: 'fotos',
-    categorie: 'modele',
+    slug: 'espace-echange', nom: 'Échange', gamme: 'galileo', categorie: 'espace',
     carte: {
-      description: 'Une table à l’ombre des grimpantes, déplaçable au chariot élévateur.',
-      visuel: v('fotos-table'),
+      description: 'Une banquette sans dossier avec brumisation, pour une pause à l’ombre et au frais.',
+      visuel: v('659dd', 'Échange : une banquette Galiléo rouge sans dossier avec brumisation'),
     },
     fiche: {
-      titre: 'Table Fotos',
-      sousTitre: 'Une table de jardin sous pergola végétale',
-      description:
-        'Une table de jardin ombragée, inspirée des pergolas méditerranéennes : un point de repos vert dans l’espace public.',
-      galerie: [v('fotos-table'), f('fotos-table-2'), f('fotos-table-3'), f('fotos-table-plan')],
+      titre: 'Échange Galiléo', sousTitre: 'Une banquette avec brumisation',
+      description: 'La configuration Échange associe une banquette Galiléo sans dossier et une brumisation. Un seul module est présenté : une assise ouverte pour faire une pause à l’ombre et profiter de la fraîcheur de la brume. La végétation peut compléter l’installation.',
+      galerie: [v('659dd', 'Échange : une banquette Galiléo rouge sans dossier avec brumisation'), v('15185', 'Banquette Galiléo rouge brumisée vue de face')],
       caracteristiques: [
-        { label: 'Référence', valeur: 'AT_FOT10_D_TAB (déplaçable)' },
-        { label: 'Emprise au sol', valeur: '160 × 159 cm' },
-        { label: 'Hauteur', valeur: '250 cm' },
-        { label: 'Masse', valeur: '220 kg (sans terre)' },
-        { label: 'Surface d’ombrage', valeur: '6 m²' },
-        structure,
-        jardiniere,
-        kebony('Assise, dossier et table'),
-        { label: 'Toiture', valeur: 'Végétalisée, charpente ajourée pour plantes grimpantes' },
-        eauxPluviales,
-        autostable,
-        garanties,
-        entretien,
+        { label: 'Composition', valeur: 'Une banquette Galiléo sans dossier, avec brumisation' },
+        ...dimensionsGalileo, ...baseGalileo('Assise'),
+        { label: 'Brumisation', valeur: 'Présente sur le modèle illustré ; raccordement à l’eau et à l’électricité nécessaire' },
+        vegetationOption, { label: 'Garantie brumisation', valeur: '2 ans, selon les conditions de garantie' }, entretienBrume,
       ],
-      similaires: [
-        { titre: 'Banc', description: 'Le banc Fotos, un îlot de verdure pour faire une pause.', produit: 'banc-fotos' },
-        {
-          titre: 'Espace Pique-nique',
-          description: 'Deux tables Fotos en vis-à-vis : une table de 6 places à l’ombre.',
-          produit: 'espace-pique-nique',
-        },
-        {
-          titre: 'Table / Gradin',
-          description: 'La version Galiléo, ancrée au sol, avec une toiture perforée.',
-          produit: 'table-gradin-galileo',
-        },
-      ],
+      similaires: [similaire('banquette-galileo', 'Banquette', 'La banquette sans brumisation.'), similaire('espace-salon', 'Salon', 'Un banc avec dossier, végétation et brumisation.'), similaire('espace-banquet', 'Banquet', 'Deux tables / gradins en vis-à-vis.')],
     },
   },
   {
-    slug: 'espace-sequoia',
-    nom: 'Séquoia',
-    gamme: 'fotos',
-    categorie: 'espace',
-    lienVers: 'banc-fotos',
-    carte: { description: 'Un îlot de verdure où l’on s’assoit à l’ombre des grimpantes.', visuel: v('espace-sequoia') },
-  },
-  {
-    slug: 'espace-babylone',
-    nom: 'Babylone',
-    gamme: 'fotos',
-    categorie: 'espace',
-    lienVers: 'banc-fotos',
+    slug: 'espace-salon', nom: 'Salon', gamme: 'galileo', categorie: 'espace',
     carte: {
-      description: 'Une arche végétale qui relie deux modules et crée un passage ombragé.',
-      visuel: v('espace-babylone'),
+      description: 'Un banc avec dossier, végétation et brumisation, pour se reposer à l’ombre.',
+      visuel: v('26d66', 'Salon : un banc Galiléo blanc avec dossier, plantes grimpantes et brumisation'),
+    },
+    fiche: {
+      titre: 'Salon Galiléo', sousTitre: 'Un banc végétalisé avec brumisation',
+      description: 'La configuration Salon réunit un banc Galiléo avec dossier, des plantes grimpantes à l’arrière et une brumisation. Le visuel présente un seul module, pour s’installer confortablement à l’ombre.',
+      galerie: [v('26d66', 'Salon : un banc Galiléo blanc avec dossier, plantes grimpantes et brumisation'), v('a2f37', 'Banc Galiléo blanc végétalisé et brumisé vu de face')],
+      caracteristiques: [
+        { label: 'Référence', valeur: 'AT_GAL10_DOS_BRO_VEGE' },
+        { label: 'Composition', valeur: 'Un banc Galiléo avec dossier, végétation et brumisation' },
+        ...dimensionsGalileo, ...baseGalileo('Assise et dossier'),
+        { label: 'Brumisation', valeur: 'Présente sur le modèle illustré ; raccordement à l’eau et à l’électricité nécessaire' },
+        { label: 'Support des plantes', valeur: 'Filet de pêche recyclé Filae ou câbles inox' },
+        { label: 'Garantie brumisation', valeur: '2 ans, selon les conditions de garantie' }, entretienBrume,
+      ],
+      similaires: [similaire('banc-galileo', 'Banc', 'Le banc sans végétation ni brumisation.'), similaire('espace-echange', 'Échange', 'Une banquette sans dossier avec brumisation.'), similaire('banc-fotos', 'Banc Fotos', 'Un banc sous pergola végétale, avec jardinière.')],
     },
   },
   {
-    slug: 'espace-pique-nique',
-    nom: 'Pique-nique',
-    gamme: 'fotos',
-    categorie: 'espace',
-    lienVers: 'table-fotos',
-    carte: {
-      description: 'Une table de 6 places sous la végétation, pour manger dehors à l’ombre.',
-      visuel: v('espace-pique-nique'),
+    slug: 'espace-banquet', nom: 'Banquet', gamme: 'galileo', categorie: 'espace',
+    carte: { description: 'Deux modules table / gradin Galiléo en vis-à-vis, pour partager un repas à l’ombre.', visuel: v('0d8dc', 'Banquet : deux tables / gradins Galiléo bleus en vis-à-vis') },
+    fiche: {
+      titre: 'Banquet Galiléo', sousTitre: 'Deux tables / gradins en vis-à-vis',
+      description: 'Deux modules table / gradin Galiléo se font face pour former un espace de repas partagé sous leurs toitures en aluminium perforé. La configuration présentée est sans brumisation.',
+      galerie: [v('0d8dc', 'Banquet : deux tables / gradins Galiléo bleus en vis-à-vis')],
+      caracteristiques: [{ label: 'Composition', valeur: 'Deux modules AT_GAL10_TAB en vis-à-vis' }, { label: 'Surface d’ombrage', valeur: '12 m² pour deux modules, selon implantation' }, implantation, ...baseGalileo('Assises et tables'), toiture, brumeOption, garantiesOption, entretien],
+      similaires: [similaire('table-gradin-galileo', 'Table / Gradin', 'Le module individuel avec assise et table.'), similaire('espace-recreation', 'Récréation', 'Une autre configuration de deux tables / gradins.'), similaire('espace-pique-nique', 'Pique-nique', 'Deux tables Fotos en vis-à-vis sous la végétation.')],
+    },
+  },
+  {
+    slug: 'espace-recreation', nom: 'Récréation', gamme: 'galileo', categorie: 'espace',
+    carte: { description: 'Deux modules table / gradin en vis-à-vis pour se réunir, apprendre ou faire une pause dehors.', visuel: v('c0ff2', 'Récréation : deux tables / gradins Galiléo blancs en vis-à-vis') },
+    fiche: {
+      titre: 'Récréation Galiléo', sousTitre: 'Un espace de rencontre pour les cours d’école',
+      description: 'Deux modules table / gradin Galiléo en vis-à-vis créent un lieu pour faire classe dehors, échanger ou se reposer à l’ombre. La configuration présentée est sans brumisation.',
+      galerie: [v('c0ff2', 'Récréation : deux tables / gradins Galiléo blancs en vis-à-vis')],
+      caracteristiques: [{ label: 'Composition', valeur: 'Deux modules AT_GAL10_TAB en vis-à-vis' }, { label: 'Surface d’ombrage', valeur: '12 m² pour deux modules, selon implantation' }, implantation, ...baseGalileo('Assises et tables'), toiture, brumeOption, garantiesOption, entretien],
+      similaires: [similaire('table-gradin-galileo', 'Table / Gradin', 'Un module pour déjeuner ou travailler à l’ombre.'), similaire('espace-banquet', 'Banquet', 'Deux tables / gradins réunis pour le repas.'), similaire('espace-salon', 'Salon', 'Un banc végétalisé et brumisé avec dossier.')],
+    },
+  },
+  {
+    slug: 'banc-fotos', nom: 'Banc', gamme: 'fotos', categorie: 'modele',
+    carte: { description: 'Un banc avec dossier sous une pergola végétale, avec jardinière et gestion de l’eau selon la version.', visuel: v('0f928', 'Banc Fotos, un module avec dossier et jardinière végétalisée') },
+    fiche: {
+      titre: 'Banc Fotos', sousTitre: 'Un banc sous pergola végétale, sans ancrage',
+      description: 'Un banc avec dossier et jardinière, sous une charpente qui accueille les plantes grimpantes. La terre de la jardinière stabilise le mobilier. L’ombre se densifie avec la croissance de la végétation.',
+      galerie: [v('0f928', 'Banc Fotos, un module avec dossier et jardinière végétalisée'), v('a38a3', 'Banc Fotos vu de face'), v('3c5dc', 'Banc Fotos vu du dessus'), v('1875a', 'Jardinière et structure arrière du banc Fotos')],
+      caracteristiques: [
+        { label: 'Référence déplaçable', valeur: 'AT_FOT10_D ; AT_FOT10_D_ACC avec accoudoirs' },
+        { label: 'Jardinière au sol', valeur: '180 × 83,4 cm (largeur × profondeur, hors débords)' },
+        { label: 'Charpente en toiture', valeur: '295,8 × 160,3 cm (largeur × profondeur)' },
+        { label: 'Hauteur totale', valeur: '237,3 cm' }, ...baseFotos('Assise et dossier'),
+      ],
+      similaires: [similaire('table-fotos', 'Table', 'Le module Fotos avec table.'), similaire('espace-sequoia', 'Séquoia', 'Deux bancs Fotos dos à dos.'), similaire('espace-babylone', 'Babylone', 'Deux bancs Fotos face à face.')],
+    },
+  },
+  {
+    slug: 'table-fotos', nom: 'Table', gamme: 'fotos', categorie: 'modele',
+    carte: { description: 'Une assise avec dossier et une table sous une pergola végétale, avec jardinière et gestion de l’eau selon la version.', visuel: v('f0cf0', 'Table Fotos, un module avec assise, dossier, table et jardinière végétalisée') },
+    fiche: {
+      titre: 'Table Fotos', sousTitre: 'Une table et son assise sous pergola végétale',
+      description: 'Un module Fotos qui associe une assise avec dossier et une table, sous une charpente pour plantes grimpantes. La jardinière stabilise le mobilier et participe à la gestion de l’eau. L’ombre dépend du développement des plantes.',
+      galerie: [v('f0cf0', 'Table Fotos, un module avec assise, dossier, table et jardinière végétalisée'), v('f4f61', 'Table Fotos vue du dessus'), v('3f6a7', 'Table Fotos vue de face'), v('adfa4', 'Jardinière et structure arrière de la table Fotos')],
+      caracteristiques: [
+        { label: 'Référence déplaçable', valeur: 'AT_FOT10_D_TAB' },
+        { label: 'Largeur de jardinière', valeur: '180 cm' },
+        { label: 'Profondeur au sol avec table', valeur: '148,4 cm' },
+        { label: 'Charpente en toiture', valeur: '295,8 × 160,3 cm (largeur × profondeur)' },
+        { label: 'Hauteur totale', valeur: '237,3 cm' }, ...baseFotos('Assise, dossier et table'),
+      ],
+      similaires: [similaire('banc-fotos', 'Banc', 'Le module Fotos sans table.'), similaire('espace-pique-nique', 'Pique-nique', 'Deux tables Fotos face à face.'), similaire('table-gradin-galileo', 'Table / Gradin', 'Une assise et une table sous une toiture perforée.')],
+    },
+  },
+  {
+    slug: 'espace-sequoia', nom: 'Séquoia', gamme: 'fotos', categorie: 'espace',
+    carte: { description: 'Deux bancs Fotos dos à dos, pour s’asseoir de chaque côté d’un îlot végétal.', visuel: v('6fbcb', 'Séquoia : deux bancs Fotos dos à dos, jardinières au centre') },
+    fiche: {
+      titre: 'Séquoia Fotos', sousTitre: 'Deux bancs dos à dos',
+      description: 'Deux bancs Fotos sont disposés dos à dos, avec leurs jardinières réunies au centre. Les assises s’ouvrent de part et d’autre de l’îlot végétal. La densité d’ombre évolue avec les plantes grimpantes.',
+      galerie: [v('6fbcb', 'Séquoia : deux bancs Fotos dos à dos, jardinières au centre')],
+      caracteristiques: [{ label: 'Composition', valeur: 'Deux bancs Fotos avec dossier, en dos à dos' }, implantation, ...baseFotos('Assises et dossiers')],
+      similaires: [similaire('banc-fotos', 'Banc', 'Un banc Fotos individuel.'), similaire('espace-babylone', 'Babylone', 'Deux bancs Fotos en face à face.'), similaire('espace-pique-nique', 'Pique-nique', 'Deux modules avec table pour manger dehors.')],
+    },
+  },
+  {
+    slug: 'espace-babylone', nom: 'Babylone', gamme: 'fotos', categorie: 'espace',
+    carte: { description: 'Deux bancs Fotos en face à face, sous une arche de plantes grimpantes.', visuel: v('761bd', 'Babylone : deux bancs Fotos face à face sous leurs charpentes végétalisées') },
+    fiche: {
+      titre: 'Babylone Fotos', sousTitre: 'Deux bancs face à face',
+      description: 'Deux bancs Fotos se font face et leurs charpentes composent une arche végétale au-dessus de l’espace de rencontre. Les jardinières sont placées à l’arrière des dossiers. L’ombre se densifie au fil de la croissance des plantes.',
+      galerie: [v('761bd', 'Babylone : deux bancs Fotos face à face sous leurs charpentes végétalisées')],
+      caracteristiques: [{ label: 'Composition', valeur: 'Deux bancs Fotos avec dossier, en face à face' }, implantation, ...baseFotos('Assises et dossiers')],
+      similaires: [similaire('banc-fotos', 'Banc', 'Un banc Fotos individuel.'), similaire('espace-sequoia', 'Séquoia', 'Deux bancs Fotos en dos à dos.'), similaire('espace-pique-nique', 'Pique-nique', 'La configuration face à face avec tables.')],
+    },
+  },
+  {
+    slug: 'espace-pique-nique', nom: 'Pique-nique', gamme: 'fotos', categorie: 'espace',
+    carte: { description: 'Deux tables Fotos en face à face pour partager un repas sous les plantes grimpantes.', visuel: v('a149b', 'Pique-nique : deux tables Fotos face à face sous une arche végétale') },
+    fiche: {
+      titre: 'Pique-nique Fotos', sousTitre: 'Deux tables face à face',
+      description: 'Deux modules Fotos avec assise, dossier et table se font face pour partager un repas dehors. Les charpentes accueillent les plantes grimpantes, qui apportent une ombre croissante au fil des saisons.',
+      galerie: [v('a149b', 'Pique-nique : deux tables Fotos face à face sous une arche végétale')],
+      caracteristiques: [{ label: 'Composition', valeur: 'Deux modules Fotos avec assise, dossier et table, en face à face' }, implantation, ...baseFotos('Assises, dossiers et tables')],
+      similaires: [similaire('table-fotos', 'Table', 'Une table Fotos individuelle.'), similaire('espace-babylone', 'Babylone', 'Deux bancs en face à face sans table.'), similaire('espace-banquet', 'Banquet', 'Deux tables / gradins sous des toitures perforées.')],
     },
   },
 ]

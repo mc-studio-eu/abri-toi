@@ -6,11 +6,13 @@ const manifeste = computed(() => page.value.manifeste)
 // Chaque mot et chaque pastille reçoit un rang dans l'ordre de lecture.
 const decoupage = computed(() => {
   let rank = 0
-  const tokens = manifeste.value.morceaux.map((part) =>
-    'image' in part
-      ? { img: img(part.image, 400), width: part.largeur, rank: rank++ }
-      : { em: part.accent, words: part.texte.split(' ').map((w) => ({ w, rank: rank++ })) },
-  )
+  const tokens = manifeste.value.morceaux.map((value) => {
+    // Sanity's explicit union type wins over stale fields from older content.
+    const part = value as typeof value & { _type?: string }
+    return (part._type ? part._type === 'morceauTexte' : 'texte' in part) && 'texte' in part
+      ? { em: part.accent, words: part.texte.split(' ').map((w) => ({ w, rank: rank++ })) }
+      : { img: img('image' in part ? part.image : null, 400), width: 'largeur' in part ? part.largeur : 132, rank: rank++ }
+  })
   return { tokens, total: rank }
 })
 const tokens = computed(() => decoupage.value.tokens)
@@ -63,7 +65,7 @@ onBeforeUnmount(() => {
           :class="{ 'is-on': token.rank < shown }"
           :src="token.img"
           alt=""
-          :style="{ width: `${token.width}px` }"
+          :style="{ width: `calc(${token.width} * var(--manifesto-unit))` }"
         />
         <component :is="token.em ? 'em' : 'span'" v-else>
           <template v-for="(word, j) in token.words" :key="j">
@@ -84,39 +86,52 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+@font-face { font-family:'Bricolage Manifesto'; font-style:normal; font-weight:400; font-display:swap; src:url('/fonts/bricolage-regular.ttf') format('truetype'); }
+@font-face { font-family:'Bricolage Manifesto'; font-style:normal; font-weight:500; font-display:swap; src:url('/fonts/bricolage-medium.ttf') format('truetype'); }
+
 .manifesto {
+  --manifesto-unit: min(1px, calc((100vw - 240px) / 1200));
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 56px;
-  padding-top: 120px;
-  padding-bottom: 120px;
+  padding-top: 60px;
+  padding-bottom: 60px;
   padding-inline: max(120px, calc((100% - var(--page-max)) / 2 + 120px));
 }
 
 .manifesto__text {
+  max-width: 100%;
+  min-width: 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 10px 16px;
-  font-family: var(--font-display);
+  gap: calc(10 * var(--manifesto-unit)) calc(16 * var(--manifesto-unit));
+  font-family: 'Bricolage Manifesto', var(--font-display);
   font-weight: 500;
-  font-size: 64px;
+  font-size: calc(52 * var(--manifesto-unit));
   line-height: 1.15;
   letter-spacing: -0.03em;
+  font-variation-settings: "opsz" 14, "wdth" 100;
   color: var(--brown-900);
 }
 
-.manifesto__text span,
-.manifesto__text em {
+.manifesto__text > span,
+.manifesto__text > em {
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+}
+
+.manifesto__text .word {
   white-space: nowrap;
 }
 
 .manifesto__text em {
   font-style: normal;
   font-weight: 400;
-  font-size: 72px;
+  font-size: calc(52 * var(--manifesto-unit));
   letter-spacing: -0.01em;
   color: var(--orange-600);
 }
@@ -131,7 +146,7 @@ onBeforeUnmount(() => {
 }
 
 .pill {
-  height: 72px;
+  height: calc(72 * var(--manifesto-unit));
   border-radius: 999px;
   object-fit: cover;
   opacity: 0.15;
@@ -192,6 +207,7 @@ onBeforeUnmount(() => {
 
 @media (max-width: 1024px) {
   .manifesto {
+    --manifesto-unit: 1px;
     padding-inline: var(--gutter);
   }
 

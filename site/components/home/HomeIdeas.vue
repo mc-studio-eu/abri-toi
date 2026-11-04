@@ -1,25 +1,21 @@
 <script setup lang="ts">
 const pistes = [
-  { lieu: 'Étude d’intégration', titre: 'Un salon ouvert et ombragé', gamme: 'Galiléo', image: '/images/produits/espace-salon.jpg', alt: 'Proposition d’aménagement Galiléo en espace salon' },
-  { lieu: 'Étude d’intégration', titre: 'Un espace de pause à l’ombre', gamme: 'Galiléo', image: '/images/produits/espace-recreation.jpg', alt: 'Proposition d’aménagement Galiléo avec gradins' },
-  { lieu: 'Étude d’intégration', titre: 'Un îlot végétal modulable', gamme: 'Fotos', image: '/images/produits/espace-sequoia.jpg', alt: 'Proposition d’aménagement Fotos végétalisé' },
+  { titre: 'Des solutions pour les espaces artificiels', texte: 'Fréquentez de nouveau les rues et espaces publics de votre commune.', image: '/images/figma-home/426-19739-imgVisuel.png', alt: 'Abri végétalisé dans une place publique' },
+  { titre: 'Travailler en plein air', texte: 'Une nouvelle manière d’imaginer vos réunions ou un nouvel endroit pour déjeuner entre collègues.', image: '/images/figma-home/426-19739-imgVisuel1.png', alt: 'Abris Galiléo installés dans le jardin d’un lieu de travail' },
+  { titre: 'Valoriser l’existant', texte: 'Intégrez de la brumisation à votre ombrière et créez un véritable espace d’ombrage.', image: '/images/figma-home/426-19739-imgVisuel2.png', alt: 'Espace de détente ombragé et brumisé au bord d’un jardin' },
 ]
 </script>
 
 <template>
-  <section class="ideas section">
-    <header class="ideas__header">
-      <div>
-        <h2 class="display-h2">Nos sujets en cours de réflexion.</h2>
-      </div>
-      <p class="ideas__intro">Quelques pistes d’aménagement actuellement à l’étude, présentées sans nommer les villes concernées.</p>
-    </header>
+  <section class="ideas section" aria-labelledby="ideas-title">
+    <h2 id="ideas-title" class="ideas__title">Nos sujets en cours de réflexion</h2>
+    <p class="ideas__intro">Des pistes d’aménagement pour nourrir la réflexion. Chaque étude d’intégration est adaptée au lieu et à ses usages.</p>
     <ul class="ideas__grid">
       <li v-for="piste in pistes" :key="piste.titre" class="idea">
         <img :src="piste.image" :alt="piste.alt" loading="lazy" />
         <div class="idea__copy">
-          <p class="label-mono">{{ piste.lieu }} · {{ piste.gamme }}</p>
-          <h3>{{ piste.titre }}</h3>
+          <h3 class="display-h3">{{ piste.titre }}</h3>
+          <p>{{ piste.texte }}</p>
         </div>
       </li>
     </ul>
@@ -27,16 +23,14 @@ const pistes = [
 </template>
 
 <style scoped>
-.ideas { display:flex; flex-direction:column; gap:36px; padding-top:96px; padding-bottom:112px; background:var(--brown-900); color:var(--cream); }
-.ideas__header { display:flex; align-items:flex-end; justify-content:space-between; gap:32px; }
-.ideas__header .label-mono { margin-bottom:14px; color:var(--orange-500); text-transform:uppercase; }
-.ideas__header h2 { max-width:720px; }
-.ideas__intro { max-width:420px; color:var(--sand); line-height:1.6; }
-.ideas__grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin:0; padding:0; list-style:none; }
-.idea { overflow:hidden; border-radius:14px; background:var(--brown-800); }
-.idea img { display:block; width:100%; height:280px; object-fit:cover; background:#fff; }
-.idea__copy { padding:20px; }
-.idea__copy .label-mono { color:var(--sand); }
-.idea__copy h3 { margin-top:10px; font-size:22px; font-weight:500; }
-@media(max-width:760px) { .ideas__header { flex-direction:column; align-items:flex-start; } .ideas__grid { grid-template-columns:1fr; } .idea img { height:240px; } }
+.ideas { display:flex; flex-direction:column; gap:30px; padding-top:80px; padding-bottom:80px; background:var(--brown-900); color:var(--cream); }
+.ideas__title { max-width:900px; font-family:var(--font-display); font-size:48px; font-weight:500; line-height:normal; }
+.ideas__intro { max-width:838px; color:var(--sand); font-size:16px; }
+.ideas__grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
+.idea { min-height:532px; overflow:hidden; border:1px solid var(--line); border-radius:16px; background:var(--paper); color:var(--brown-900); }
+.idea img { display:block; width:100%; height:300px; object-fit:cover; }
+.idea__copy { display:flex; flex-direction:column; gap:14px; padding:24px 28px 28px; }
+.idea__copy p { color:var(--brown-700); font-size:14px; line-height:1.5; }
+@media(max-width:1100px) { .idea { height:auto; min-height:532px; } .idea__copy h3 { font-size:26px; } }
+@media(max-width:760px) { .ideas__title { font-size:34px; } .ideas__grid { grid-template-columns:1fr; } .idea { min-height:0; } .idea img { height:280px; } }
 </style>

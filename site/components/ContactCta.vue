@@ -1,4 +1,5 @@
 <script setup lang="ts">
+defineProps<{ titre?: string; texte?: string }>()
 const parametres = await useParametres()
 const tel = computed(() => `tel:+33${parametres.value.telephone?.replace(/\D/g, '').replace(/^0/, '')}`)
 </script>
@@ -7,8 +8,8 @@ const tel = computed(() => `tel:+33${parametres.value.telephone?.replace(/\D/g, 
   <section id="contact" class="contact section">
     <div v-reveal class="cta">
       <div class="cta__body">
-        <h2 class="display-h2 cta__title">{{ parametres.contact?.titre }}</h2>
-        <p class="body-l cta__text">{{ parametres.contact?.texte }}</p>
+        <h2 class="display-h2 cta__title">{{ titre || parametres.contact?.titre }}</h2>
+        <p class="body-l cta__text">{{ texte || parametres.contact?.texte }}</p>
         <ul class="cta__infos">
           <li>Tél. — <a :href="tel">{{ parametres.telephone }}</a></li>
           <li>Mail — <a :href="`mailto:${parametres.email}`">{{ parametres.email }}</a></li>
@@ -16,7 +17,7 @@ const tel = computed(() => `tel:+33${parametres.value.telephone?.replace(/\D/g, 
         </ul>
       </div>
       <UiButton variant="dark" to="/contact" :label="parametres.contact?.bouton" class="cta__btn" />
-      <img src="/images/dessin-ombriere-trait.svg" alt="" width="400" height="250" class="cta__drawing float" />
+      <img src="/images/figma-shared/contact-ombriere.svg" alt="" width="400" height="250" class="cta__drawing" />
     </div>
   </section>
 </template>
@@ -64,6 +65,7 @@ const tel = computed(() => `tel:+33${parametres.value.telephone?.replace(/\D/g, 
   font-weight: 500;
   font-size: 16px;
   line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 .cta__infos a:hover {

@@ -20,6 +20,9 @@
 
   --page-max: 1440px;
   --gutter: 80px;
+  --nav-floating-top: 12px;
+  --nav-floating-height: 64px;
+  --nav-content-offset: calc(var(--nav-floating-top) + var(--nav-floating-height) + 24px);
 }
 
 *,

@@ -8,7 +8,7 @@ defineProps<{ hero: Hero; large?: boolean }>()
   <section class="page-hero section">
     <AppNav class="page-hero__nav" />
     <div class="page-hero__contenu">
-      <h1 class="page-hero__titre" :class="{ 'page-hero__titre--large': large }">{{ hero.titre }}</h1>
+      <h1 class="page-hero__titre" :class="{ 'page-hero__titre--large': large }">{{ hero.titre.replace(/\.\s*$/, '') }}</h1>
       <div class="page-hero__droite" :class="{ 'page-hero__droite--etroite': large }">
         <slot name="chapo">
           <p v-if="hero.chapo" class="body-l page-hero__chapo">{{ hero.chapo }}</p>
@@ -31,15 +31,14 @@ defineProps<{ hero: Hero; large?: boolean }>()
   display: flex;
   flex-direction: column;
   gap: 96px;
-  padding-top: 28px;
+  padding-top: 20px;
   padding-bottom: 112px;
   background: var(--brown-900);
   color: var(--cream);
 }
 
-/* Même position que la nav de l'accueil (marges de 90 px au lieu de 80 px pour les sections) */
 .page-hero__nav {
-  margin-inline: 10px;
+  width: 100%;
 }
 
 .page-hero__contenu {

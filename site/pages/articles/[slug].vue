@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { articleComplet, texteArticle } from '~/utils/contenuPublic'
+definePageMeta({ key: (route) => route.path })
 const route = useRoute()
 const slug = String(route.params.slug)
 
@@ -9,7 +11,16 @@ const a = computed(() => article.value!)
 const textes = await usePageArticles()
 const tous = await useArticles()
 
-useHead({ title: () => `${a.value.titre} — Abri Toi`, meta: [{ name: 'description', content: () => a.value.extrait || a.value.intro }] })
+const complet = computed(() => articleComplet(a.value))
+usePageSeo(() => ({
+  titre: `${a.value.titre} | Abri Toi`,
+  description: a.value.extrait || a.value.intro || (complet.value ? texteArticle(a.value) : '') || `Article en préparation sur le thème « ${a.value.titre} ». Découvrez les réflexions d’Abri Toi sur l’ombrage et les espaces extérieurs.`,
+  image: a.value.illustration || a.value.couverture,
+  noindex: !complet.value,
+  type: complet.value ? 'article' : 'website',
+  fil: [{ nom: 'Articles', chemin: '/articles' }, { nom: a.value.titre, chemin: `/articles/${slug}` }],
+  article: complet.value ? { titre: a.value.titre, date: a.value.date, auteur: a.value.auteur?.nom } : undefined,
+}))
 
 const hero = computed(() => ({ titre: a.value.titre }))
 const corps = ref<{ intertitres: { id: string; titre: string }[] }>()
@@ -87,7 +98,7 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
           <ArticleCorps ref="corps" :blocs="a.corps" />
           <div v-if="a.auteur?.nom" class="auteur">
             <img v-if="a.auteur.photo" :src="img(a.auteur.photo, 112, 112)" alt="" class="auteur__photo" />
-            <img v-else src="/images/avatar-paul.svg" alt="" width="56" height="56" class="auteur__photo" />
+            <img v-else src="/images/figma-secondary/paul-saraceno.png" alt="" width="56" height="56" class="auteur__photo" />
             <div>
               <p class="auteur__nom">{{ a.auteur.nom }}</p>
               <p class="body-m">{{ a.auteur.bio }}</p>
@@ -158,7 +169,7 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
 
 .aside {
   position: sticky;
-  top: 32px;
+  top: var(--nav-content-offset);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -229,7 +240,6 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-top: 8px;
   padding-top: 32px;
   border-top: 1px solid rgba(63, 38, 29, 0.15);
 }
@@ -247,6 +257,12 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
   font-weight: 500;
   font-size: 20px;
   line-height: 1.25;
+}
+
+.auteur > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .a-lire {
@@ -292,17 +308,45 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
 }
 
 @media (max-width: 640px) {
+  .couverture {
+    gap: 32px;
+    padding-top: 48px;
+  }
+
   .couverture__visuel {
-    height: 260px;
+    height: auto;
+    aspect-ratio: 1280 / 560;
+  }
+
+  .article,
+  .a-lire {
+    padding-block: 64px;
+  }
+
+  .article {
+    gap: 40px;
+  }
+
+  .aside__trait {
+    width: 260px;
+    max-width: 100%;
   }
 
   .contenu__intro {
-    font-size: 20px;
+    font-size: 24px;
+  }
+
+  .a-lire {
+    gap: 32px;
   }
 
   .a-lire__entete {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: flex-end;
+  }
+
+  .a-lire__entete h2 {
+    align-self: flex-start;
   }
 }
 </style>

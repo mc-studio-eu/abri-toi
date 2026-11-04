@@ -83,13 +83,12 @@ defineExpose({ intertitres: computed(() => elements.value.filter((e) => e.numero
 }
 
 .corps__h2 {
-  padding-top: 8px;
   font-family: var(--font-display);
   font-weight: 500;
   font-size: 32px;
   line-height: 1.06;
   letter-spacing: -0.02em;
-  scroll-margin-top: 24px;
+  scroll-margin-top: var(--nav-content-offset);
 }
 
 .corps__p,
@@ -141,7 +140,7 @@ defineExpose({ intertitres: computed(() => elements.value.filter((e) => e.numero
   font-family: var(--font-display);
   font-weight: 500;
   font-size: 28px;
-  line-height: 1.15;
+  line-height: 1.06;
   letter-spacing: -0.02em;
 }
 
@@ -168,12 +167,13 @@ defineExpose({ intertitres: computed(() => elements.value.filter((e) => e.numero
     font-size: 26px;
   }
 
-  .photo img {
-    height: 280px;
+  .encadre {
+    padding-inline: 24px;
   }
 
   .citation p {
-    font-size: 22px;
+    font-size: 24px;
+    line-height: 1.06;
   }
 }
 </style>

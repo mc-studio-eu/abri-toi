@@ -5,37 +5,35 @@ type MorceauManifeste = { texte: string; accent?: boolean } | { image: Img; larg
 export const pageAccueil = {
   hero: {
     photo: { src: '/images/hero-v5-photo-plein-fond.png', alt: 'Des habitants assis à l’ombre d’un abri Galiléo' } as Img,
-    surtitre: 'Bureau d’études design · Conçu à Lyon, fabriqué en France',
+    surtitre: 'Bureau d’études design et conception Lyonnais · Fabrication française',
     titre: 'Reconquérir les espaces',
     titreSuite: 'extérieurs',
     // Mot animé (reflet orange) en fin de titre
     titreAccent: '',
     texte:
-      'Plus que des abris contre le soleil : des espaces de fraîcheur en extérieur où l’on a envie de passer du temps.',
+      'Plus que des abris contre le soleil : De véritables espaces d’ombrage et de fraîcheur où l’on a envie de se retrouver et passer du temps.',
     boutonProduits: 'Découvrez nos produits',
   },
   manifeste: {
     morceaux: [
+      { image: { src: '/images/manifesto-fotos-lacet.jpg', alt: 'Une femme fait ses lacets sur le banc Fotos' }, largeur: 132 },
       { texte: 'Chaque été,' },
-      { image: { src: '/images/image-pill.jpg' }, largeur: 132 },
-      { texte: 'nos places' },
-      { texte: 'se vident.', accent: true },
-      { texte: 'Alors nous dessinons' },
-      { image: { src: '/images/image-pill1.jpg' }, largeur: 112 },
-      { texte: 'des abris' },
-      { texte: 'où l’on reste' },
-      { image: { src: '/images/image-pill2.jpg' }, largeur: 150 },
-      { texte: 'dehors,' },
-      { texte: 'ensemble.', accent: true },
+      { texte: 'nos villes et espaces extérieurs' },
+      { texte: 'sont désertés', accent: true },
+      { texte: 'à cause de la canicule.' },
+      { texte: 'Notre objectif' },
+      { texte: 'leur' },
+      { texte: 'redonner vie.', accent: true },
+      { image: { src: '/images/image-pill2.jpg', alt: 'Trois amis profitent de l’ombre du banc Galiléo' }, largeur: 150 },
     ] as MorceauManifeste[],
     signatureNom: 'Paul Saraceno',
     signatureRole: 'Fondateur & designer industriel · Lyon',
   },
   probleme: {
-    titre: '2026, l’année de tous les records.',
-    titreSuite: 'Vos places, cours et parcs deviennent invivables.',
+    titre: '2026, l’année de tous les records !',
+    titreSuite: 'Nos espaces publics deviennent invivables.',
     texte:
-      'La chaleur pousse les habitants à rester à l’intérieur, dans des espaces climatisés. Les lieux publics se vident et les occasions de se retrouver diminuent, surtout pour les publics fragiles.',
+      'La chaleur accroît la sédentarité en intérieur, la fréquentation des espaces climatisés et réduit le lien social et l’envie de sortir de chez soi.',
     chiffres: [
       { valeur: '40,3 °C', texte: 'Record de température mesuré à Lavaur (Tarn) le 6 septembre 2026.' },
       { valeur: '53 jours', texte: 'De canicule en France entre le 1er juin et le 31 août 2026.' },
@@ -49,7 +47,7 @@ export const pageAccueil = {
       'Deux choix s’offrent à vous. Deux gammes conçues à Lyon et fabriquées en France, pour deux façons de rafraîchir vos espaces.',
     communes: [
       {
-        titre: 'Structure. Aluminium thermolaqué, fabriqué en France.',
+        titre: 'Structure et bac jardinière en aluminium, fabriqué en France.',
         texte:
           'Légère, très résistante et composée d’au moins 40 % de matière recyclée. Thermolaquée, elle ne s’oxyde pas, même en bord de mer.',
       },
@@ -60,8 +58,8 @@ export const pageAccueil = {
       },
     ],
     galileo: {
-      tags: 'Ombrage immédiat · Brumisation',
-      legende: 'Ancré au sol et relié au réseau d’eau, Galiléo brumise l’air pour rafraîchir dès la pose.',
+      tags: 'Ombrage métallique · Brumisation',
+      legende: 'Un abri ancré au sol, relié au réseau d’eau, pour de l’ombre et de la fraîcheur dès la pose.',
       etapes: [
         {
           titre: 'Brumisation. Jusqu’à –8 °C sous l’abri.',
@@ -69,9 +67,9 @@ export const pageAccueil = {
             'Brumisation haute pression à 70 bars avec BRO Brumisation : eau potable filtrée et traitée aux UV, temporisation pilotée pour maîtriser chaque litre.',
         },
         {
-          titre: 'Ancré au sol. Efficace dès la pose.',
+          titre: 'Installation fixe. Ancrage au sol.',
           texte:
-            'Fixé sur une dalle béton et raccordé au réseau d’eau par le sol : une installation pérenne, rafraîchissante dès le premier jour.',
+            'Fixé via cheville à béton sur une dalle béton ou longrine dimensionnée. Option brumisation nécessitant un raccord à l’eau potable.',
         },
       ],
       etiquettes: ['Structure aluminium', 'Toiture perforée', 'Brumisation 70 bars', 'Platines ancrées au sol'],
@@ -79,17 +77,21 @@ export const pageAccueil = {
     },
     fotos: {
       tags: 'Végétal · Déplaçable · Eau de pluie',
-      legende: 'Sans ancrage et déplaçable, Fotos récupère l’eau de pluie pour faire pousser son ombre végétale.',
+      legende: 'Un abri déplaçable qui associe végétation et récupération d’eau de pluie.',
+      toiture: {
+        titre: 'Toiture végétalisée pour un ombrage naturel.',
+        texte: 'Le support des plantes grimpantes est un filet de pêche recyclé, tout droit venu du port de Marseille par notre partenaire Philae.',
+      },
       etapes: [
         {
-          titre: 'Végétation. L’ombre prend vie.',
+          titre: 'Végétation et gestion des eaux pluviales.',
           texte:
-            'Plantes grimpantes sur un filet issu de filets de pêche recyclés, plantées dans une jardinière de près de 800 kg de terre. Un filet en fibre de coco les guide le temps qu’elles poussent.',
+            'Les plantes grimpantes s’épanouissent dans une jardinière à large volume de terre. Un réservoir d’eau pluviale est directement intégré au bac jardinière.',
         },
         {
-          titre: 'Autonome et déplaçable.',
+          titre: 'Installation déplaçable ou accès pleine terre.',
           texte:
-            'Un réservoir de 120 L recueille l’eau de pluie et arrose les plantes par capillarité. Les quelque 800 kg de terre servent de lest : pas de béton, l’abri se déplace au chariot élévateur.',
+            'Fotos est disponible en version déplaçable par chariot élévateur ou en version pleine terre, avec une jardinière ouverte en partie basse. Dans les deux cas, aucun ancrage au sol n’est nécessaire.',
         },
       ],
       etiquettes: ['Structure aluminium', 'Toiture perforée', 'Filet de grimpe recyclé', 'Jardinière 800 kg & réservoir 120 L'],
@@ -108,19 +110,19 @@ export const pageAccueil = {
     note: 'au total*',
     etapes: [
       {
-        titre: 'Prise de contact',
-        texte: 'On échange sur votre site, vos usages et vos contraintes : budget, calendrier, marché public.',
+        titre: 'Rendez-vous découverte',
+        texte: 'Premiers échanges, rencontre et présentation du projet. Site concerné, usages, contraintes, calendrier, budget.',
       },
       {
-        titre: 'Étude d’ensoleillement',
-        texte: 'Nous analysons la course du soleil et les flux pour placer l’ombre au bon endroit, aux bonnes heures.',
+        titre: 'Étude d’aménagement',
+        texte: 'Nous réalisons un dossier de présentation de votre espace aménagé avec nos installations.',
       },
       {
-        titre: 'Proposition sur-mesure',
-        texte: 'Configuration, implantation 3D, chiffrage et fiches techniques prêtes pour vos instances.',
+        titre: 'Marché conclu !',
+        texte: 'L’intégration 3D de votre aménagement vous plaît, les contraintes techniques ont été appréhendées, le budget est validé.',
       },
       {
-        titre: 'Fabrication, pose… et fraîcheur',
+        titre: 'Fabrication, pose et ombrage',
         texte:
           'Fabrication chez nos partenaires industriels en France, installation sur site. Vos habitants retrouvent l’ombre et l’extérieur.',
       },
@@ -142,7 +144,7 @@ export const pageAccueil = {
       {
         titre: 'Galiléo · Terrasse d’un particulier · Sanary (83)',
         gamme: 'galileo',
-        image: { src: '/images/bandeau-galileo-blanc-banc-brumise.jpg' } as Img,
+        image: { src: '/images/bandeau-galileo-premiers-usagers.jpg' } as Img,
         produit: 'banc-galileo',
       },
     ],
@@ -160,14 +162,14 @@ export const pageAccueil = {
     intro: 'Tout ce qu’il faut pour défendre le projet en interne et en conseil municipal.',
     questions: [
       {
-        question: 'Quelle consommation d’eau ? Et en cas d’arrêté sécheresse ?',
+        question: 'Quel volume d’eau consomme la brumisation ?',
         reponse:
-          'La brumisation fonctionne à haute pression (70 bars) avec une temporisation pilotée : les périodes de pulvérisation s’adaptent à l’usage de l’espace et la consommation se maîtrise au litre près. Elle peut être coupée en cas de restriction : l’abri continue de fournir de l’ombre. La gamme Fotos récupère jusqu’à 120 L d’eau de pluie. [Consommation horaire à compléter.]',
+          'La brumisation consomme environ 4 à 5 L d’eau par heure et par buse. Galiléo possède 6 buses : à fonctionnement continu, cela représente 24 à 30 L par heure. La temporisation adapte les cycles de pulvérisation à l’usage de l’espace et peut réduire la consommation jusqu’à 75 %.',
       },
       {
-        question: 'L’eau brumisée est-elle sûre (légionellose) ?',
+        question: 'Y a-t-il un risque de légionellose avec la brumisation ?',
         reponse:
-          'Oui. Galiléo brumise uniquement de l’eau potable issue du réseau, filtrée à 5 microns et traitée aux UV en milieu urbain. Le système est conçu avec notre partenaire BRO Brumisation, spécialiste de la haute pression, et fait l’objet d’une maintenance deux fois par an pour contrôler le circuit et les buses.',
+          'Galiléo brumise uniquement de l’eau potable issue du réseau, filtrée à 5 microns et traitée aux UV en milieu urbain. Le système est conçu avec notre partenaire BRO Brumisation, spécialiste de la haute pression, et fait l’objet d’une maintenance deux fois par an pour contrôler le circuit et les buses.',
       },
       {
         question: 'Quel entretien prévoir ?',
@@ -175,27 +177,22 @@ export const pageAccueil = {
           'Très peu. La structure en aluminium thermolaqué ne rouille pas, même en bord de mer, et se nettoie simplement à l’eau. L’assise en bois Kebony ne demande aucun traitement et prend une teinte argentée avec le temps. Sur Galiléo, la brumisation est révisée deux fois par an. Sur Fotos, les plantes s’arrosent seules par capillarité grâce au réservoir d’eau de pluie de 120 L ; il suffit de les entretenir comme un massif.',
       },
       {
-        question: 'Est-ce compatible avec un marché public ?',
-        reponse:
-          'Oui. Nous accompagnons les collectivités dans leurs démarches : chaque proposition comprend la configuration, l’implantation en 3D, le chiffrage et les fiches techniques, prêts à être présentés en commission ou en conseil municipal. Les abris sont conçus à Lyon et fabriqués en France par nos partenaires industriels.',
-      },
-      {
         question: 'Quelle garantie et quelle durée de vie ?',
         reponse:
           'Les abris sont pensés pour durer : structure en aluminium recyclé à 40 % minimum et thermolaqué, assise en bois Kebony classe 4, toiture en tôle d’aluminium perforée. Le bois Kebony est garanti 30 ans contre les champignons et la pourriture, la structure aluminium 5 ans et le système de brumisation 2 ans, à compter de la livraison. Le bois demande un simple brossage à sec mensuel, la brumisation une maintenance avant et après l’été.',
       },
       {
-        question: 'Comment l’abri est-il fixé ? Résiste-t-il au vent ?',
+        question: 'Quels ancrages au sol nécessitent vos abris ?',
         reponse:
           'Cela dépend de la gamme. Galiléo est ancré au sol sur une fondation béton, avec une arrivée d’eau qui passe par le sol. Fotos ne nécessite aucun ancrage : sa jardinière contient près de 800 kg de terre qui la lestent naturellement. Il peut être posé en pleine terre ou rester déplaçable au chariot élévateur. Les caractéristiques de résistance figurent dans les fiches techniques.',
       },
       {
-        question: 'Que se passe-t-il en hiver ?',
+        question: 'Quelle est la fréquence d’arrosage recommandée des plantes en jardinière Fotos ?',
         reponse:
-          'L’abri reste en place et continue d’offrir un lieu où s’asseoir et se retrouver toute l’année. Sur Galiléo, la brumisation est mise à l’arrêt hors de la saison chaude. Sur Fotos, la végétation suit le rythme des saisons et repart au printemps, le réservoir se remplissant avec les pluies.',
+          'Le réservoir de 120 L récupère l’eau de pluie et arrose les plantes par capillarité. Les besoins complémentaires dépendent des plantes, de la saison et de l’exposition de votre site. Nous vous accompagnons dans le choix des végétaux et les consignes d’entretien adaptées.',
       },
       {
-        question: 'Quel budget prévoir ?',
+        question: 'Combien coûte une installation Abri Toi ?',
         reponse:
           'Le budget dépend de la gamme, du nombre de modules et de votre site (pose, raccordement à l’eau pour Galiléo). Contactez-nous : nous revenons vers vous sous 48 h avec une première orientation, puis un chiffrage détaillé dans la proposition sur-mesure.',
       },
@@ -206,13 +203,13 @@ export const pageAccueil = {
     citation:
       '« Pouvoir s’asseoir à l’ombre le plus longtemps possible dans la journée. C’est pour ça que j’ai créé Abri Toi. »',
     texte:
-      'J’ai toujours aimé observer la ville et les lieux où l’on se retrouve au quotidien. Après cinq années dans l’aménagement urbain chez Pro Urba, j’ai fondé Abri Toi à Lyon, en octobre 2025, pour rendre les espaces urbains plus confortables, plus vivants et plus durables. Une envie guide ce projet : permettre à chacun de s’asseoir à l’ombre et de profiter plus longtemps de la ville.',
+      'J’ai toujours aimé observer la ville et les lieux où l’on se retrouve au quotidien.\nAprès cinq années dans l’aménagement urbain chez Pro Urba, j’ai fondé Abri Toi à Lyon, en octobre 2025, pour rendre les espaces urbains plus confortables, plus vivants et plus durables.\n\nUne envie guide ce projet : permettre à chacun de s’asseoir à l’ombre et de profiter plus longtemps de la ville.',
     nom: 'Paul Saraceno',
     role: 'Fondateur & designer industriel',
   },
   articles: {
     titre: 'Comprendre l’enjeu de l’ombre en ville.',
     lien: 'Tous les articles',
-    selection: ['seniors-ehpad-canicules', 'financer-ombrage-espaces-publics', 'brumisation-haute-pression'],
+    selection: ['recuperer-eau-pluie-vegetaliser-villes', 'ombrage-cour-ecole-solutions-sans-plantation', 'solution-ombrage-metallique-aluminium'],
   },
 }

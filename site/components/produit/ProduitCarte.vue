@@ -34,7 +34,7 @@ defineProps<{ titre: string; description?: string; visuel?: Img; to: string }>()
   align-items: center;
   justify-content: center;
   height: 300px;
-  padding: 24px 0 16px;
+  flex: none;
   background: var(--white);
 }
 
@@ -61,5 +61,9 @@ defineProps<{ titre: string; description?: string; visuel?: Img; to: string }>()
 
 .carte__lien {
   padding-top: 8px;
+}
+
+@media (max-width: 640px) {
+  .carte__nom { font-size: 26px; }
 }
 </style>

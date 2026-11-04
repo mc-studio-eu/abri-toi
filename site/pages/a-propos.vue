@@ -1,7 +1,12 @@
 <script setup lang="ts">
 const page = await usePageAPropos()
 
-useHead({ title: 'À propos — Abri Toi' })
+usePageSeo(() => ({
+  titre: 'À propos : concevoir l’ombre à Lyon | Abri Toi',
+  description: 'Rencontrez Paul Saraceno, fondateur d’Abri Toi, et découvrez notre démarche de conception de mobilier abrité à Lyon, fabriqué en France.',
+  image: page.value.histoire.portrait,
+  fil: [{ nom: 'À propos', chemin: '/a-propos' }],
+}))
 </script>
 
 <template>
@@ -415,17 +420,51 @@ useHead({ title: 'À propos — Abri Toi' })
 }
 
 @media (max-width: 640px) {
-  .chiffres__grille,
-  .partenaires__grille {
-    grid-template-columns: 1fr;
-  }
-
-  .terrain__photos img {
-    height: 260px;
+  .histoire {
+    align-items: flex-start;
+    gap: 40px;
+    padding-block: 64px;
   }
 
   .histoire__portrait {
-    height: 380px;
+    max-width: none;
+    height: auto;
+    aspect-ratio: 350 / 434;
+  }
+
+  .chiffres {
+    gap: 32px;
+    padding-block: 64px;
+  }
+
+  .engagements,
+  .partenaires,
+  .terrain {
+    gap: 32px;
+    padding-block: 64px;
+  }
+
+  .entete {
+    gap: 40px;
+  }
+
+  .engagement {
+    padding-inline: 24px;
+  }
+
+  .chiffres__grille,
+  .partenaires__grille,
+  .terrain__photos {
+    grid-template-columns: 1fr;
+  }
+
+  .partenaire__logo {
+    height: auto;
+  }
+
+  .terrain__entete {
+    align-items: flex-end;
+    gap: 24px;
   }
 }
 </style>

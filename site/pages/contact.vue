@@ -1,35 +1,70 @@
 <script setup lang="ts">
+import { limitesDemande, erreurDemande } from '~/utils/demande'
 const page = await usePageContact()
 const parametres = await useParametres()
+const produits = await useProduits()
+const route = useRoute()
 
-useHead({ title: 'Contact — Abri Toi' })
+usePageSeo({
+  titre: 'Votre projet d’ombrage : contactez Abri Toi',
+  description: 'Un projet d’ombrage pour votre collectivité, école ou entreprise ? Contactez Abri Toi à Lyon pour étudier votre site et choisir une solution adaptée.',
+  fil: [{ nom: 'Contact', chemin: '/contact' }],
+})
 
 const f = computed(() => page.value.formulaire)
 const tel = computed(() => `tel:+33${parametres.value.telephone?.replace(/\D/g, '').replace(/^0/, '')}`)
+const catalogue = computed(() => produits.value.filter((produit) => produit.fiche))
+const gammeParDefaut = () => f.value.gammes.find((gamme) => gamme === 'Les deux') ?? ''
+const libelleGamme = (cle: string) => f.value.gammes.find((gamme) =>
+  gamme.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().startsWith(cle),
+) ?? ''
 
 const form = reactive({
-  profil: '',
+  profil: f.value.typesClient[0] ?? '',
   prenom: '',
   nom: '',
   organisation: '',
   fonction: '',
   email: '',
   telephone: '',
-  gamme: '',
+  gamme: gammeParDefaut(),
+  produit: '',
   codePostal: '',
-  echeance: '',
+  echeance: f.value.echeances[0] ?? '',
   message: '',
   consentement: false,
+  website: '',
 })
 const etat = ref<'' | 'envoi' | 'ok' | 'erreur'>('')
+const erreur = ref('')
+const produitSelectionne = computed(() => catalogue.value.find((produit) => produit.slug === form.produit))
+
+watch(produitSelectionne, (produit) => {
+  if (produit) form.gamme = libelleGamme(produit.gamme)
+}, { flush: 'sync' })
+
+watch(() => form.gamme, (gamme) => {
+  if (produitSelectionne.value && gamme !== libelleGamme(produitSelectionne.value.gamme)) form.produit = ''
+}, { flush: 'sync' })
+
+watch(() => route.query.produit, (slug) => {
+  const produit = typeof slug === 'string' ? catalogue.value.find((produit) => produit.slug === slug) : undefined
+  form.produit = produit?.slug ?? ''
+  form.gamme = produit ? libelleGamme(produit.gamme) : gammeParDefaut()
+}, { immediate: true })
 
 async function envoyer() {
+  if (etat.value === 'envoi') return
   etat.value = 'envoi'
+  erreur.value = ''
   try {
-    const { consentement: _, ...champs } = form
-    await $fetch('/api/demande', { method: 'POST', body: { type: 'contact', ...champs } })
+    await $fetch('/api/demande', {
+      method: 'POST',
+      body: { type: 'contact', ...form, produit: produitSelectionne.value?.fiche?.titre ?? '' },
+    })
     etat.value = 'ok'
-  } catch {
+  } catch (error) {
+    erreur.value = erreurDemande(error) ?? 'L’envoi n’a pas abouti. Vous pouvez réessayer ou nous contacter ci-dessous.'
     etat.value = 'erreur'
   }
 }
@@ -48,14 +83,21 @@ async function envoyer() {
           </div>
 
           <form v-else @submit.prevent="envoyer">
+            <label class="form-trap" aria-hidden="true">
+              Laisser ce champ vide
+              <input v-model="form.website" name="website" tabindex="-1" autocomplete="off" :maxlength="limitesDemande.website" />
+            </label>
             <div class="formulaire__entete">
               <h2 class="formulaire__titre">{{ f.titre }}</h2>
               <p class="formulaire__aide">{{ f.sousTitre }}</p>
+              <p v-if="produitSelectionne" class="formulaire__produit" role="status">
+                Votre demande concerne : {{ produitSelectionne.fiche?.titre }}
+              </p>
             </div>
 
             <fieldset class="choix">
               <legend class="champ__label">Vous êtes *</legend>
-              <div class="choix__options">
+              <div class="choix__options choix__options--profils">
                 <label v-for="option in f.typesClient" :key="option" class="puce">
                   <input v-model="form.profil" type="radio" name="profil" :value="option" required />
                   <span>{{ option }}</span>
@@ -66,35 +108,43 @@ async function envoyer() {
             <div class="ligne">
               <label class="champ">
                 <span class="champ__label">Prénom *</span>
-                <input v-model="form.prenom" required autocomplete="given-name" placeholder="Camille" />
+                <input v-model="form.prenom" :maxlength="limitesDemande.prenom" required autocomplete="given-name" placeholder="Camille" />
               </label>
               <label class="champ">
                 <span class="champ__label">Nom *</span>
-                <input v-model="form.nom" required autocomplete="family-name" placeholder="Martin" />
+                <input v-model="form.nom" :maxlength="limitesDemande.nom" required autocomplete="family-name" placeholder="Martin" />
               </label>
             </div>
 
             <div class="ligne">
               <label class="champ">
                 <span class="champ__label">Collectivité ou organisation *</span>
-                <input v-model="form.organisation" required autocomplete="organization" placeholder="Mairie de Villeurbanne" />
+                <input v-model="form.organisation" :maxlength="limitesDemande.organisation" required autocomplete="organization" placeholder="Mairie de Villeurbanne" />
               </label>
               <label class="champ">
                 <span class="champ__label">Fonction</span>
-                <input v-model="form.fonction" autocomplete="organization-title" placeholder="Responsable espaces verts" />
+                <input v-model="form.fonction" :maxlength="limitesDemande.fonction" autocomplete="organization-title" placeholder="Responsable espaces verts" />
               </label>
             </div>
 
             <div class="ligne">
               <label class="champ">
                 <span class="champ__label">E-mail *</span>
-                <input v-model="form.email" type="email" required autocomplete="email" placeholder="prenom.nom@mairie.fr" />
+                <input v-model="form.email" :maxlength="limitesDemande.email" type="email" required autocomplete="email" placeholder="prenom.nom@mairie.fr" />
               </label>
               <label class="champ">
                 <span class="champ__label">Téléphone</span>
-                <input v-model="form.telephone" type="tel" autocomplete="tel" placeholder="06 00 00 00 00" />
+                <input v-model="form.telephone" :maxlength="limitesDemande.telephone" type="tel" autocomplete="tel" placeholder="06 00 00 00 00" />
               </label>
             </div>
+
+            <label class="champ">
+              <span class="champ__label">Produit concerné</span>
+              <select v-model="form.produit" name="produit">
+                <option value="">Aucun / Je ne sais pas encore</option>
+                <option v-for="produit in catalogue" :key="produit.slug" :value="produit.slug">{{ produit.fiche?.titre }}</option>
+              </select>
+            </label>
 
             <fieldset class="choix">
               <legend class="champ__label">Gamme qui vous intéresse</legend>
@@ -109,7 +159,7 @@ async function envoyer() {
             <div class="ligne">
               <label class="champ">
                 <span class="champ__label">Code postal du site</span>
-                <input v-model="form.codePostal" inputmode="numeric" autocomplete="postal-code" placeholder="69100" />
+                <input v-model="form.codePostal" :maxlength="limitesDemande.codePostal" inputmode="numeric" autocomplete="postal-code" placeholder="69100" />
               </label>
               <label class="champ">
                 <span class="champ__label">Échéance souhaitée</span>
@@ -124,6 +174,7 @@ async function envoyer() {
               <span class="champ__label">Votre projet *</span>
               <textarea
                 v-model="form.message"
+                :maxlength="limitesDemande.message"
                 required
                 rows="5"
                 placeholder="Décrivez le lieu à équiper : une cour d’école, une place, un parc… Nombre de places, surface, contraintes d’ancrage ou d’eau."
@@ -140,7 +191,7 @@ async function envoyer() {
               <p class="envoi__delai">{{ f.delai }}</p>
             </div>
             <p v-if="etat === 'erreur'" class="erreur" role="alert">
-              L’envoi n’a pas abouti. Écrivez-nous à
+              {{ erreur }} Écrivez-nous à
               <a :href="`mailto:${parametres.email}`">{{ parametres.email }}</a> ou appelez le {{ parametres.telephone }}.
             </p>
           </form>
@@ -186,6 +237,14 @@ async function envoyer() {
 </template>
 
 <style scoped>
+.form-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .contact {
   display: flex;
   align-items: flex-start;
@@ -224,6 +283,11 @@ form {
 .formulaire__aide {
   font-size: 15px;
   color: rgba(63, 38, 29, 0.65);
+}
+
+.formulaire__produit {
+  margin-top: 8px;
+  font-weight: 500;
 }
 
 .ligne {
@@ -484,12 +548,47 @@ form {
 }
 
 @media (max-width: 640px) {
+  .contact {
+    gap: 40px;
+    padding-block: 64px;
+  }
+
   .formulaire {
-    padding: 28px 20px;
+    width: 100%;
+    padding: 48px 24px;
+  }
+
+  .formulaire__titre {
+    font-size: 26px;
+  }
+
+  .choix__options {
+    row-gap: 16px;
+  }
+
+  .choix__options--profils {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
   }
 
   .ligne {
     grid-template-columns: 1fr;
+  }
+
+  .envoi {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rdv,
+  .contacts,
+  .ensuite {
+    padding-inline: 24px;
+  }
+
+  .rdv__titre {
+    font-size: 24px;
   }
 }
 </style>

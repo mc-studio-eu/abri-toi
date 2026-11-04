@@ -4,11 +4,15 @@ import { categories, type Categorie } from '~/content/articles'
 const page = await usePageArticles()
 const articles = await useArticles()
 
-useHead({ title: 'Articles — Abri Toi' })
+usePageSeo({
+  titre: 'Articles : ombrage et fraîcheur en ville | Abri Toi',
+  description: 'Explorez les articles Abri Toi sur l’ombrage, la végétalisation et la conception d’espaces publics plus agréables pendant les périodes de chaleur.',
+  fil: [{ nom: 'Articles', chemin: '/articles' }],
+})
 
 const une = computed(() => articles.value.find((a) => a.slug === page.value.aLaUne) ?? articles.value[0])
 
-const PAR_PAGE = 6
+const PAR_PAGE = 9
 const filtre = ref<Categorie | ''>('')
 const affiches = ref(PAR_PAGE)
 watch(filtre, () => (affiches.value = PAR_PAGE))
@@ -24,7 +28,7 @@ const liste = computed(() =>
 
       <section v-if="une" class="une section">
         <NuxtLink :to="`/articles/${une.slug}`" class="une__lien">
-          <ArticleCouverture v-reveal :article="une" class="une__couv" />
+          <ArticleCouverture v-reveal :article="une" :full-width="une.slug === 'brumisation-haute-pression'" class="une__couv" />
           <div v-reveal="120" class="une__texte">
             <p class="label-mono une__meta">
               {{ page.labelALaUne }}&nbsp;&nbsp;·&nbsp;&nbsp;{{ labelCategorie(une.categorie) }}&nbsp;&nbsp;·&nbsp;&nbsp;{{ une.tempsLecture }} min
@@ -228,12 +232,36 @@ const liste = computed(() =>
 }
 
 @media (max-width: 640px) {
+  .une,
+  .tous {
+    padding-block: 64px;
+  }
+
+  .une__lien {
+    gap: 40px;
+  }
+
+  .tous {
+    gap: 32px;
+  }
+
+  .filtres {
+    gap: 16px 8px;
+  }
+
   .grille {
     grid-template-columns: 1fr;
+    row-gap: 24px;
+  }
+
+  .grille > li:nth-child(3n + 4) {
+    margin-top: 8px;
   }
 
   .une__couv {
-    height: 260px;
+    height: auto;
+    aspect-ratio: 720 / 456;
+    border-radius: 8px;
   }
 
   .une__titre {

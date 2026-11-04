@@ -5,7 +5,12 @@ const page = await usePageRealisations()
 const realisations = await useRealisations()
 const gammes = await useGammes()
 
-useHead({ title: 'Nos réalisations — Abri Toi' })
+usePageSeo(() => ({
+  titre: 'Réalisations : des espaces de pause ombragés | Abri Toi',
+  description: 'Découvrez les installations Galiléo et Fotos : des espaces de pause et d’ombrage adaptés aux lieux de vie, aux collectivités et aux jardins.',
+  image: page.value.aLaUne.photo,
+  fil: [{ nom: 'Réalisations', chemin: '/realisations' }],
+}))
 
 const une = computed(() => page.value.aLaUne)
 
@@ -145,7 +150,7 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
 }
 
 .une__photo {
-  width: 61%;
+  width: calc((100% - 32px) * 5 / 8);
   height: 560px;
   flex: none;
   border-radius: 20px;
@@ -338,6 +343,24 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
 }
 
 @media (max-width: 640px) {
+  .entete {
+    gap: 40px;
+  }
+
+  .filtres {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .une__projet {
+    align-items: stretch;
+  }
+
+  .fiche__info {
+    grid-template-columns: 1fr;
+  }
+
   .grille {
     grid-template-columns: 1fr;
   }

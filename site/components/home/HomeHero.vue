@@ -119,7 +119,7 @@ const hero = computed(() => page.value.hero)
   max-width: 100%;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: 96px;
+  font-size: 84px;
   line-height: 1;
   letter-spacing: -0.035em;
 }
@@ -132,7 +132,7 @@ const hero = computed(() => page.value.hero)
 .hero__lead {
   width: 628px;
   max-width: 100%;
-  min-height: 86px;
+  min-height: 57px;
   font-size: 19px;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.9);

@@ -9,9 +9,15 @@ export default defineNuxtConfig({
     sanityWriteToken: '',
     // Clé Resend côté serveur : envoi des demandes du formulaire vers la boîte de contact.
     resendApiKey: '',
-    contactEmail: 'contact@mc-studio.eu',
+    contactEmail: 'collaborer@abritoi.com',
     emailFrom: '',
+    // Origine publique HTTPS utilisée dans les liens PDF envoyés par e-mail.
+    siteUrl: '',
     public: {
+      // Domaine SEO public, distinct de siteUrl (liens PDF par e-mail).
+      seoSiteUrl: 'https://abritoi.com',
+      // Aperçu local de la maquette sans remplacer les contenus publiés dans Sanity.
+      contentSource: 'sanity',
       // Sans projectId, le site affiche le contenu de référence (dossier content/).
       sanity: {
         projectId: '',
@@ -44,7 +50,7 @@ export default defineNuxtConfig({
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500&family=Geist+Mono:wght@500&family=Instrument+Sans:wght@400;500&display=swap',
+          href: 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500&family=Geist:wght@700&family=Geist+Mono:wght@500&family=Instrument+Sans:wght@400;500&display=swap',
         },
       ],
     },

@@ -95,7 +95,7 @@ export const produit = defineType({
       options: {
         list: [
           { title: 'Modèle (a sa fiche produit)', value: 'modele' },
-          { title: 'Espace (deux modules en vis-à-vis)', value: 'espace' },
+          { title: 'Configuration (variante ou assemblage)', value: 'espace' },
         ],
         layout: 'radio',
       },
@@ -107,7 +107,7 @@ export const produit = defineType({
     defineField({
       name: 'lienVers',
       title: 'Fiche produit liée',
-      description: 'Pour un espace : la fiche du modèle qui le compose.',
+      description: 'Ancien lien de repli, utilisé uniquement si cette entrée ne possède pas sa propre fiche.',
       type: 'reference',
       to: [{ type: 'produit' }],
       group: 'carte',
@@ -123,7 +123,7 @@ export const produit = defineType({
         defineField({
           name: 'galerie',
           title: 'Galerie photos',
-          description: 'La première image est affichée en grand.',
+          description: 'La première image doit correspondre au visuel de la carte. Ajouter uniquement des vues de cette même configuration.',
           type: 'array',
           of: [defineArrayMember({ type: 'image', options: { hotspot: true } })],
           options: { layout: 'grid' },
@@ -136,12 +136,16 @@ export const produit = defineType({
             defineField({ name: 'produit', title: 'Produit', type: 'reference', to: [{ type: 'produit' }] }),
             texte('titre', 'Titre'),
             paragraphe('description', 'Description'),
+            image('visuel', 'Visuel propre à cette recommandation'),
+            texte('variante', 'Variante du modèle', {
+              options: { list: [{ title: 'Sans brumisation', value: 'sans-brumisation' }] },
+            }),
           ],
           { title: 'titre', subtitle: 'description' },
           { validation: (r: any) => r.max(3) },
         ),
       ],
-      { group: 'fiche', hidden: ({ document }: any) => document?.categorie === 'espace' },
+      { group: 'fiche' },
     ),
   ],
   orderings: [{ title: 'Ordre d’affichage', name: 'ordre', by: [{ field: 'ordre', direction: 'asc' }] }],

@@ -4,9 +4,12 @@
   "type": "module",
   "scripts": {
     "dev": "nuxt dev",
+    "dev:maquette": "NUXT_PUBLIC_CONTENT_SOURCE=reference nuxt dev",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "test:seo": "node --experimental-vm-modules --test tests/seo.test.mjs",
+    "test:contact": "node --experimental-vm-modules --test tests/demande.test.mjs tests/contact.test.mjs",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {

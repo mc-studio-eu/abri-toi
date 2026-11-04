@@ -6,6 +6,8 @@ import { pagesLegales } from '~/content/legal'
 import { ficheProduit, pageAPropos, pageArticles, pageContact, pageProduits, pageRealisations } from '~/content/pages'
 import { produits, type Produit } from '~/content/produits'
 import { realisations } from '~/content/realisations'
+import { normaliserAccueil } from '~/utils/normaliserAccueil'
+import { cataloguePublic, REQUETE_PRODUITS, REQUETE_ARTICLES, REQUETE_ARTICLE, SLUG_ARTICLE_EXCLU } from '~/utils/contenuPublic'
 
 const page = <T>(id: string, secours: T, projection = '...') =>
   useContenu(id, `*[_id == "${id}"][0]{${projection}}`, secours)
@@ -32,22 +34,14 @@ export async function useGammes() {
   return computed(() => ({ galileo: avecSecours('galileo'), fotos: avecSecours('fotos') }))
 }
 
-export const useProduits = () =>
-  useContenu(
-    'produits',
-    `*[_type == "produit"] | order(ordre asc){
-      "slug": slug.current, nom, gamme, categorie,
-      "carte": { description, visuel },
-      "lienVers": lienVers->slug.current,
-      fiche{ titre, sousTitre, description, galerie, caracteristiques,
-        similaires[]{ titre, description, "produit": produit->slug.current } }
-    }`,
-    produits,
-  )
+export async function useProduits() {
+  const data = await useContenu('produits', REQUETE_PRODUITS, produits)
+  return computed<Produit[]>(() => cataloguePublic(data.value))
+}
 
-// Adresse de la fiche à ouvrir depuis une carte (un espace renvoie vers la fiche de son modèle).
-export const lienProduit = (p?: Pick<Produit, 'slug' | 'lienVers'>) =>
-  p ? `/produits/${p.lienVers || p.slug}` : '/produits'
+// Chaque carte ouvre la fiche de la configuration qu’elle présente.
+export const lienProduit = (p?: Pick<Produit, 'slug'>) =>
+  p ? `/produits/${p.slug}` : '/produits'
 
 export const useRealisations = () =>
   useContenu(
@@ -56,31 +50,27 @@ export const useRealisations = () =>
     realisations,
   )
 
-const champsArticle = `"slug": slug.current, titre, categorie, tempsLecture, date, extrait, couverture, couvertureFond, couvertureInset`
-
 export const useArticles = () =>
-  useContenu(
-    'articles',
-    `*[_type == "article" && defined(slug.current)] | order(date desc){ ${champsArticle} }`,
-    articles as Omit<Article, 'corps' | 'intro' | 'auteur'>[],
-  )
+  useContenu('articles', REQUETE_ARTICLES, articles as Omit<Article, 'corps' | 'intro' | 'auteur'>[])
 
 export const useArticle = (slug: string) =>
   useContenu(
     `article-${slug}`,
-    `*[_type == "article" && slug.current == $slug][0]{ ..., ${champsArticle} }`,
-    (articles.find((a) => a.slug === slug) ?? null) as Article | null,
+    REQUETE_ARTICLE,
+    (slug === SLUG_ARTICLE_EXCLU ? null : articles.find((a) => a.slug === slug) ?? null) as Article | null,
     { slug },
   )
 
-export const usePageAccueil = () =>
-  page(
+export async function usePageAccueil() {
+  const contenu = await page(
     'pageAccueil',
     pageAccueil,
     `...,
     installations{ ..., bandeaux[]{ ..., "produit": produit->slug.current } },
     articles{ ..., "selection": selection[]->slug.current }`,
   )
+  return computed(() => normaliserAccueil(contenu.value, pageAccueil))
+}
 export const usePageProduits = () => page('pageProduits', pageProduits)
 export const useFicheProduit = () => page('ficheProduit', ficheProduit)
 export const usePageRealisations = () => page('pageRealisations', pageRealisations)

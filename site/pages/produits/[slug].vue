@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { limitesDemande, erreurDemande } from '~/utils/demande'
+import { galeriesProduits } from '~/content/galeriesProduits'
+definePageMeta({ key: (route) => route.path })
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
 
@@ -10,43 +13,73 @@ const parametres = await useParametres()
 const produit = computed(() => produits.value.find((p) => p.slug === slug.value && p.fiche))
 if (!produit.value) throw createError({ statusCode: 404, statusMessage: 'Produit introuvable', fatal: true })
 
-const fiche = computed(() => produit.value!.fiche!)
+const fiche = computed(() => {
+  const base = produit.value!.fiche!
+  // La carte et la première vue de la fiche représentent toujours la même configuration.
+  const principale = produit.value!.carte.visuel
+  const vues = [principale, ...(base.galerie ?? []), ...(galeriesProduits[slug.value] ?? [])]
+  const dejaVues = new Set<string>()
+  return {
+    ...base,
+    galerie: vues.filter((image) => {
+      const cle = JSON.stringify(image, ['src', 'asset', '_ref', 'crop', 'hotspot', 'left', 'top', 'right', 'bottom', 'x', 'y', 'width', 'height'])
+      if (dejaVues.has(cle)) return false
+      dejaVues.add(cle)
+      return true
+    }),
+  }
+})
 const gamme = computed(() => gammes.value[produit.value!.gamme])
 
-useHead({ title: () => `${fiche.value.titre} — Abri Toi`, meta: [{ name: 'description', content: () => fiche.value.description }] })
+usePageSeo(() => ({
+  titre: ({
+    'banc-galileo': 'Banc Galiléo avec toiture d’ombrage | Abri Toi',
+    'banc-fotos': 'Banc Fotos avec pergola végétalisée | Abri Toi',
+  } as Record<string, string>)[slug.value] || `${fiche.value.titre} : mobilier ombragé | Abri Toi`,
+  description: fiche.value.description || `${produit.value!.nom} : découvrez cette configuration de mobilier abrité ${gamme.value.nom}, conçue pour vos espaces extérieurs.`,
+  image: produit.value!.carte.visuel,
+  fil: [{ nom: 'Produits', chemin: '/produits' }, { nom: fiche.value.titre, chemin: `/produits/${slug.value}` }],
+}))
 
 // Galerie : la vignette choisie s'affiche en grand
 const choisie = ref(0)
-watch(slug, () => (choisie.value = 0))
+watch(() => route.fullPath, () => (choisie.value = 0))
 const photo = computed(() => fiche.value.galerie?.[choisie.value] ?? fiche.value.galerie?.[0])
 
 const similaires = computed(() =>
-  (fiche.value.similaires ?? []).map((s) => {
+  (fiche.value.similaires ?? []).flatMap((s) => {
     const cible = produits.value.find((p) => p.slug === s.produit)
-    return { ...s, visuel: cible?.carte.visuel, to: lienProduit(cible) }
+    if (!cible?.fiche || cible.slug === produit.value!.slug) return []
+    return [{ titre: cible.nom, description: cible.carte.description, visuel: cible.carte.visuel, to: lienProduit(cible) }]
   }),
 )
 
-// Demande de documentation : e-mail obligatoire, puis accès aux PDF de la gamme.
-// Les PDF restent proposés si l'enregistrement de la demande échoue (Sanity non branché, réseau…).
+// Le téléchargement reste disponible si le service d'e-mail est indisponible.
 const email = ref('')
-const etat = ref<'' | 'envoi' | 'ok' | 'erreur'>('')
-const pdfs = computed(() =>
-  [
-    { label: `Documentation ${gamme.value.nom}`, url: gamme.value.documentation },
-    { label: `Fiches techniques ${gamme.value.nom}`, url: gamme.value.ficheTechnique },
-  ].filter((p) => p.url),
-)
+const website = ref('')
+const erreur = ref('')
+const etat = ref<'' | 'envoi' | 'emailed' | 'download-only' | 'erreur'>('')
+const documentsRecus = ref<{ label: string; url: string }[] | null>(null)
+const pdfs = computed(() => documentsRecus.value ?? [
+  { label: `Documentation ${gamme.value.nom}`, url: gamme.value.documentation },
+  { label: `Fiches techniques ${gamme.value.nom}`, url: gamme.value.ficheTechnique },
+].filter((p) => p.url))
+watch(slug, () => { etat.value = ''; documentsRecus.value = null })
 async function demanderDoc() {
+  if (etat.value === 'envoi') return
   etat.value = 'envoi'
+  erreur.value = ''
   try {
-    await $fetch('/api/demande', {
+    const result = await $fetch<{ delivery: 'emailed' | 'download-only'; documents: { label: string; url: string }[] }>('/api/demande', {
       method: 'POST',
-      body: { type: 'documentation', email: email.value, produit: fiche.value.titre, gamme: produit.value!.gamme },
+      body: { type: 'documentation', email: email.value, website: website.value, produit: fiche.value.titre, gamme: produit.value!.gamme },
     })
-    etat.value = 'ok'
-  } catch {
-    etat.value = pdfs.value.length ? 'ok' : 'erreur'
+    documentsRecus.value = result.documents
+    etat.value = result.delivery
+  } catch (error) {
+    const refus = erreurDemande(error)
+    erreur.value = refus ?? `L’envoi n’a pas abouti. Écrivez-nous à ${parametres.value.email}.`
+    etat.value = refus ? 'erreur' : pdfs.value.length ? 'download-only' : 'erreur'
   }
 }
 </script>
@@ -70,7 +103,7 @@ async function demanderDoc() {
                 :aria-pressed="i === choisie"
                 @click="choisie = i"
               >
-                <img :src="img(image, 200, 200)" alt="" />
+                <img :src="img(image, 200)" alt="" loading="lazy" />
               </button>
             </li>
           </ul>
@@ -88,7 +121,7 @@ async function demanderDoc() {
           </div>
           <p class="body-l infos__description">{{ fiche.description }}</p>
           <div class="infos__actions">
-            <UiButton pill :label="textes.boutonDevis" />
+            <UiButton pill label="Demander un devis" :to="`/contact?produit=${encodeURIComponent(produit.slug)}`" />
             <UiButton pill variant="outline-dark" :label="`Documentation ${gamme.nom}`" to="#documentation" />
           </div>
         </div>
@@ -118,26 +151,31 @@ async function demanderDoc() {
         <form id="documentation" class="doc" @submit.prevent="demanderDoc">
           <h2 class="display-h3">{{ textes.documentation.titre }}</h2>
           <p class="body-m doc__texte">{{ textes.documentation.texte }}</p>
-          <template v-if="etat !== 'ok'">
+          <template v-if="etat !== 'emailed' && etat !== 'download-only'">
+            <label class="form-trap" aria-hidden="true">
+              Laisser ce champ vide
+              <input v-model="website" name="website" tabindex="-1" autocomplete="off" :maxlength="limitesDemande.website" />
+            </label>
             <label class="doc__champ">
               <span class="label-mono">{{ textes.documentation.champ }}</span>
-              <input v-model="email" type="email" required autocomplete="email" :placeholder="textes.documentation.placeholder" />
+              <input v-model="email" type="email" required :maxlength="limitesDemande.email" autocomplete="email" :placeholder="textes.documentation.placeholder" />
             </label>
             <UiButton submit pill :label="textes.documentation.bouton" :disabled="etat === 'envoi'" />
             <p v-if="etat === 'erreur'" class="doc__message" role="alert">
-              L’envoi n’a pas abouti. Écrivez-nous à {{ parametres.email }}.
+              {{ erreur }}
             </p>
           </template>
           <div v-else class="doc__message" role="status">
             <template v-if="pdfs.length">
-              <p>Merci ! Vos documents sont prêts :</p>
+              <p v-if="etat === 'emailed'">Merci ! Vos documents ont été envoyés à {{ email }}. Vous pouvez aussi les télécharger :</p>
+              <p v-else>L’envoi par e-mail n’a pas pu être confirmé. Téléchargez vos documents ici :</p>
               <ul class="doc__pdfs">
                 <li v-for="p in pdfs" :key="p.url">
                   <a :href="p.url" target="_blank" rel="noopener" download>{{ p.label }} (PDF)</a>
                 </li>
               </ul>
             </template>
-            <p v-else>Merci ! Nous vous envoyons la documentation par e-mail très vite.</p>
+            <p v-else>L’envoi n’a pas pu être confirmé. Écrivez-nous à {{ parametres.email }}.</p>
           </div>
         </form>
       </section>
@@ -161,15 +199,23 @@ async function demanderDoc() {
 </template>
 
 <style scoped>
+.form-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .entete {
-  padding-top: 28px;
+  padding-top: 20px;
   padding-bottom: 20px;
   background: var(--brown-900);
 }
 
 /* Même position que la nav de l'accueil */
 .entete__nav {
-  margin-inline: 10px;
+  margin-inline: 0;
 }
 
 @media (max-width: 1024px) {
@@ -196,6 +242,9 @@ async function demanderDoc() {
 }
 
 .galerie__vignettes {
+  max-height: 520px;
+  overflow-y: auto;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -209,6 +258,8 @@ async function demanderDoc() {
   border: 2px solid transparent;
   border-radius: 8px;
   opacity: 0.75;
+  padding: 0;
+  background: var(--white);
   transition: opacity 0.2s, border-color 0.2s;
 }
 
@@ -224,11 +275,12 @@ async function demanderDoc() {
 .galerie__vignette img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .galerie__photo {
   flex: 1;
+  min-width: 0;
   height: 520px;
   overflow: hidden;
   border-radius: 12px;
@@ -460,30 +512,54 @@ async function demanderDoc() {
 }
 
 @media (max-width: 640px) {
+  .hero, .reassurance, .technique, .similaires {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+
+  .hero, .technique { gap: 40px; }
+  .reassurance { gap: 32px; }
+
   .galerie {
     flex-direction: column-reverse;
+    gap: 10px;
   }
 
   .galerie__vignettes {
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
     flex-direction: row;
+    gap: 10px;
+    width: 100%;
   }
 
   .galerie__vignette {
-    width: 72px;
-    height: 72px;
+    width: min(80px, calc((100vw - 70px) / 4));
+    height: min(80px, calc((100vw - 70px) / 4));
   }
 
   .galerie__photo {
-    height: 320px;
+    flex: none;
+    width: 100%;
+    height: 520px;
   }
 
   .infos__nom {
-    font-size: 44px;
+    font-size: 40px;
   }
+
+  .infos__actions { flex-direction: column; align-items: flex-start; gap: 24px; }
+  .caracteristiques { width: 100%; }
+  .caracteristiques > h2, .doc > h2, .similaires__entete > h2 { font-size: 26px; }
 
   .caracteristiques__ligne {
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: 24px;
   }
+
+  .doc { padding: 24px; }
+  .similaires__entete { flex-direction: column; align-items: stretch; gap: 24px; }
+  .similaires__entete :deep(.link) { align-self: flex-end; }
 }
 </style>

@@ -53,7 +53,8 @@ const fondateur = computed(() => page.value.fondateur)
 }
 
 .founder__text {
-  max-width: 620px;
+  max-width: 677px;
+  white-space: pre-line;
 }
 
 .founder__sign {

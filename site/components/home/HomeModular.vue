@@ -4,18 +4,24 @@ const ranges = [
   {
     name: 'Gamme Galiléo',
     modules: [
-      { src: '/images/iso.svg', w: 242.25, h: 281.2 },
-      { src: '/images/iso1.svg', w: 242.25, h: 281.2 },
+      { src: '/images/modular/galileo-solo.png', size: 242.25 },
+      { src: '/images/modular/galileo-solo.png', size: 242.25 },
     ],
-    space: { src: '/images/iso2.svg', w: 321.1, h: 326.8, label: 'Espace Galiléo' },
+    space: {
+      configurations: ['/images/modular/galileo-a.png', '/images/modular/galileo-b.png'],
+      size: 155, label: 'Espace Galiléo',
+    },
   },
   {
     name: 'Gamme Fotos',
     modules: [
-      { src: '/images/iso3.svg', w: 256.5, h: 294.5 },
-      { src: '/images/iso4.svg', w: 256.5, h: 294.5 },
+      { src: '/images/modular/fotos-solo.png', size: 256.5 },
+      { src: '/images/modular/fotos-solo.png', size: 256.5 },
     ],
-    space: { src: '/images/iso5.svg', w: 336.3, h: 340.1, label: 'Espace Fotos' },
+    space: {
+      configurations: ['/images/modular/fotos-a.png', '/images/modular/fotos-b.png'],
+      size: 160, label: 'Espace Fotos',
+    },
   },
 ]
 </script>
@@ -31,9 +37,11 @@ const ranges = [
       <article v-for="range in ranges" :key="range.name" v-reveal class="range">
         <h3 class="range__name">{{ range.name }}</h3>
         <div class="range__equation">
-          <template v-for="(mod, i) in range.modules" :key="mod.src">
+          <template v-for="(mod, i) in range.modules" :key="i">
             <figure class="range__item">
-              <img :src="mod.src" alt="" :width="mod.w" :height="mod.h" :style="{ width: `${mod.w}px` }" />
+              <div class="range__visual" :style="{ width: `${mod.size}px` }">
+                <img :src="mod.src" alt="" :width="mod.size" :height="mod.size" />
+              </div>
               <figcaption>
                 <span class="range__label">Module</span>
                 <span class="range__meta">3 places</span>
@@ -41,14 +49,20 @@ const ranges = [
             </figure>
             <span class="range__op" aria-hidden="true">{{ i === 0 ? '+' : '=' }}</span>
           </template>
-          <figure class="range__item">
-            <img
-              :src="range.space.src"
-              alt=""
-              :width="range.space.w"
-              :height="range.space.h"
-              :style="{ width: `${range.space.w}px` }"
-            />
+          <figure class="range__item range__item--space">
+            <div
+              v-for="(configuration, i) in range.space.configurations"
+              :key="configuration"
+              class="range__visual"
+              :style="{ width: `${range.space.size}px` }"
+            >
+              <img
+                :src="configuration"
+                :alt="`${range.space.label}, configuration ${i + 1}`"
+                :width="range.space.size"
+                :height="range.space.size"
+              />
+            </div>
             <figcaption>
               <span class="range__label">{{ range.space.label }}</span>
               <span class="range__meta">Jusqu’à 8 personnes · 12 m² d’ombre</span>
@@ -121,9 +135,23 @@ const ranges = [
   min-width: 0;
 }
 
-.range__item img {
+.range__item--space {
+  gap: 14px;
+}
+
+.range__visual {
   max-width: 100%;
-  height: auto;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--white);
+}
+
+.range__visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .range__item figcaption {
@@ -166,9 +194,15 @@ const ranges = [
 }
 
 @media (max-width: 760px) {
+  .modular { padding-top: 48px; padding-bottom: 48px; gap: 40px; }
+  .modular__header { gap: 24px; }
+  .range { gap: 24px; padding: 32px 0; }
+  .range__name { font-size: 28px; }
   .range__equation {
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    gap: 24px;
   }
 
   .range__op {

@@ -142,12 +142,14 @@ async function main() {
     const patch: Record<string, unknown> = {}
     if (p.lienVers) patch.lienVers = ref(idsProduits.get(p.lienVers)!)
     if (p.fiche?.similaires.length) {
-      patch['fiche.similaires'] = p.fiche.similaires.map((s) => ({
+      patch['fiche.similaires'] = await Promise.all(p.fiche.similaires.map(async (s) => ({
         _key: key(),
         titre: s.titre,
         description: s.description,
+        ...(s.visuel ? { visuel: await convertir(s.visuel) } : {}),
+        ...(s.variante ? { variante: s.variante } : {}),
         produit: ref(idsProduits.get(s.produit)!),
-      }))
+      })))
     }
     if (Object.keys(patch).length) await client.patch(id).setIfMissing(patch).commit()
   }

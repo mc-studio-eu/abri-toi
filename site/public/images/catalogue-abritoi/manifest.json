@@ -1,0 +1,980 @@
+[
+  {
+    "title": "Banc Galiléo",
+    "source": "https://abritoi.com/produit/banc_galileo/",
+    "folder": "banc-galileo",
+    "images": [
+      {
+        "alt": "Abri Toi_GAL10_DOS_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_DOS_FB-11.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo/AT_GAL10_DOS_FB-11.jpg",
+        "bytes": 338225,
+        "sha256": "73ac086f6a714814cdb63112ac278cc6feb2cf0cdecce949c0ca5249b1da12dc",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_DOS_FB 2",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_DOS_FB2-11.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo/AT_GAL10_DOS_FB2-11.jpg",
+        "bytes": 329956,
+        "sha256": "1c668c7748ad9c1b26aa1314f79ec01ca7f9c77d04c32d0d406192b4e6e3631c",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_DOS_FB 3",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_DOS_FB3-11.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo/AT_GAL10_DOS_FB3-11.jpg",
+        "bytes": 252982,
+        "sha256": "153e556433645b4e0c52f3cca3223ab27eff56450542d43e6828b12096cfb6a3",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_DOS_FB 4",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_DOS_FB4-11.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo/AT_GAL10_DOS_FB4-11.jpg",
+        "bytes": 345647,
+        "sha256": "723494ef792cc2555fe50acc01e9652072aec946de58e2d682e7f15ca871d443",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Banc Galiléo – Image 5",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_DOS_FB7.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo/AT_GAL10_DOS_FB7.jpg",
+        "bytes": 273494,
+        "sha256": "8e974c7adcbe7e01d728d1d80cdf5ce4de83632f822129bf2d5ac576d0b4b915",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Banc Galiléo – Image 6",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_DOS_FB8.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo/AT_GAL10_DOS_FB8.jpg",
+        "bytes": 378441,
+        "sha256": "6efbacd0eb7d69472278e741a945b007b35164aeb0ed3ba05e25719cdccf0390",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Banc Galiléo – Image 7",
+        "url": "https://abritoi.com/wp-content/uploads/2026/01/Abri-Toi-Prototype-Vue-8-scaled.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo/Abri-Toi-Prototype-Vue-8-scaled.jpg",
+        "bytes": 501431,
+        "sha256": "1eb742b1a15fdb9a322501b3973c32643ee0f7158615323facd1bdd714f88171",
+        "width": 2560,
+        "height": 1440
+      },
+      {
+        "alt": "Banc Galiléo – Image 8",
+        "url": "https://abritoi.com/wp-content/uploads/2026/01/Abri-Toi-Prototype-Vue-9-scaled.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo/Abri-Toi-Prototype-Vue-9-scaled.jpg",
+        "bytes": 441790,
+        "sha256": "552ad626a882c0e45eaffb0b58930e90b8e9787c7dc60153e24e76a10ccc3d17",
+        "width": 2560,
+        "height": 1440
+      },
+      {
+        "alt": "Banc Galiléo – Image 9",
+        "url": "https://abritoi.com/wp-content/uploads/2026/01/IM1-scaled.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo/IM1-scaled.jpg",
+        "bytes": 905410,
+        "sha256": "bcc9e7c2a51b6a5fa0437f6cf22608e3bef7d5a795fd96f4b796b4d4351d524b",
+        "width": 2560,
+        "height": 2560
+      },
+      {
+        "alt": "Banc Galiléo – Image 10",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_DOS.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo/AT_GAL10_DOS.jpg",
+        "bytes": 1857517,
+        "sha256": "c68d2d5cdeb083721febcbe0f5d4efac06b378af65f335a8bb6b84c2558b9c45",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Banc Galiléo – Image 11",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_DOS1-e1774442538843.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo/AT_GAL10_DOS1-e1774442538843.jpg",
+        "bytes": 474694,
+        "sha256": "23408fbfe779cefd74e62257bdb3019e50ddc8c6bbc74262262293b9a6daac06",
+        "width": 1920,
+        "height": 1080
+      }
+    ]
+  },
+  {
+    "title": "Banquette Galiléo",
+    "source": "https://abritoi.com/produit/banquette_galileo/",
+    "folder": "banquette-galileo",
+    "images": [
+      {
+        "alt": "Abri Toi_GAL10_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_FB.jpg",
+        "local": "/images/catalogue-abritoi/banquette-galileo/AT_GAL10_FB.jpg",
+        "bytes": 296270,
+        "sha256": "dd49d0018ed3f63309fab78dc08b1f669c44b31923bc28ba438a8bc41d56a730",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_FB2.jpg",
+        "local": "/images/catalogue-abritoi/banquette-galileo/AT_GAL10_FB2.jpg",
+        "bytes": 290951,
+        "sha256": "398c4aeacd0771ffec614f7582d585429e1f7738592ff8e33a193b7a28636ba7",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_FB3.jpg",
+        "local": "/images/catalogue-abritoi/banquette-galileo/AT_GAL10_FB3.jpg",
+        "bytes": 252950,
+        "sha256": "30a6f25072c286df9bac30170764693109f415f7d30d5506a96ff9547456b844",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_FB4.jpg",
+        "local": "/images/catalogue-abritoi/banquette-galileo/AT_GAL10_FB4.jpg",
+        "bytes": 367087,
+        "sha256": "5fd92ad5898f98597e5e2139c4b3a20483e457d72706548bf0eadeb7eaeb6752",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_FB5.jpg",
+        "local": "/images/catalogue-abritoi/banquette-galileo/AT_GAL10_FB5.jpg",
+        "bytes": 393288,
+        "sha256": "535d4243697996aa925bbac564312a20d532962a7a4e78857fbdfab7431022f8",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_FB6.jpg",
+        "local": "/images/catalogue-abritoi/banquette-galileo/AT_GAL10_FB6.jpg",
+        "bytes": 486129,
+        "sha256": "7212aa3996361ec1ddc2954e77a69e49a2ec55e0e158bc19a03e2a1ab71a5314",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Banquette Galiléo – Image 7",
+        "url": "https://abritoi.com/wp-content/uploads/2026/01/AT_GAL10_TENNIS3-UHD.jpg",
+        "local": "/images/catalogue-abritoi/banquette-galileo/AT_GAL10_TENNIS3-UHD.jpg",
+        "bytes": 2236708,
+        "sha256": "f71849a19bdc8abef96aab15b0f1c79d3349db57018e1d43355b8f77fbdded19",
+        "width": 2560,
+        "height": 1440
+      },
+      {
+        "alt": "Banquette Galiléo – Image 8",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_HD-e1774442496676.jpg",
+        "local": "/images/catalogue-abritoi/banquette-galileo/AT_GAL10_HD-e1774442496676.jpg",
+        "bytes": 718951,
+        "sha256": "4de49fffde3f41d0f061dcbd6924392c245f46a94d845c4b5f29cb28710dcc9a",
+        "width": 2560,
+        "height": 1440
+      }
+    ]
+  },
+  {
+    "title": "Table d’appoint / Gradin Galiléo",
+    "source": "https://abritoi.com/produit/table_dappoint_gradin_galileo/",
+    "folder": "table-dappoint-gradin-galileo",
+    "images": [
+      {
+        "alt": "Abri Toi_GAL10_TAB1_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_TAB1_FB.jpg",
+        "local": "/images/catalogue-abritoi/table-dappoint-gradin-galileo/AT_GAL10_TAB1_FB.jpg",
+        "bytes": 333401,
+        "sha256": "8141096da91a6d66ac8002e656894ac93929519051b9ec91b0e977083142405a",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_TAB1_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_TAB1_FB2.jpg",
+        "local": "/images/catalogue-abritoi/table-dappoint-gradin-galileo/AT_GAL10_TAB1_FB2.jpg",
+        "bytes": 355427,
+        "sha256": "9222878e3a0868dadf512af58c6269696cb3247359060b9aa332b3eca88cbd7a",
+        "width": 1152,
+        "height": 1152
+      },
+      {
+        "alt": "Abri Toi_GAL10_TAB1_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_TAB1_FB3.jpg",
+        "local": "/images/catalogue-abritoi/table-dappoint-gradin-galileo/AT_GAL10_TAB1_FB3.jpg",
+        "bytes": 211938,
+        "sha256": "830e7443d05d2bde8b4b7655a8517a399d2f7b421811d0224ce03903a1c9ded3",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_TAB1_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_TAB1_FB4.jpg",
+        "local": "/images/catalogue-abritoi/table-dappoint-gradin-galileo/AT_GAL10_TAB1_FB4.jpg",
+        "bytes": 376424,
+        "sha256": "347656011149d65950d4e57a00326479b768310fa12845a559c2f6e4af4450c2",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_TAB1_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_TAB1_FB5.jpg",
+        "local": "/images/catalogue-abritoi/table-dappoint-gradin-galileo/AT_GAL10_TAB1_FB5.jpg",
+        "bytes": 450402,
+        "sha256": "7b55382dd8292833e6c05bc53df37dcf5323c134f7c1b7d4e31f0c50201790ff",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_TAB1_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_TAB1_FB6.jpg",
+        "local": "/images/catalogue-abritoi/table-dappoint-gradin-galileo/AT_GAL10_TAB1_FB6.jpg",
+        "bytes": 573831,
+        "sha256": "4220f41b5a6bdff5243d41a270f2023f1b0862a95564954b7dfa2b1631c3e9c3",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_TAB1_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_TAB1_FB7.jpg",
+        "local": "/images/catalogue-abritoi/table-dappoint-gradin-galileo/AT_GAL10_TAB1_FB7.jpg",
+        "bytes": 283517,
+        "sha256": "a3695eeaf3fb91e30d6f44a75d076203946fab9159a3ee4b69e821f0a03cdbdd",
+        "width": 921,
+        "height": 920
+      },
+      {
+        "alt": "Table d’appoint / Gradin Galiléo – Image 8",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_TAB12.jpg",
+        "local": "/images/catalogue-abritoi/table-dappoint-gradin-galileo/AT_GAL10_TAB12.jpg",
+        "bytes": 1446436,
+        "sha256": "74b9700951155a675959307dfde26a7a11b95f543e25fdf626302bd8c9424ac6",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Table d’appoint / Gradin Galiléo – Image 9",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_TAB1-2.jpg",
+        "local": "/images/catalogue-abritoi/table-dappoint-gradin-galileo/AT_GAL10_TAB1-2.jpg",
+        "bytes": 1142298,
+        "sha256": "e14d1bf384e8305afa09bb23345760a205d92e6e83867c0cd57a0240a63d7771",
+        "width": 1920,
+        "height": 1080
+      }
+    ]
+  },
+  {
+    "title": "Équipements Urbains",
+    "source": "https://abritoi.com/produit/equipements-connexes/",
+    "folder": "equipements-connexes",
+    "images": [
+      {
+        "alt": "Équipements Urbains",
+        "url": "https://abritoi.com/wp-content/uploads/2026/04/AT_ACC_Complet.jpg",
+        "local": "/images/catalogue-abritoi/equipements-connexes/AT_ACC_Complet.jpg",
+        "bytes": 354216,
+        "sha256": "15561beedb4c18c7d559cf4ace6dbb8e401bb79da75237a6722df74cdbfabb12",
+        "width": 2560,
+        "height": 1440
+      },
+      {
+        "alt": "Équipements Urbains – Image 2",
+        "url": "https://abritoi.com/wp-content/uploads/2026/04/AT_ACC_COR_2.jpg",
+        "local": "/images/catalogue-abritoi/equipements-connexes/AT_ACC_COR_2.jpg",
+        "bytes": 366872,
+        "sha256": "c5ef611275f2cbcd6da7c6840b61b1ab73783506ac63abb96e53d80c6923b9c1",
+        "width": 2560,
+        "height": 1440
+      },
+      {
+        "alt": "Équipements Urbains – Image 3",
+        "url": "https://abritoi.com/wp-content/uploads/2026/04/AT_ACC_Galileo2.jpg",
+        "local": "/images/catalogue-abritoi/equipements-connexes/AT_ACC_Galileo2.jpg",
+        "bytes": 3672132,
+        "sha256": "5e495c53932b5407149de5befdb906b4e8f36573cf5e822fbc35596564b8ca53",
+        "width": 2560,
+        "height": 1440
+      }
+    ]
+  },
+  {
+    "title": "Banc Fotos",
+    "source": "https://abritoi.com/produit/banc_fotos/",
+    "folder": "banc-fotos",
+    "images": [
+      {
+        "alt": "Banc Fotos",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/FB_AT_FOT11.jpg",
+        "local": "/images/catalogue-abritoi/banc-fotos/FB_AT_FOT11.jpg",
+        "bytes": 361012,
+        "sha256": "582d2010fce5cc90629892505481469fcc6eebd26e1f9df6355f94e8afe4c83b",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Banc Fotos – Image 2",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/FB_AT_FOT112.jpg",
+        "local": "/images/catalogue-abritoi/banc-fotos/FB_AT_FOT112.jpg",
+        "bytes": 309681,
+        "sha256": "d456d07d0e1555544db5c87f43ac62015eb19a09f0813afd79729dd57563d69f",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Banc Fotos – Image 3",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/FB_AT_FOT113.jpg",
+        "local": "/images/catalogue-abritoi/banc-fotos/FB_AT_FOT113.jpg",
+        "bytes": 355397,
+        "sha256": "c777684d042fdc5efaca020539d3a6ce32970ef8152d3c9f2922556023957b62",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Banc Fotos – Image 4",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/FB_AT_FOT114.jpg",
+        "local": "/images/catalogue-abritoi/banc-fotos/FB_AT_FOT114.jpg",
+        "bytes": 359265,
+        "sha256": "a77e0f2af746f45517fa0c020cecb1a9cd604e9e3cd6123a082811d1490caa17",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Banc Fotos – Image 5",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_FOT11.jpg",
+        "local": "/images/catalogue-abritoi/banc-fotos/AT_FOT11.jpg",
+        "bytes": 1907627,
+        "sha256": "eac2250a81d665ae1880c6b807f46fee6a8f9ee9f8579efc57e5ed1f78651926",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Banc Fotos – Image 6",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_FOT112.jpg",
+        "local": "/images/catalogue-abritoi/banc-fotos/AT_FOT112.jpg",
+        "bytes": 1469614,
+        "sha256": "f317c900c387d870fcb1612496d7940fce093e8b69106230f846990996b5761c",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Banc Fotos – Image 7",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/CIMG_7789-scaled.jpeg",
+        "local": "/images/catalogue-abritoi/banc-fotos/CIMG_7789-scaled.jpeg",
+        "bytes": 1295865,
+        "sha256": "dbae241aace3e6250eeb136e46a05b93dd31f136b1d60fe7d24eeb2341387ccd",
+        "width": 2560,
+        "height": 2560
+      },
+      {
+        "alt": "Banc Fotos – Image 8",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/IMG_7786-scaled.jpeg",
+        "local": "/images/catalogue-abritoi/banc-fotos/IMG_7786-scaled.jpeg",
+        "bytes": 1034352,
+        "sha256": "113b7889b7cc0af992087b72e6f865480e97b12ae7e00c102d8f73481a776cd7",
+        "width": 2560,
+        "height": 1920
+      }
+    ]
+  },
+  {
+    "title": "Table d’appoint – Fotos",
+    "source": "https://abritoi.com/produit/table-dappoint-fotos/",
+    "folder": "table-dappoint-fotos",
+    "images": [
+      {
+        "alt": "Table d'appoint - Fotos",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/FB-AT_FOT11_TAB.jpg",
+        "local": "/images/catalogue-abritoi/table-dappoint-fotos/FB-AT_FOT11_TAB.jpg",
+        "bytes": 383724,
+        "sha256": "d9a221ae735a28284d7d1bf66d4e73475a34db665f13956e8f09bde1ea11805e",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Table d'appoint - Fotos – Image 2",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/FB-AT_FOT11_TAB3.jpg",
+        "local": "/images/catalogue-abritoi/table-dappoint-fotos/FB-AT_FOT11_TAB3.jpg",
+        "bytes": 358704,
+        "sha256": "1e2c71c972031de5e2bf74f8d0d6a756ab256207e72add741a283f3c3b85edf9",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Table d'appoint - Fotos – Image 3",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/FB-AT_FOT11_TAB2-1.jpg",
+        "local": "/images/catalogue-abritoi/table-dappoint-fotos/FB-AT_FOT11_TAB2-1.jpg",
+        "bytes": 321218,
+        "sha256": "3808627811c85a73c34682f1b4f0c918afcc72dfeb392892cdc8ff24a1f8e7b7",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Table d'appoint - Fotos – Image 4",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/FB-AT_FOT11_TAB4.jpg",
+        "local": "/images/catalogue-abritoi/table-dappoint-fotos/FB-AT_FOT11_TAB4.jpg",
+        "bytes": 366471,
+        "sha256": "33fbcca814ccbe0b93132512c6602f2696138659456be1601d7ad18363165bce",
+        "width": 1920,
+        "height": 1080
+      }
+    ]
+  },
+  {
+    "title": "Espace Fotos – Pique-nique",
+    "source": "https://abritoi.com/produit/espace_fotos_pique_nique/",
+    "folder": "espace-fotos-pique-nique",
+    "images": [
+      {
+        "alt": "Espace Fotos - Pique-nique",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/FB_AT_FOT11_E03.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-pique-nique/FB_AT_FOT11_E03.jpg",
+        "bytes": 402039,
+        "sha256": "fed4eff58eb6d7fa63c6af5cc2a721dbf07d563387e350d2143d420e5d7ceb0b",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Pique-nique – Image 2",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/FB_AT_FOT11_E032.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-pique-nique/FB_AT_FOT11_E032.jpg",
+        "bytes": 557007,
+        "sha256": "c88830eb49974098928bf7e34a257e7afc33bbb3e18b13ec40a22e0e3f2f7468",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Pique-nique – Image 3",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/FB_AT_FOT11_E031-1.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-pique-nique/FB_AT_FOT11_E031-1.jpg",
+        "bytes": 419029,
+        "sha256": "015cc81b3b9ac715c2ea3f9e891c7a88b86b5049dce7cf3a55e106a12a66a4fc",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Pique-nique – Image 4",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/FB_AT_FOT11_E033.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-pique-nique/FB_AT_FOT11_E033.jpg",
+        "bytes": 747696,
+        "sha256": "d53b83f0c29f190378bee4f4a269617a999759fd5d078901055b160ec983e5d9",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Pique-nique – Image 6",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/AT_FOT11_E032.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-pique-nique/AT_FOT11_E032.jpg",
+        "bytes": 1714872,
+        "sha256": "b1214b0664dfbd22cde83a4f06df5c620add84989efba730dcae73b921729aff",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Pique-nique – Image 7",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_FOT11_E03-e1781777738279.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-pique-nique/AT_FOT11_E03-e1781777738279.jpg",
+        "bytes": 646177,
+        "sha256": "0ce39d6376793664a7f4c4da96d19b0d7d1d5d912346b1ab2fba1aaf5d158eb7",
+        "width": 1920,
+        "height": 1080
+      }
+    ]
+  },
+  {
+    "title": "Espace Fotos – Séquoia",
+    "source": "https://abritoi.com/produit/espace_fotos_sequoia/",
+    "folder": "espace-fotos-sequoia",
+    "images": [
+      {
+        "alt": "Espace Fotos - Séquoia",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/FB_AT_FOT11_E02.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-sequoia/FB_AT_FOT11_E02.jpg",
+        "bytes": 288335,
+        "sha256": "7c38d92ffa3f9c7616d376b05d2b9d9aa44cbe13815f0e304e436ba6e61258b4",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Séquoia – Image 2",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/FB_AT_FOT11_E023.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-sequoia/FB_AT_FOT11_E023.jpg",
+        "bytes": 371544,
+        "sha256": "ad4f565d5099f9f5fab3e8b5093ba2586d5fa462ca2b6eebb7b00141dcedac1c",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Séquoia – Image 3",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/FB_AT_FOT11_E024.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-sequoia/FB_AT_FOT11_E024.jpg",
+        "bytes": 315427,
+        "sha256": "f23576181cfae9f8ff9da1b115b43ce164f13380672748182286bdc7ca95111b",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Séquoia – Image 4",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/FB_AT_FOT11_E022.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-sequoia/FB_AT_FOT11_E022.jpg",
+        "bytes": 328724,
+        "sha256": "92fadd4b839da6c347311d0bdb6864d15bb792616df2927828bcc66fb7d9fb7b",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Séquoia – Image 5",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_FOT11_E022.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-sequoia/AT_FOT11_E022.jpg",
+        "bytes": 1505699,
+        "sha256": "c0f5b670a3e1d687386f27daddfabed3a16b27de9f1b692e9ac8f781685242a1",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Séquoia – Image 6",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_FOT11_E02.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-sequoia/AT_FOT11_E02.jpg",
+        "bytes": 1614685,
+        "sha256": "a6bdfc1226680b7b4974522d28d560172ad7ea0957dfd2cdf4732538bf762277",
+        "width": 1920,
+        "height": 1080
+      }
+    ]
+  },
+  {
+    "title": "Espace Fotos – Babylone",
+    "source": "https://abritoi.com/produit/espace_fotos_babylone/",
+    "folder": "espace-fotos-babylone",
+    "images": [
+      {
+        "alt": "Espace Fotos - Babylone",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/FB_AT_FOT11_E01.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-babylone/FB_AT_FOT11_E01.jpg",
+        "bytes": 334940,
+        "sha256": "78e9497d136bfd25e317d7449331e8c8af74360c8f66f4477da75511490476d3",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Babylone – Image 2",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/FB_AT_FOT11_E012.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-babylone/FB_AT_FOT11_E012.jpg",
+        "bytes": 448215,
+        "sha256": "4d2957905b8f4c595823b2ed21b73416a5d60669c232054b40be8ab95d87a665",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Babylone – Image 3",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/FB_AT_FOT11_E014.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-babylone/FB_AT_FOT11_E014.jpg",
+        "bytes": 494860,
+        "sha256": "16bcf59b264f1ed75240902fdc024dc27478142158bc03f0bef1d48d17fb07d2",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Babylone – Image 4",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_FOT11_E01.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-babylone/AT_FOT11_E01.jpg",
+        "bytes": 1749523,
+        "sha256": "e142532997b3a644a4a390b7d8123f11a3838a59431a006234b0d908b0bdf466",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Fotos - Babylone – Image 5",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_FOT11_E01_HD4.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-babylone/AT_FOT11_E01_HD4.jpg",
+        "bytes": 3430637,
+        "sha256": "27c942049bb96444da03a249aeb2fb4e09bca9bc1e5f1327517ea94444643f90",
+        "width": 2560,
+        "height": 1440
+      },
+      {
+        "alt": "Espace Fotos - Babylone – Image 6",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_FOT11_E012-1.jpg",
+        "local": "/images/catalogue-abritoi/espace-fotos-babylone/AT_FOT11_E012-1.jpg",
+        "bytes": 2017306,
+        "sha256": "31ad7a9befcbd682bc70a479fbae834cfad5aa067c95d65f48239b200fb99b7a",
+        "width": 1920,
+        "height": 1080
+      }
+    ]
+  },
+  {
+    "title": "Banquette Galiléo – Brumisation",
+    "source": "https://abritoi.com/produit/banquette_galileo_brumisation/",
+    "folder": "banquette-galileo-brumisation",
+    "images": [
+      {
+        "alt": "Banquette Galiléo - Brumisation",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_BRO2-1.jpg",
+        "local": "/images/catalogue-abritoi/banquette-galileo-brumisation/AT_GAL10_BRO2-1.jpg",
+        "bytes": 386606,
+        "sha256": "bb5fa595d66a8e851e852c8b48ac212d1a1adec2ae96ddffa9ea7a79f50d63a3",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Banquette Galiléo - Brumisation – Image 2",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_BRO.jpg",
+        "local": "/images/catalogue-abritoi/banquette-galileo-brumisation/AT_GAL10_BRO.jpg",
+        "bytes": 459809,
+        "sha256": "dc0476a05eccf0bc6760de810b78d74b9e0f6f188f2ff8255283f7e173d69d5f",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Banquette Galiléo - Brumisation – Image 3",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_DOS_BRO-3.jpg",
+        "local": "/images/catalogue-abritoi/banquette-galileo-brumisation/AT_GAL10_DOS_BRO-3.jpg",
+        "bytes": 2882771,
+        "sha256": "ed85fa56b691344508981431875b749c3d3465e0c5e7c6012189a5c908740617",
+        "width": 2560,
+        "height": 1440
+      },
+      {
+        "alt": "Banquette Galiléo - Brumisation – Image 4",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_DOS_BRO-BUSE.jpg",
+        "local": "/images/catalogue-abritoi/banquette-galileo-brumisation/AT_GAL10_DOS_BRO-BUSE.jpg",
+        "bytes": 1466268,
+        "sha256": "f233e4e9916e8d954c7820d5748a04c9ce6d0a0f3f4586d47d91d94d3f7f0001",
+        "width": 2560,
+        "height": 1440
+      }
+    ]
+  },
+  {
+    "title": "Banc Galiléo végétalisé avec brumisation",
+    "source": "https://abritoi.com/produit/banc_galileo_brumisation_vegetation/",
+    "folder": "banc-galileo-brumisation-vegetation",
+    "images": [
+      {
+        "alt": "Banc Galiléo végétalisé avec brumisation",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_DOS_BRO_VEGE.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo-brumisation-vegetation/AT_GAL10_DOS_BRO_VEGE.jpg",
+        "bytes": 416488,
+        "sha256": "d9e6a7cd7d9696278a5f2c31310a390b19bb6a6e7fb4aa678e199c0bca6f5647",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Banc Galiléo végétalisé avec brumisation – Image 2",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_DOS_BRO_VEGE2.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo-brumisation-vegetation/AT_GAL10_DOS_BRO_VEGE2.jpg",
+        "bytes": 457434,
+        "sha256": "209adeb1b5eacbff6c4a4bb8b602b58ba0fbf32eee2061f2b71cbeca69be54a8",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Banc Galiléo végétalisé avec brumisation – Image 3",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/2Y3A49542.JPG-scaled.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo-brumisation-vegetation/2Y3A49542.JPG-scaled.jpg",
+        "bytes": 1187104,
+        "sha256": "36db8b745c95a34f19a1080a2276940090307d5ce9173ff665ffad545f62ae7b",
+        "width": 2560,
+        "height": 1707
+      },
+      {
+        "alt": "Banc Galiléo végétalisé avec brumisation – Image 4",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/2Y3A4936-scaled.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo-brumisation-vegetation/2Y3A4936-scaled.jpg",
+        "bytes": 248218,
+        "sha256": "d47975102991c728a573b7f36789c8b143c1bfa0f1ec7c14fe995ba908d0e171",
+        "width": 2560,
+        "height": 1707
+      },
+      {
+        "alt": "Banc Galiléo végétalisé avec brumisation – Image 5",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/2Y3A4956-scaled.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo-brumisation-vegetation/2Y3A4956-scaled.jpg",
+        "bytes": 1061395,
+        "sha256": "8c2ec536e06e1337a5e5b8eeeaec17b076c3daedd6f5061560ab9bf3bb72ee10",
+        "width": 2560,
+        "height": 1707
+      },
+      {
+        "alt": "Banc Galiléo végétalisé avec brumisation – Image 6",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/2Y3A4922-scaled.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo-brumisation-vegetation/2Y3A4922-scaled.jpg",
+        "bytes": 432307,
+        "sha256": "ff3e1167d6fa30374b9cf7e4aa8f40d24088ea78c9c1dfc26350c2b3ec4b7412",
+        "width": 2560,
+        "height": 1707
+      },
+      {
+        "alt": "Banc Galiléo végétalisé avec brumisation – Image 7",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/2Y3A4916-1-scaled.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo-brumisation-vegetation/2Y3A4916-1-scaled.jpg",
+        "bytes": 517988,
+        "sha256": "b130fcf49bfd8ca169a059c556cf610ba503afb5fcdc547c7ecde2837a365d83",
+        "width": 2560,
+        "height": 1707
+      },
+      {
+        "alt": "Banc Galiléo végétalisé avec brumisation – Image 8",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/2Y3A5007.JPG-scaled.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo-brumisation-vegetation/2Y3A5007.JPG-scaled.jpg",
+        "bytes": 1091238,
+        "sha256": "dda7e0d880309cfde0984e0222df06526d85c1f23de2fb419bd7e17fa1e28516",
+        "width": 2560,
+        "height": 1707
+      },
+      {
+        "alt": "Banc Galiléo végétalisé avec brumisation – Image 9",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/2Y3A4986-scaled.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo-brumisation-vegetation/2Y3A4986-scaled.jpg",
+        "bytes": 279469,
+        "sha256": "8c1afac0a83921d9defc8382981547c98147f05aaf8829cd0b879294f2087455",
+        "width": 2560,
+        "height": 1707
+      },
+      {
+        "alt": "Banc Galiléo végétalisé avec brumisation – Image 10",
+        "url": "https://abritoi.com/wp-content/uploads/2026/10/AT_GAL10_DOS_BRO_VEGE.jpg",
+        "local": "/images/catalogue-abritoi/banc-galileo-brumisation-vegetation/AT_GAL10_DOS_BRO_VEGE.jpg",
+        "bytes": 1730122,
+        "sha256": "d074b449d07de85923251adefc6981424a1d54cc9cda936ee9a8e97ebf5dba4e",
+        "width": 1920,
+        "height": 1080
+      }
+    ]
+  },
+  {
+    "title": "Espace Galiléo – Échange",
+    "source": "https://abritoi.com/produit/espace-galileo-echange/",
+    "folder": "espace-galileo-echange",
+    "images": [
+      {
+        "alt": "Abri Toi_GAL10_E01_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E01_FB.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-echange/AT_GAL10_E01_FB.jpg",
+        "bytes": 278009,
+        "sha256": "d516a7550468aef2e5049a8365c7d5b3c9c186a0ad4f0ea1d9da591d763644cc",
+        "width": 992,
+        "height": 992
+      },
+      {
+        "alt": "Abri Toi_GAL10_E01_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E01_FB1.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-echange/AT_GAL10_E01_FB1.jpg",
+        "bytes": 261306,
+        "sha256": "8cc610dd57bc527616de934fb931f6910131bb2f0bb279882a3ab0b34c719251",
+        "width": 978,
+        "height": 978
+      },
+      {
+        "alt": "Abri Toi_GAL10_E01_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E01_FB2.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-echange/AT_GAL10_E01_FB2.jpg",
+        "bytes": 262344,
+        "sha256": "2a594c67b1f94b03f5da10ec7b6dd8c6a08ad462a9f15f8c7908b3b20a62bbea",
+        "width": 918,
+        "height": 919
+      },
+      {
+        "alt": "Abri Toi_GAL10_E01_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E01_FB3.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-echange/AT_GAL10_E01_FB3.jpg",
+        "bytes": 356162,
+        "sha256": "0032b65cba7d02720594aefbe87a02a0189459e1ec14cd8613a6145e2616e6fd",
+        "width": 956,
+        "height": 956
+      }
+    ]
+  },
+  {
+    "title": "Espace Galiléo – Salon",
+    "source": "https://abritoi.com/produit/espace_galileo_salon/",
+    "folder": "espace-galileo-salon",
+    "images": [
+      {
+        "alt": "Abri Toi_GAL10_E02_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E02_FB.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-salon/AT_GAL10_E02_FB.jpg",
+        "bytes": 326706,
+        "sha256": "8448e89adbe98e40abd641f85765f70cdb5fc1fa4b042b9f8dc352ecadccb22e",
+        "width": 962,
+        "height": 962
+      },
+      {
+        "alt": "Abri Toi_GAL10_E02_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E02_FB2.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-salon/AT_GAL10_E02_FB2.jpg",
+        "bytes": 315867,
+        "sha256": "318d7ac07c9804b31b30b54e3c21bfe5227ff8908dafea8e503f3bb460a439cc",
+        "width": 889,
+        "height": 889
+      },
+      {
+        "alt": "Abri Toi_GAL10_E02_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E02_FB1.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-salon/AT_GAL10_E02_FB1.jpg",
+        "bytes": 307622,
+        "sha256": "c4e2cc63d4a44a8fb1d7b3d1aec14643b196c89ca58bc8fbe40e9ddb33166c39",
+        "width": 1026,
+        "height": 1026
+      },
+      {
+        "alt": "Abri Toi_GAL10_E02_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E02_FB3.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-salon/AT_GAL10_E02_FB3.jpg",
+        "bytes": 268134,
+        "sha256": "68030c6a17d2191e7fc30644382b2647d8b9a0f9f4ec45ff037513a9888adb97",
+        "width": 866,
+        "height": 866
+      },
+      {
+        "alt": "Espace Galiléo - Salon – Image 5",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E02.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-salon/AT_GAL10_E02.jpg",
+        "bytes": 2262048,
+        "sha256": "a03e35e454ae0d44aee50239d35af5d20eca279726533a595e95d35b2247acbf",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Galiléo - Salon – Image 6",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E022.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-salon/AT_GAL10_E022.jpg",
+        "bytes": 2295725,
+        "sha256": "ffe3606b810f2f71307a648aafcf07efa294a030e689178c64f2491040b8e8c5",
+        "width": 1920,
+        "height": 1080
+      }
+    ]
+  },
+  {
+    "title": "Espace Galiléo – Banquet",
+    "source": "https://abritoi.com/produit/espace_galileo_banquet/",
+    "folder": "espace-galileo-banquet",
+    "images": [
+      {
+        "alt": "Abri Toi_GAL10_E03_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E03_FB.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-banquet/AT_GAL10_E03_FB.jpg",
+        "bytes": 305200,
+        "sha256": "e7a7d3ae02c220769a68a2ac63ad4cba5e3740a9cea2b1357f17db5c647e1a82",
+        "width": 1080,
+        "height": 1080
+      },
+      {
+        "alt": "Abri Toi_GAL10_E03_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E03_FB1.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-banquet/AT_GAL10_E03_FB1.jpg",
+        "bytes": 302929,
+        "sha256": "9c2bc43a138043b75be62fc03a31361109a9a8c6bfea0c8cb1c7990e9afcafad",
+        "width": 1008,
+        "height": 1007
+      },
+      {
+        "alt": "Abri Toi_GAL10_E03_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E03_FB2.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-banquet/AT_GAL10_E03_FB2.jpg",
+        "bytes": 224758,
+        "sha256": "63e1b224844659cecf7439a66634c5037c5120b1bcc1d8b75781a714d5bc18ab",
+        "width": 1020,
+        "height": 1020
+      },
+      {
+        "alt": "Abri Toi_GAL10_E03_FB",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E03_FB3.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-banquet/AT_GAL10_E03_FB3.jpg",
+        "bytes": 283743,
+        "sha256": "69ca12451f3c418d69bac598e522b58c776612c32615210fdf8d5f26836c32b4",
+        "width": 998,
+        "height": 998
+      },
+      {
+        "alt": "Espace Galiléo - Banquet – Image 5",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_E03.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-banquet/AT_GAL10_E03.jpg",
+        "bytes": 1732231,
+        "sha256": "65781735d386c195cd2e7eafa453eb5be0ea1336b98a2cdc24eb049e02d4c04a",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Galiléo - Banquet – Image 6",
+        "url": "https://abritoi.com/wp-content/uploads/2025/12/AT_GAL10_DOS_TAB2.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-banquet/AT_GAL10_DOS_TAB2.jpg",
+        "bytes": 2005791,
+        "sha256": "c729e630ad404c8904078407d2b86003a47d8e8df78ba78af0b3bddbb69ac60f",
+        "width": 1536,
+        "height": 1024
+      }
+    ]
+  },
+  {
+    "title": "Espace Galiléo – Récréation",
+    "source": "https://abritoi.com/produit/espace_galileo_recreation/",
+    "folder": "espace-galileo-recreation",
+    "images": [
+      {
+        "alt": "Espace Galiléo - Récréation",
+        "url": "https://abritoi.com/wp-content/uploads/2026/02/AT_GAL10_E04_FB1.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-recreation/AT_GAL10_E04_FB1.jpg",
+        "bytes": 349578,
+        "sha256": "8c781b5296d2df45bed323d765b4f56e48449a516ea73eb3dbc6eb8a428a8851",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Galiléo - Récréation – Image 2",
+        "url": "https://abritoi.com/wp-content/uploads/2026/02/AT_GAL10_E04_FB3.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-recreation/AT_GAL10_E04_FB3.jpg",
+        "bytes": 328705,
+        "sha256": "4775a280c0d173c2c56a9a952696b2c988713d17dc487f329d19519a14786ad1",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Galiléo - Récréation – Image 3",
+        "url": "https://abritoi.com/wp-content/uploads/2026/02/AT_GAL10_E04_FB2.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-recreation/AT_GAL10_E04_FB2.jpg",
+        "bytes": 349997,
+        "sha256": "8cc2579b2ce3aecef7276363eeb6fad1db92abd7d115b157dee890bdc51cc131",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Galiléo - Récréation – Image 4",
+        "url": "https://abritoi.com/wp-content/uploads/2026/02/AT_GAL10_E04_FB4.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-recreation/AT_GAL10_E04_FB4.jpg",
+        "bytes": 350318,
+        "sha256": "252040ad3e4906d5b2b180baff948aa711ca3c171c110febc35c2eaf2508dc41",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "alt": "Espace Galiléo - Récréation – Image 5",
+        "url": "https://abritoi.com/wp-content/uploads/2026/03/AT_GAL10_SITE-INTERNET-3-e1774441903472.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-recreation/AT_GAL10_SITE-INTERNET-3-e1774441903472.jpg",
+        "bytes": 849043,
+        "sha256": "a2bed8be1df5a5439d749cbc8cdc6c6664ebd9726be7606cab4974168c3796b7",
+        "width": 2560,
+        "height": 1440
+      },
+      {
+        "alt": "Espace Galiléo - Récréation – Image 6",
+        "url": "https://abritoi.com/wp-content/uploads/2026/02/AT_GAL10_TAB_DOS.jpg",
+        "local": "/images/catalogue-abritoi/espace-galileo-recreation/AT_GAL10_TAB_DOS.jpg",
+        "bytes": 1930793,
+        "sha256": "5150536ca503d89931b06c4279a8741b946c3c6638b9decdb385e7555a5615fb",
+        "width": 2560,
+        "height": 1440
+      }
+    ]
+  }
+]

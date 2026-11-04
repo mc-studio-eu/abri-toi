@@ -54,17 +54,18 @@ export const pageAccueil = page('pageAccueil', 'Accueil', [
       subtitle: 'texte',
     }),
   ]),
-  objet('solution', 'Solution (vue éclatée)', [
+  objet('solution', 'Présentation des gammes (photos)', [
     texte('titre', 'Titre (1re ligne)'),
     texte('titreSuite', 'Titre (2e ligne)'),
     paragraphe('intro', 'Introduction'),
-    liste('communes', 'Étapes 01 et 02 (communes aux deux gammes)', [texte('titre', 'Titre'), paragraphe('texte', 'Texte')], {
+    liste('communes', 'Structure et toiture Galiléo', [texte('titre', 'Titre'), paragraphe('texte', 'Texte')], {
       title: 'titre',
     }),
     ...(['galileo', 'fotos'] as const).map((g) =>
       objet(g, g === 'galileo' ? 'Gamme Galiléo' : 'Gamme Fotos', [
         texte('tags', 'Mots-clés'),
         paragraphe('legende', 'Légende du sélecteur'),
+        ...(g === 'fotos' ? [objet('toiture', 'Toiture végétalisée', [texte('titre', 'Titre'), paragraphe('texte', 'Texte')])] : []),
         liste('etapes', 'Étapes 03 et 04', [texte('titre', 'Titre'), paragraphe('texte', 'Texte')], { title: 'titre' }),
         listeTextes('etiquettes', 'Étiquettes de la vue éclatée (4)'),
         texte('badge', 'Badge de l’étape 04'),
@@ -143,9 +144,14 @@ export const pageProduits = page('pageProduits', 'Page Produits', [
   ]),
   objet('comparatif', 'Comparatif', [
     texte('titre', 'Titre'),
-    liste('lignes', 'Lignes', [texte('label', 'Critère'), texte('galileo', 'Galiléo'), texte('fotos', 'Fotos')], {
-      title: 'label',
-    }),
+    liste('colonnes', 'Gammes comparées', [
+      texte('gamme', 'Nom de la gamme'),
+      texte('numero', 'Numéro'),
+      texte('typeOmbre', 'Type d’ombre'),
+      listeTextes('caracteristiques', 'Caractéristiques'),
+      texte('surface', 'Surface d’ombrage'),
+      texte('capacite', 'Nombre de personnes'),
+    ], { title: 'gamme' }),
   ]),
 ])
 

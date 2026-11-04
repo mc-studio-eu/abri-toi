@@ -31,7 +31,7 @@ export const parametres = {
   telephone: '06 48 20 52 38',
   email: 'collaborer@abritoi.com',
   adresse: '16 rue Fénelon, 69006 Lyon',
-  pitch: 'Plus que des abris contre le soleil : des espaces de fraîcheur en extérieur où l’on a envie de passer du temps.',
+  pitch: 'Des espaces d’ombrage et de fraîcheur qui rassemblent. Conçus à Lyon, fabriqués en France.',
   linkedin: '',
   youtube: '',
   mentions: '© 2026 ABRI TOI SAS · SIREN 992 306 621',
@@ -44,7 +44,7 @@ export const parametres = {
   ],
   // Bloc orange « Un projet d'ombrage… » en bas de la plupart des pages
   contact: {
-    titre: 'Un projet d’ombrage spécifique ?',
+    titre: 'Un projet d’ombrage pour votre commune ?',
     texte: 'Parlons de votre site. Nous revenons vers vous sous 48 h avec une première orientation.',
     bouton: 'Prendre rendez-vous',
   },
@@ -56,8 +56,8 @@ export const gammes = {
   galileo: {
     cle: 'galileo' as GammeCle,
     nom: 'Galiléo',
-    tag: 'Ombrage et brumisation · 4 teintes',
-    labelEspaces: 'Jusqu’à 8 personnes · 12 m² d’ombre',
+    tag: 'Ombrage · brumisation et végétation en option',
+    labelEspaces: 'Configurations avec brumisation et espaces en vis-à-vis',
     documentation: '/docs/abri-toi-galileo-documentation.pdf',
     ficheTechnique: '/docs/abri-toi-galileo-fiches-techniques.pdf',
     reassurance: [
@@ -68,8 +68,8 @@ export const gammes = {
       },
       {
         icone: { src: '/images/icones/ombrage.svg' } as Img,
-        titre: 'Ombrage effectif pendant +6 heures',
-        texte: 'Une large surface d’ombre sur le mobilier pendant une grande partie des journées chaudes d’été.',
+        titre: 'Un ombrage adapté au site',
+        texte: 'L’étude d’ensoleillement détermine l’orientation des modules pour ombrager l’assise pendant près de 6 heures, selon le site.',
       },
       {
         icone: { src: '/images/icones/aluminium-kebony.svg' } as Img,
@@ -81,15 +81,15 @@ export const gammes = {
   fotos: {
     cle: 'fotos' as GammeCle,
     nom: 'Fotos',
-    tag: 'Ombrage et végétation · teinte brun',
-    labelEspaces: 'Jusqu’à 8 personnes · 12 m² d’ombre',
+    tag: 'Ombrage et végétation · jardinière intégrée',
+    labelEspaces: 'Espaces en face à face ou dos à dos',
     documentation: '/docs/abri-toi-fotos-documentation.pdf',
     ficheTechnique: '/docs/abri-toi-fotos-fiches-techniques.pdf',
     reassurance: [
       {
         icone: { src: '/images/icones/reservoir.svg' } as Img,
         titre: 'Réservoir d’eau pluviale',
-        texte: 'Un réservoir de récupération des eaux de pluie peut être intégré en bas de la jardinière.',
+        texte: 'La version déplaçable intègre une réserve d’eau dans la jardinière. Une toile de récupération des eaux pluviales est disponible en option.',
       },
       {
         icone: { src: '/images/icones/autostable.svg' } as Img,

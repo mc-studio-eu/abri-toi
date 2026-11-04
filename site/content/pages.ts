@@ -2,9 +2,7 @@ import type { Hero, Img, Ligne } from './commun'
 
 export const pageProduits = {
   hero: {
-    titre: 'Deux gammes de mobilier abrité pour valoriser vos extérieurs.',
-    chapo:
-      'Galiléo rafraîchit dès la pose grâce à la brumisation. Fotos fait pousser son ombre avec l’eau de pluie. Même structure, deux réponses à la chaleur.',
+    titre: 'Deux gammes de mobilier abrité pour valoriser vos extérieurs',
     ancres: [
       { label: 'Galiléo ↓', cible: '#galileo', point: 'orange' },
       { label: 'Fotos ↓', cible: '#fotos', point: 'sage' },
@@ -12,13 +10,13 @@ export const pageProduits = {
     ],
   } as Hero,
   collection: {
-    titre: 'Cinq modèles, sept espaces, à combiner selon vos lieux.',
+    titre: 'Combinaisons possibles',
     intro:
-      'Un module seul ou deux modules combinés en vis-à-vis ou dos à dos : créez des espaces qui accueillent jusqu’à 8 personnes et offrent jusqu’à 12 m² d’ombre.',
+      'Un module seul, une variante équipée ou plusieurs modules combinés : choisissez votre espace de pause. Galiléo offre une ombre immédiate ; l’ombrage de Fotos se développe avec les plantes grimpantes.',
   },
   usages: {
-    galileo: ['Places publiques', 'Cours d’école', 'Campus universitaires', 'Esplanades piétonnes', 'EHPAD', 'Aires de jeux et de sport', 'Gares et aéroports'],
-    fotos: ['Terrasses', 'Parcs et places publiques', 'Cours et campus', 'Espaces d’entreprise', 'Aires de détente', 'Bords de piscine'],
+    galileo: ['Places', 'Écoles', 'Campus', 'Centres commerciaux', 'Esplanades', 'EHPAD', 'Terrasses', 'Aires de jeux et de sport', 'Piscines', 'Parkings', 'Gares et aéroports'],
+    fotos: ['Places', 'Écoles', 'Campus', 'Centres commerciaux', 'Esplanades', 'EHPAD', 'Terrasses', 'Aires de jeux et de sport', 'Piscines', 'Parkings', 'Gares et aéroports'],
   },
   surMesure: {
     label: 'Sur mesure',
@@ -27,32 +25,37 @@ export const pageProduits = {
     bouton: 'Prendre rendez-vous',
   },
   comparatif: {
-    titre: 'Galiléo ou Fotos, en un coup d’œil.',
-    lignes: [
+    titre: 'Galiléo et Fotos, deux produits pour deux besoins bien différents.',
+    colonnes: [
       {
-        label: 'Promesse',
-        galileo: 'Ombrage et fraîcheur immédiats, efficaces dès la pose',
-        fotos: 'Ombrage durable et écoresponsable, qui grandit avec les plantes',
+        gamme: 'Galiléo',
+        typeOmbre: 'Ombre immédiate',
+        numero: '01',
+        caracteristiques: [
+          'Ombrage immédiat',
+          'Installation fixe',
+          'Installation combinable',
+          'Végétalisation face arrière possible',
+          'Brumisation possible',
+          'Assise avec accoudoir possible',
+        ],
+        surface: '6 à 12 m²',
+        capacite: '3 à 6',
       },
       {
-        label: 'Fraîcheur',
-        galileo: 'Brumisation haute pression (70 bars)',
-        fotos: 'Végétation grimpante sur filet en filets de pêche recyclés',
-      },
-      {
-        label: 'Eau',
-        galileo: 'Réseau d’eau potable, canalisations par le sol',
-        fotos: 'Eau de pluie : réservoir de 120 L, arrosage par capillarité',
-      },
-      { label: 'Pose', galileo: 'Ancré sur dalle béton', fotos: 'Sans ancrage : près de 800 kg de terre servent de lest' },
-      { label: 'Déplaçable', galileo: '✕ Non', fotos: '✓ Oui, au chariot élévateur' },
-      { label: 'Ombrage immédiat', galileo: '✓ Oui', fotos: '✕ Non, l’ombre grandit avec les plantes' },
-      { label: 'Modèles', galileo: 'Banquette, Banc, Table / Gradin', fotos: 'Banc, Table' },
-      { label: 'Teintes', galileo: 'Blanc, olive, orange, bleu', fotos: 'Brun' },
-      {
-        label: 'Entretien',
-        galileo: 'Brumisation : maintenance deux fois par an',
-        fotos: 'Plantes : filet en fibre de coco le temps de la pousse',
+        gamme: 'Fotos',
+        typeOmbre: 'Ombre végétalisée',
+        numero: '02',
+        caracteristiques: [
+          'Ombrage végétalisé',
+          'Installation déplaçable',
+          'Installation combinable et modulable',
+          'Jardinière avec accès pleine terre possible',
+          'Réservoir d’eau pluviale 60 à 120 L possible',
+          'Assise avec accoudoirs possible',
+        ],
+        surface: '5 à 10 m²',
+        capacite: '3 à 8',
       },
     ],
   },
@@ -73,7 +76,7 @@ export const ficheProduit = {
 
 export const pageRealisations = {
   hero: {
-    titre: 'Ils ont repris l’extérieur. Voici où.',
+    titre: 'Ils ont repris l’extérieur. Voici où',
     chapo:
       'Places de village, cours d’école, parcs d’entreprise : nos abris Galiléo et Fotos en situation, et ce qu’ils ont changé pour ceux qui s’y assoient.',
     ancres: [
@@ -92,8 +95,8 @@ export const pageRealisations = {
     ] as Ligne[],
     lien: { label: 'Lire l’étude de cas', url: '' },
     galerie: [
-      { src: '/images/image-pill1.jpg', alt: 'Brume au repos' },
-      { src: '/images/image-pill2.jpg', alt: 'Premiers usagers' },
+      { src: '/images/figma-secondary/galileo-brume-au-repos.png', alt: 'Brume au repos' },
+      { src: '/images/figma-secondary/galileo-premiers-usagers.png', alt: 'Premiers usagers' },
       { src: '/images/fiches/galileo-banc-plan.jpg', alt: 'Détail de l’assise' },
       { src: '/images/installe-usagers-a-lombre.jpg', alt: 'À l’ombre, 15 h' },
     ] as Img[],
@@ -101,19 +104,19 @@ export const pageRealisations = {
   liste: {
     titre: 'Chaque lieu, sa réponse.',
     intro:
-      'Communes, écoles, entreprises ou particuliers : filtrez par gamme ou par type de lieu pour trouver un projet proche du vôtre.',
+      'Communes, écoles, entreprises ou particuliers : filtrez par gamme pour trouver un projet proche du vôtre.',
     boutonPlus: 'Voir plus de réalisations',
   },
 }
 
 export const pageAPropos = {
   hero: {
-    titre: 'Rendre l’ombre aux villes qui ont chaud.',
+    titre: 'Rendre l’ombre aux villes qui ont chaud',
     chapo:
       'Abri Toi conçoit à Lyon des abris d’ombrage et de fraîcheur pour les places, les cours d’école et les parcs. Une idée simple : que chacun puisse s’asseoir dehors, même au cœur de l’été.',
   } as Hero,
   histoire: {
-    portrait: { src: '/images/process-visuel01-contact.png', alt: 'Paul Saraceno, fondateur d’Abri Toi' } as Img,
+    portrait: { src: '/images/figma-secondary/paul-saraceno.png', alt: 'Paul Saraceno, fondateur d’Abri Toi' } as Img,
     titre: 'Tout est parti d’une envie simple : s’asseoir à l’ombre.',
     paragraphes: [
       'J’ai toujours aimé observer la ville : ce lieu que l’on pratique au quotidien, pour retrouver des amis au parc, faire quelques courses ou profiter d’une soirée au restaurant. Elle façonne nos modes de vie, nos rencontres et notre bien-être. Contribuer à son évolution me semble essentiel.',
@@ -139,7 +142,7 @@ export const pageAPropos = {
     items: [
       {
         numero: '13',
-        icone: { src: '/images/odd/odd-13.png', alt: 'ODD 13 : mesures relatives à la lutte contre les changements climatiques' } as Img,
+        icone: { src: '/images/figma-secondary/odd-13.png', alt: 'ODD 13 : mesures relatives à la lutte contre les changements climatiques' } as Img,
         label: 'ODD 13 · Lutte contre le changement climatique',
         titre: 'Innovation & durabilité',
         texte: 'Des matériaux choisis pour leur faible impact et leur longévité, et l’eau de pluie mise à profit.',
@@ -152,7 +155,7 @@ export const pageAPropos = {
       },
       {
         numero: '11',
-        icone: { src: '/images/odd/odd-11.png', alt: 'ODD 11 : villes et communautés durables' } as Img,
+        icone: { src: '/images/figma-secondary/odd-11.png', alt: 'ODD 11 : villes et communautés durables' } as Img,
         label: 'ODD 11 · Villes et communautés durables',
         titre: 'Convivialité & lien social',
         texte: 'Des abris pensés comme des lieux de rencontre, où l’on s’assoit face à face plutôt que côte à côte.',
@@ -164,7 +167,7 @@ export const pageAPropos = {
       },
       {
         numero: '9',
-        icone: { src: '/images/odd/odd-9.png', alt: 'ODD 9 : industrie, innovation et infrastructure' } as Img,
+        icone: { src: '/images/figma-secondary/odd-9.png', alt: 'ODD 9 : industrie, innovation et infrastructure' } as Img,
         label: 'ODD 9 · Industrie, innovation et infrastructure',
         titre: 'Savoir-faire français',
         texte: 'Conçus par notre bureau d’études à Lyon, fabriqués avec nos partenaires industriels français.',
@@ -178,7 +181,7 @@ export const pageAPropos = {
       'Chaque composant de nos abris est confié à un spécialiste, choisi pour son savoir-faire et son exigence environnementale.',
     items: [
       {
-        logo: { src: '/images/logo-bro-brumisation.png', alt: 'B.R.O Brumisation' } as Img,
+        logo: { src: '/images/figma-secondary/logo-bro-brumisation.png', alt: 'B.R.O Brumisation' } as Img,
         largeur: 112,
         hauteur: 58,
         categorie: 'Brumisation',
@@ -186,7 +189,7 @@ export const pageAPropos = {
         texte: 'Le système haute pression (70 bars) qui rafraîchit les abris Galiléo.',
       },
       {
-        logo: { src: '/images/logo-kebony.png', alt: 'Kebony' } as Img,
+        logo: { src: '/images/figma-secondary/logo-kebony.png', alt: 'Kebony' } as Img,
         largeur: 46,
         hauteur: 76,
         categorie: 'Bois des assises',
@@ -194,7 +197,7 @@ export const pageAPropos = {
         texte: 'Un pin de classe 4, conçu pour rester dehors toute l’année sans traitement.',
       },
       {
-        logo: { src: '/images/logo-filae.png', alt: 'Filae' } as Img,
+        logo: { src: '/images/figma-secondary/logo-filae.png', alt: 'Filae' } as Img,
         largeur: 164,
         hauteur: 44,
         categorie: 'Filets recyclés',
@@ -202,38 +205,38 @@ export const pageAPropos = {
         texte: 'Des filets de pêche du port de Saumaty, à Marseille, recyclés en filets de grimpe pour Fotos.',
       },
       {
-        logo: { src: '/images/logo-larbaletier.png', alt: 'L’Arbaletier' } as Img,
+        logo: { src: '/images/figma-secondary/logo-larbaletier.png', alt: 'Larbaletier' } as Img,
         largeur: 187,
         hauteur: 36,
-        categorie: 'Rôle à confirmer',
-        nom: 'L’Arbaletier',
-        texte: '[À compléter avec Paul : rôle dans la fabrication des abris.]',
+        categorie: 'Fabrication de mobilier',
+        nom: 'Larbaletier',
+        texte: 'Concepteur-fabricant français depuis 1977, Larbaletier possède un savoir-faire dans le travail de l’aluminium et la réalisation de mobilier sur mesure, notamment pour les espaces urbains.',
       },
       {
-        logo: { src: '/images/logo-dargaisse.png', alt: 'Dargaisse' } as Img,
+        logo: { src: '/images/figma-secondary/logo-dargaisse.png', alt: 'Dargaisse' } as Img,
         largeur: 136,
         hauteur: 52,
-        categorie: 'Rôle à confirmer',
+        categorie: 'Tôlerie fine de précision',
         nom: 'Dargaisse',
-        texte: '[À compléter avec Paul : rôle dans la fabrication des abris.]',
+        texte: 'Implantée à Vendôme, Dargaisse maîtrise la découpe, le pliage, la soudure et l’assemblage des métaux. Son savoir-faire industriel associe fabrication sur mesure et thermolaquage intégré.',
       },
     ],
   },
   terrain: {
-    titre: 'Nos premières réalisations.',
+    titre: 'Nos premiers abris, déjà adoptés.',
     bouton: 'Voir les réalisations',
     photos: [
-      { image: { src: '/images/photo-une-pause-a-lombre.jpg' } as Img, legende: 'Une pause à l’ombre' },
-      { image: { src: '/images/photo-grimpantes-et-fleurs.jpg' } as Img, legende: 'Grimpantes et fleurs · Fotos' },
-      { image: { src: '/images/photo-la-pergola-vue-den-bas.jpg' } as Img, legende: 'La pergola, vue d’en bas' },
-      { image: { src: '/images/photo-assise-en-bois-kebony.jpg' } as Img, legende: 'Assise en bois Kebony' },
+      { image: { src: '/images/figma-secondary/fotos-une-pause-a-lombre.png' } as Img, legende: 'Une pause à l’ombre' },
+      { image: { src: '/images/figma-secondary/fotos-grimpantes-et-fleurs.png' } as Img, legende: 'Grimpantes et fleurs · Fotos' },
+      { image: { src: '/images/figma-secondary/fotos-pergola-vue-den-bas.png' } as Img, legende: 'La pergola, vue d’en bas' },
+      { image: { src: '/images/figma-secondary/fotos-assise-bois-kebony.png' } as Img, legende: 'Assise en bois Kebony' },
     ],
   },
 }
 
 export const pageArticles = {
   hero: {
-    titre: 'Comprendre l’enjeu de l’ombre en ville.',
+    titre: 'Comprendre l’enjeu de l’ombre en ville',
     chapo:
       'Canicules, îlots de fraîcheur, financement, entretien : des articles courts pour aider les collectivités à préparer l’été.',
   } as Hero,
@@ -248,14 +251,14 @@ export const pageArticles = {
 
 export const pageContact = {
   hero: {
-    titre: 'Parlons de votre projet d’ombrage.',
+    titre: 'Parlons de votre projet d’ombrage',
     chapo: 'Une cour d’école, une place, le jardin d’un EHPAD ? Décrivez-nous le lieu : Paul vous recontacte sous 48 h.',
   } as Hero,
   formulaire: {
     titre: 'Votre demande',
     sousTitre: 'Les champs marqués * sont obligatoires.',
     typesClient: ['Collectivité', 'Architecte / paysagiste', 'Entreprise privée', 'Particulier', 'Autre'],
-    gammes: ['Galiléo · brumisation', 'Fotos · végétation', 'Les deux gammes', 'Je ne sais pas encore'],
+    gammes: ['Galiléo · brumisation', 'Fotos · végétation', 'Les deux', 'Je ne sais pas encore'],
     echeances: ['Avant l’été 2027', 'Dans l’année', 'Pas de date précise'],
     consentement:
       'J’accepte qu’Abri Toi utilise ces informations pour me recontacter. Aucune donnée n’est transmise à des tiers.',
@@ -266,7 +269,7 @@ export const pageContact = {
   rendezVous: {
     label: 'Plutôt en direct ?',
     titre: 'Prenez rendez-vous avec Paul.',
-    texte: '30 minutes en visio ou au téléphone pour parler de votre site, de vos délais et de votre budget.',
+    texte: '30 minutes en visio ou au téléphone pour parler du lieu, des usages et du calendrier.',
     bouton: 'Choisir un créneau',
     lien: '',
   },
@@ -275,9 +278,7 @@ export const pageContact = {
     items: [
       'Premier échange sous 48 h pour comprendre votre lieu et vos besoins.',
       'Étude d’ensoleillement et conception d’une implantation 3D.',
-      'Proposition détaillée, chiffrage et validation de la commande.',
-      'Fabrication des modules auprès de nos partenaires en France.',
-      'Installation sur site : comptez environ 8 semaines après la commande.',
+      'Environ 8 semaines après la commande, fabrication, livraison et pose comprises.',
     ],
   },
 }

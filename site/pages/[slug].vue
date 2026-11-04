@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { pagesLegales } from '~/content/legal'
 // Pages légales : mentions légales, politique de confidentialité, politique de cookies.
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
@@ -6,7 +7,11 @@ const page = computed(() => pagesLegales.find((p) => p.slug === slug.value) ?? n
 if (!page.value) throw createError({ statusCode: 404, statusMessage: 'Page introuvable', fatal: true })
 const l = computed(() => page.value!)
 
-useHead({ title: () => `${l.value.titre} — Abri Toi` })
+usePageSeo(() => ({
+  titre: `${l.value.titre} | Abri Toi`,
+  description: l.value.chapo || `${l.value.titre} du site Abri Toi : consultez les informations relatives à l’utilisation de notre site.`,
+  fil: [{ nom: l.value.titre, chemin: `/${slug.value}` }],
+}))
 
 const corps = ref<{ intertitres: { id: string; titre: string }[] }>()
 const sommaire = computed(() => corps.value?.intertitres ?? [])
