@@ -33,16 +33,27 @@ const steps = computed(() => {
 
 const track = ref<HTMLElement>()
 const animated = ref(false)
+const flowAnimated = ref(false)
 const activeStep = ref(0)
 const progress = ref(0)
+const reveals = ref<number[]>([])
 let frame = 0
 let motionQuery: MediaQueryList | undefined
+let mobileQuery: MediaQueryList | undefined
+let contentObserver: ResizeObserver | undefined
 
 function updateScroll() {
   const el = track.value
-  if (!el || !animated.value) return
-  const distance = el.offsetHeight - window.innerHeight
-  const ratio = distance > 0 ? Math.min(Math.max(-el.getBoundingClientRect().top / distance, 0), 0.9999) : 0
+  if (!el) return
+  if (flowAnimated.value) {
+    reveals.value = Array.from(el.querySelectorAll<HTMLElement>('.anatomy__row'), row =>
+      Math.min(Math.max((window.innerHeight - row.getBoundingClientRect().top) / (window.innerHeight * .5), 0), 1))
+  }
+  if (!animated.value) return
+  const panel = el.querySelector<HTMLElement>('.anatomy')!
+  const top = mobileQuery?.matches ? 96 : 0
+  const distance = el.offsetHeight - panel.offsetHeight
+  const ratio = distance > 0 ? Math.min(Math.max((top - el.getBoundingClientRect().top) / distance, 0), 0.9999) : 0
   progress.value = ratio * steps.value.length
   activeStep.value = Math.floor(progress.value)
 }
@@ -51,29 +62,53 @@ function schedule() {
   frame = requestAnimationFrame(() => { frame = 0; updateScroll() })
 }
 function syncMotion() {
-  animated.value = motionQuery?.matches ?? false
+  const allowed = motionQuery?.matches ?? false
+  const mobile = mobileQuery?.matches ?? false
+  // Long CMS copy must stay in the document flow if a whole card cannot fit.
+  const available = (window.visualViewport?.height ?? window.innerHeight) - 96 - 32
+  const fits = !mobile || Array.from(track.value?.querySelectorAll<HTMLElement>('.anatomy__row') ?? []).every(row => {
+    const copy = row.querySelector<HTMLElement>('.anatomy__copy')!
+    const view = row.querySelector<HTMLElement>('.anatomy__view')!
+    return copy.scrollHeight + view.offsetHeight + 16 <= available
+  })
+  animated.value = allowed && fits
+  flowAnimated.value = allowed && mobile && !fits
   nextTick(schedule)
 }
+function observeContent() {
+  if (!contentObserver) return
+  contentObserver.disconnect()
+  track.value?.querySelectorAll('.anatomy__copy, .anatomy__view').forEach(el => contentObserver?.observe(el))
+  syncMotion()
+}
+watch(steps, observeContent, { flush: 'post' })
 onMounted(() => {
   // On small landscape screens, retain the readable, naturally scrolling layout.
-  motionQuery = window.matchMedia('(prefers-reduced-motion: no-preference) and (min-width: 901px) and (min-height: 550px), (prefers-reduced-motion: no-preference) and (max-width: 900px) and (min-height: 800px)')
+  motionQuery = window.matchMedia('(prefers-reduced-motion: no-preference) and (min-width: 901px) and (min-height: 550px), (prefers-reduced-motion: no-preference) and (max-width: 900px) and (orientation: portrait) and (min-height: 550px)')
+  mobileQuery = window.matchMedia('(max-width: 900px)')
   motionQuery.addEventListener('change', syncMotion)
+  mobileQuery.addEventListener('change', syncMotion)
   window.addEventListener('scroll', schedule, { passive: true })
-  window.addEventListener('resize', schedule)
-  syncMotion()
+  window.addEventListener('resize', syncMotion)
+  window.visualViewport?.addEventListener('resize', syncMotion)
+  contentObserver = new ResizeObserver(syncMotion)
+  observeContent()
 })
 onBeforeUnmount(() => {
   motionQuery?.removeEventListener('change', syncMotion)
+  mobileQuery?.removeEventListener('change', syncMotion)
+  contentObserver?.disconnect()
   window.removeEventListener('scroll', schedule)
-  window.removeEventListener('resize', schedule)
+  window.removeEventListener('resize', syncMotion)
+  window.visualViewport?.removeEventListener('resize', syncMotion)
   cancelAnimationFrame(frame)
 })
 </script>
 
 <template>
-  <div ref="track" class="anatomy-track" :class="{ 'anatomy-track--animated': animated }">
+  <div ref="track" class="anatomy-track" :class="{ 'anatomy-track--animated': animated, 'anatomy-track--flow-animated': flowAnimated }">
   <div class="anatomy" :style="{ '--fill': progress - activeStep }">
-    <div v-for="(step, index) in steps" :key="`${gammeId}-${index}`" class="anatomy__row" :class="{ 'anatomy__row--active': index === activeStep, 'anatomy__row--done': index < activeStep }" :aria-hidden="animated && index !== activeStep ? true : undefined">
+    <div v-for="(step, index) in steps" :key="`${gammeId}-${index}`" class="anatomy__row" :style="{ '--reveal': reveals[index] ?? 0 }" :class="{ 'anatomy__row--active': index === activeStep, 'anatomy__row--done': index < activeStep }" :aria-hidden="animated && index !== activeStep ? true : undefined">
       <div class="anatomy__copy">
         <span class="label-mono anatomy__number">{{ step.label }}</span>
         <h3 class="display-h3 anatomy__title">{{ step.titre }}</h3>
@@ -115,11 +150,14 @@ onBeforeUnmount(() => {
   .anatomy-track--animated .anatomy__text { font-size:16px; }
 }
 @media (max-width:900px) {
-  .anatomy-track--animated { height:300svh; }
-  .anatomy-track--animated .anatomy__row { display:flex; flex-direction:column-reverse; justify-content:center; gap:20px; }
-  .anatomy-track--animated .anatomy__view { flex:none; width:min(100%, calc(40svh * 720 / 760)); }
-  .anatomy-track--animated .anatomy__copy { align-self:stretch; gap:10px; }
-  .anatomy-track--animated .anatomy__title { font-size:22px; }
-  .anatomy-track--animated .anatomy__text { font-size:15px; }
+  .anatomy { gap:36px; }
+  .anatomy__row, .anatomy-track--animated .anatomy__row { display:flex; flex-direction:column-reverse; justify-content:flex-end; gap:16px; }
+  .anatomy__view, .anatomy-track--animated .anatomy__view { flex:none; width:100%; aspect-ratio:16 / 9; max-height:300px; }
+  .anatomy__copy, .anatomy-track--animated .anatomy__copy { flex:none; align-self:stretch; gap:10px; padding:2px 0 2px 16px; }
+  .anatomy__title, .anatomy-track--animated .anatomy__title { max-width:none; font-size:22px; }
+  .anatomy__text, .anatomy-track--animated .anatomy__text { max-width:none; font-size:16px; }
+  .anatomy-track--animated { height:268dvh; }
+  .anatomy-track--animated .anatomy { top:96px; height:calc(100dvh - 96px); padding-block:12px 20px; }
+  .anatomy-track--flow-animated .anatomy__row { opacity:calc(.65 + var(--reveal) * .35); transform:translateY(calc((1 - var(--reveal)) * 20px)); }
 }
 </style>
