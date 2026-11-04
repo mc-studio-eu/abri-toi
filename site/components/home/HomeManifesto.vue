@@ -10,7 +10,7 @@ const decoupage = computed(() => {
     // Sanity's explicit union type wins over stale fields from older content.
     const part = value as typeof value & { _type?: string }
     return (part._type ? part._type === 'morceauTexte' : 'texte' in part) && 'texte' in part
-      ? { em: part.accent, words: part.texte.split(' ').map((w) => ({ w, rank: rank++ })) }
+      ? { em: part.accent, nouvelleLigne: /^Notre objectif\b/i.test(part.texte.trim()), words: part.texte.split(' ').map((w) => ({ w, rank: rank++ })) }
       : { img: img('image' in part ? part.image : null, 400), width: 'largeur' in part ? part.largeur : 132, rank: rank++ }
   })
   return { tokens, total: rank }
@@ -59,6 +59,7 @@ onBeforeUnmount(() => {
   <section class="manifesto section">
     <p ref="textEl" class="manifesto__text">
       <template v-for="(token, i) in tokens" :key="i">
+        <span v-if="'nouvelleLigne' in token && token.nouvelleLigne" class="manifesto__break" aria-hidden="true" />
         <img
           v-if="'img' in token"
           class="pill"
@@ -126,6 +127,13 @@ onBeforeUnmount(() => {
 
 .manifesto__text .word {
   white-space: nowrap;
+}
+
+/* L'objectif commence la dernière ligne de la composition sur ordinateur. */
+.manifesto__break {
+  flex-basis: 100%;
+  height: 0;
+  margin-bottom: calc(-10 * var(--manifesto-unit));
 }
 
 .manifesto__text em {
@@ -206,6 +214,10 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 1024px) {
+  .manifesto__break {
+    display: none;
+  }
+
   .manifesto {
     --manifesto-unit: 1px;
     padding-inline: var(--gutter);
