@@ -69,7 +69,6 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
         <h3 class="step__title">{{ etape(3).titre }}</h3><p class="step__text">{{ etape(3).texte }}</p>
       </li>
     </ol>
-    <p class="process__footnote">Environ 8 semaines après la commande, fabrication, livraison et pose comprises.</p>
   </section>
 </template>
 
@@ -112,7 +111,6 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
 .proposal__plan { position:relative; height:72.5px; overflow:hidden; border-radius:4px; background:var(--cream); }.proposal__plan img { position:absolute; left:-11.5px; top:-28.5px; width:176px; height:117.3px; max-width:none; }.proposal__place { font-family:var(--font-display); font-weight:500; font-size:12px; }
 .proposal__row { display:flex; justify-content:space-between; padding-bottom:3px; border-bottom:1px solid var(--line); font-size:8px; color:var(--brown-700); }.proposal__row strong { font-weight:500; color:var(--brown-900); }.proposal__file { align-self:flex-start; padding:3px 8px; border-radius:999px; background:var(--orange-100); color:var(--orange-700); font-family:var(--font-mono); font-weight:500; font-size:7px; }
 .step__tint { position:absolute; inset:0; background:rgba(127,167,176,.18); mix-blend-mode:soft-light; }
-.process__footnote { margin-top:0; color:var(--brown-500); font-size:13px; line-height:1.55; }
 .step__badge { position:absolute; left:12px; bottom:12px; padding:6px 12px; border-radius:999px; background:var(--sage-500); color:var(--paper); font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; }
 @media(min-width:1025px) and (max-width:1390px) { .steps { gap:32px; } .step { flex:1 1 0; } }
 @media(max-width:1024px) { .process { padding-top:100px; padding-bottom:100px; }.process__title { font-size:52px; }.process__weeks { font-size:44px; }.thermo { display:none; }.steps { flex-wrap:wrap; gap:24px; }.step { flex-basis:calc(50% - 12px); } }
