@@ -9,6 +9,11 @@ export async function useContenu<T>(cle: string, requete: string, secours: T, pa
     const client = sanityClient()
     if (!client) return false
     return (await client.fetch<T | null>(requete, params)) ?? false
+  }, {
+    // Réutiliser les contenus déjà lus (y compris pendant le rendu serveur).
+    // Une navigation ne doit pas relancer les mêmes requêtes ni invalider la page sortante.
+    getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key] ?? nuxtApp.static.data[key],
+    dedupe: 'defer',
   })
   return computed<T>(() => {
     const valeur = data.value

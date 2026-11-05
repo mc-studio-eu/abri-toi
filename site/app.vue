@@ -1,16 +1,5 @@
 <template>
-  <NuxtPage :page-key="(route) => route.fullPath" :transition="{ name: 'page', mode: 'out-in' }" />
+  <!-- Les pages asynchrones doivent pouvoir se monter sans attendre une transition de sortie. -->
+  <NuxtPage :transition="false" />
   <ClientOnly><AnalyticsConsent /></ClientOnly>
 </template>
-
-<style>
-.page-enter-active,
-.page-leave-active {
-  transition: opacity 140ms ease;
-}
-
-.page-enter-from,
-.page-leave-to {
-  opacity: 0;
-}
-</style>
