@@ -11,8 +11,51 @@ const liens = [
 ]
 
 const actif = (to: string) => (to === '/' ? route.path === '/' : route.path.startsWith(to))
+const boutonMenu = ref<HTMLButtonElement | null>(null)
+const tiroir = ref<HTMLDialogElement | null>(null)
 const ouvert = ref(false)
-watch(() => route.fullPath, () => (ouvert.value = false))
+let ecranMobile: MediaQueryList | undefined
+let restaurerDefilement: (() => void) | undefined
+
+function ouvrir() {
+  if (!ecranMobile?.matches || !tiroir.value || tiroir.value.open) return
+
+  boutonMenu.value?.focus({ preventScroll: true })
+  tiroir.value.showModal()
+  ouvert.value = true
+
+  const style = document.documentElement.style
+  const overflow = style.getPropertyValue('overflow')
+  const priorite = style.getPropertyPriority('overflow')
+  style.setProperty('overflow', 'hidden')
+  restaurerDefilement = () => style.setProperty('overflow', overflow, priorite)
+}
+
+function synchroniserFermeture() {
+  if (tiroir.value?.open) return
+
+  ouvert.value = false
+  restaurerDefilement?.()
+  restaurerDefilement = undefined
+}
+
+function fermer() {
+  tiroir.value?.close()
+  synchroniserFermeture()
+}
+
+function fermerSurFond(event: MouseEvent) {
+  if (!tiroir.value) return
+
+  const { left, right, top, bottom } = tiroir.value.getBoundingClientRect()
+  if (event.clientX < left || event.clientX > right || event.clientY < top || event.clientY > bottom) fermer()
+}
+
+function surveillerEcran(event: MediaQueryListEvent) {
+  if (!event.matches) fermer()
+}
+
+watch(() => route.fullPath, fermer)
 
 // Au-delà du haut de page, la barre se détache et reste visible en haut de l'écran
 const flottante = ref(false)
@@ -20,13 +63,19 @@ const surveiller = () => (flottante.value = window.scrollY > 80)
 onMounted(() => {
   surveiller()
   window.addEventListener('scroll', surveiller, { passive: true })
+  ecranMobile = window.matchMedia('(max-width: 1024px)')
+  ecranMobile.addEventListener('change', surveillerEcran)
 })
-onBeforeUnmount(() => window.removeEventListener('scroll', surveiller))
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', surveiller)
+  ecranMobile?.removeEventListener('change', surveillerEcran)
+  fermer()
+})
 </script>
 
 <template>
   <div class="nav-place">
-    <header class="nav" :class="{ 'nav--ouvert': ouvert, 'nav--flottante': flottante }">
+    <header class="nav" :class="{ 'nav--flottante': flottante }">
       <div class="nav__gauche">
         <a href="/" aria-label="Abri Toi — accueil">
           <img src="/images/logo-blanc.png" alt="Abri Toi" width="130" height="23" class="nav__logo" />
@@ -44,11 +93,13 @@ onBeforeUnmount(() => window.removeEventListener('scroll', surveiller))
       <div class="nav__droite">
         <a href="/contact" class="nav__cta"><UiTextSlide :text="parametres.boutonNav" /></a>
         <button
+          ref="boutonMenu"
           type="button"
           class="nav__burger"
           :aria-expanded="ouvert"
-          aria-controls="menu-principal"
-          @click="ouvert = !ouvert"
+          aria-controls="menu-mobile"
+          aria-haspopup="dialog"
+          @click="ouvrir"
         >
           <span class="visually-hidden">Menu</span>
           <span aria-hidden="true" />
@@ -56,6 +107,56 @@ onBeforeUnmount(() => window.removeEventListener('scroll', surveiller))
       </div>
     </header>
   </div>
+
+  <ClientOnly>
+    <Teleport to="body">
+      <dialog
+        id="menu-mobile"
+        ref="tiroir"
+        class="nav-tiroir"
+        aria-labelledby="menu-mobile-titre"
+        @cancel.prevent="fermer"
+        @close="synchroniserFermeture"
+        @click.self="fermerSurFond"
+      >
+        <div class="nav-tiroir__contenu">
+          <div class="nav-tiroir__entete">
+            <a href="/" aria-label="Abri Toi — accueil" class="nav-tiroir__marque" @click="fermer">
+              <span class="nav-tiroir__logo" aria-hidden="true" />
+            </a>
+            <button type="button" class="nav-tiroir__fermer" aria-label="Fermer le menu" autofocus @click="fermer">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="m6 6 12 12M6 18 18 6" />
+              </svg>
+            </button>
+          </div>
+
+          <nav aria-labelledby="menu-mobile-titre">
+            <h2 id="menu-mobile-titre" class="label-mono nav-tiroir__titre">Menu</h2>
+            <ul class="nav-tiroir__liste">
+              <li v-for="lien in liens" :key="lien.to">
+                <a :href="lien.to" :aria-current="actif(lien.to) ? 'page' : undefined" @click="fermer">
+                  {{ lien.label }}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <path d="M4 12h15m-6-6 6 6-6 6" />
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+          <a href="/contact" class="nav-tiroir__cta" :aria-current="actif('/contact') ? 'page' : undefined" @click="fermer">
+            {{ parametres.boutonNav }}
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M4 12h15m-6-6 6 6-6 6" />
+            </svg>
+          </a>
+
+          <p class="nav-tiroir__signature label-mono">Conçu à Lyon · Fabriqué en France</p>
+        </div>
+      </dialog>
+    </Teleport>
+  </ClientOnly>
 </template>
 
 <style scoped>
@@ -165,7 +266,6 @@ onBeforeUnmount(() => window.removeEventListener('scroll', surveiller))
   width: 22px;
   height: 2px;
   background: currentColor;
-  transition: transform 0.2s;
 }
 
 .nav__burger span[aria-hidden] {
@@ -193,30 +293,151 @@ onBeforeUnmount(() => window.removeEventListener('scroll', surveiller))
 
   #menu-principal {
     display: none;
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    right: 0;
-    padding: 20px 24px;
-    border-radius: 12px;
-    background: var(--brown-900);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
-  }
-
-  .nav--ouvert #menu-principal {
-    display: block;
-  }
-
-  .nav__menu {
-    flex-direction: column;
-    gap: 16px;
-    font-size: 18px;
   }
 }
 
 @media (max-width: 640px) {
   .nav__cta {
     display: none;
+  }
+}
+
+.nav-tiroir {
+  position: fixed;
+  inset: 12px 12px auto auto;
+  width: min(420px, calc(100% - 24px));
+  height: calc(100% - 24px);
+  height: calc(100dvh - 24px);
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--cream);
+  color: var(--brown-900);
+  box-shadow: 0 24px 64px rgba(28, 16, 12, 0.24);
+}
+
+.nav-tiroir::backdrop {
+  background: rgba(28, 16, 12, 0.48);
+  backdrop-filter: blur(5px);
+}
+
+.nav-tiroir[open] {
+  animation: nav-tiroir-entre 0.3s var(--ease-out);
+}
+
+@keyframes nav-tiroir-entre {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+}
+
+.nav-tiroir__contenu {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-height: 100%;
+  padding: 22px clamp(18px, 6vw, 28px);
+}
+
+.nav-tiroir__entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.nav-tiroir__marque {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.nav-tiroir__logo {
+  width: 130px;
+  height: 23px;
+  background: var(--brown-900);
+  -webkit-mask: url('/images/logo-blanc.png') center / contain no-repeat;
+  mask: url('/images/logo-blanc.png') center / contain no-repeat;
+}
+
+.nav-tiroir__fermer {
+  display: grid;
+  flex: 0 0 44px;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.nav-tiroir__titre {
+  margin-bottom: 10px;
+  color: var(--brown-700);
+}
+
+.nav-tiroir__liste {
+  border-top: 1px solid var(--line);
+}
+
+.nav-tiroir__liste li {
+  border-bottom: 1px solid var(--line);
+}
+
+.nav-tiroir__liste a,
+.nav-tiroir__cta {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.nav-tiroir__liste a {
+  min-height: 56px;
+  padding: 9px 4px;
+  font: 500 clamp(1.5rem, 6vw, 1.875rem) / 1.15 var(--font-display);
+  letter-spacing: -0.025em;
+}
+
+.nav-tiroir__liste a[aria-current='page'] {
+  color: var(--orange-700);
+}
+
+.nav-tiroir svg {
+  flex-shrink: 0;
+}
+
+.nav-tiroir__cta {
+  min-height: 52px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--orange-500);
+  font-weight: 600;
+}
+
+.nav-tiroir :is(a, button):focus-visible {
+  outline: 2px solid var(--orange-700);
+  outline-offset: 2px;
+}
+
+.nav-tiroir__signature {
+  margin-top: 0;
+  padding-top: 12px;
+  color: var(--brown-700);
+  font-size: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav--flottante,
+  .nav-tiroir[open] {
+    animation: none;
   }
 }
 </style>
