@@ -4,8 +4,19 @@ const [page, parametres, produits] = await Promise.all([
   usePageContact(), useParametres(), useProduits(),
 ])
 const route = useRoute()
+const chargementInitial = useNuxtApp().isHydrating
 const prefixeDemandeFichier = 'Demande de fichier DWG ou 3D\n\n'
 const demandeFichier = computed(() => route.query.demande === 'dwg')
+
+onMounted(async () => {
+  if (!chargementInitial || window.location.hash !== '#formulaire') return
+
+  // Le chargement des polices peut déplacer le formulaire après le saut initial.
+  await document.fonts.ready
+  if (window.location.hash === '#formulaire') {
+    document.getElementById('formulaire')?.scrollIntoView({ behavior: 'instant' })
+  }
+})
 
 usePageSeo({
   titre: 'Votre projet d’ombrage : contactez Abri Toi',
@@ -268,6 +279,7 @@ async function envoyer() {
 .formulaire {
   flex: 1;
   min-width: 0;
+  scroll-margin-top: var(--nav-content-offset);
   padding: 48px;
   border-radius: 20px;
   background: var(--white);

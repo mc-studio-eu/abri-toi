@@ -32,26 +32,34 @@ const steps = computed(() => {
 })
 
 const track = ref<HTMLElement>()
+const smallViewport = ref<HTMLElement>()
 const animated = ref(false)
 const flowAnimated = ref(false)
+const mobileHeight = ref(0)
 const activeStep = ref(0)
 const progress = ref(0)
 const reveals = ref<number[]>([])
 let frame = 0
-let motionQuery: MediaQueryList | undefined
+let desktopQuery: MediaQueryList | undefined
 let mobileQuery: MediaQueryList | undefined
-let contentObserver: ResizeObserver | undefined
+let mobileWidth = 0
+
+const mobilePinTop = 96
+const mobilePinPadding = 32
 
 function updateScroll() {
   const el = track.value
   if (!el) return
   if (flowAnimated.value) {
-    reveals.value = Array.from(el.querySelectorAll<HTMLElement>('.anatomy__row'), row =>
-      Math.min(Math.max((window.innerHeight - row.getBoundingClientRect().top) / (window.innerHeight * .5), 0), 1))
+    const viewport = window.visualViewport
+    const height = viewport?.height ?? window.innerHeight
+    const bottom = height + (viewport?.offsetTop ?? 0)
+    reveals.value = Array.from(el.querySelectorAll('.anatomy__row'), row =>
+      Math.min(Math.max((bottom - row.getBoundingClientRect().top) / (height * .5), 0), 1))
   }
   if (!animated.value) return
   const panel = el.querySelector<HTMLElement>('.anatomy')!
-  const top = mobileQuery?.matches ? 96 : 0
+  const top = mobileQuery?.matches ? mobilePinTop : 0
   const distance = el.offsetHeight - panel.offsetHeight
   const ratio = distance > 0 ? Math.min(Math.max((top - el.getBoundingClientRect().top) / distance, 0), 0.9999) : 0
   progress.value = ratio * steps.value.length
@@ -62,51 +70,55 @@ function schedule() {
   frame = requestAnimationFrame(() => { frame = 0; updateScroll() })
 }
 function syncMotion() {
-  const allowed = motionQuery?.matches ?? false
   const mobile = mobileQuery?.matches ?? false
-  // Long CMS copy must stay in the document flow if a whole card cannot fit.
-  const available = (window.visualViewport?.height ?? window.innerHeight) - 96 - 32
-  const fits = !mobile || Array.from(track.value?.querySelectorAll<HTMLElement>('.anatomy__row') ?? []).every(row => {
+  if (mobile && mobileWidth !== window.innerWidth) {
+    // La barre du navigateur peut changer la hauteur visible pendant le scroll.
+    mobileWidth = window.innerWidth
+    mobileHeight.value = smallViewport.value?.offsetHeight ?? window.innerHeight
+  }
+  if (!mobile) mobileWidth = 0
+
+  const available = mobileHeight.value - mobilePinTop - mobilePinPadding
+  const mobileFits = mobile && mobileHeight.value >= 550 && Array.from(
+    track.value?.querySelectorAll('.anatomy__row') ?? [],
+  ).every(row => {
     const copy = row.querySelector<HTMLElement>('.anatomy__copy')!
     const view = row.querySelector<HTMLElement>('.anatomy__view')!
-    return copy.scrollHeight + view.offsetHeight + 16 <= available
+    return copy.offsetHeight + view.offsetHeight + parseFloat(getComputedStyle(row).rowGap) <= available
   })
-  animated.value = allowed && fits
-  flowAnimated.value = allowed && mobile && !fits
+  animated.value = (desktopQuery?.matches ?? false) || mobileFits
+  flowAnimated.value = mobile && !mobileFits
   nextTick(schedule)
 }
-function observeContent() {
-  if (!contentObserver) return
-  contentObserver.disconnect()
-  track.value?.querySelectorAll('.anatomy__copy, .anatomy__view').forEach(el => contentObserver?.observe(el))
-  syncMotion()
+function resize() {
+  if (mobileQuery?.matches && mobileWidth !== window.innerWidth) syncMotion()
+  schedule()
 }
-watch(steps, observeContent, { flush: 'post' })
+watch(steps, syncMotion, { flush: 'post' })
 onMounted(() => {
-  // On small landscape screens, retain the readable, naturally scrolling layout.
-  motionQuery = window.matchMedia('(prefers-reduced-motion: no-preference) and (min-width: 901px) and (min-height: 550px), (prefers-reduced-motion: no-preference) and (max-width: 900px) and (orientation: portrait) and (min-height: 550px)')
-  mobileQuery = window.matchMedia('(max-width: 900px)')
-  motionQuery.addEventListener('change', syncMotion)
+  desktopQuery = window.matchMedia('(prefers-reduced-motion: no-preference) and (min-width: 901px) and (min-height: 550px)')
+  mobileQuery = window.matchMedia('(prefers-reduced-motion: no-preference) and (max-width: 900px)')
+  desktopQuery.addEventListener('change', syncMotion)
   mobileQuery.addEventListener('change', syncMotion)
   window.addEventListener('scroll', schedule, { passive: true })
-  window.addEventListener('resize', syncMotion)
-  window.visualViewport?.addEventListener('resize', syncMotion)
-  contentObserver = new ResizeObserver(syncMotion)
-  observeContent()
+  window.addEventListener('resize', resize)
+  window.visualViewport?.addEventListener('resize', schedule)
+  syncMotion()
+  document.fonts.ready.then(() => { if (track.value) syncMotion() })
 })
 onBeforeUnmount(() => {
-  motionQuery?.removeEventListener('change', syncMotion)
+  desktopQuery?.removeEventListener('change', syncMotion)
   mobileQuery?.removeEventListener('change', syncMotion)
-  contentObserver?.disconnect()
   window.removeEventListener('scroll', schedule)
-  window.removeEventListener('resize', syncMotion)
-  window.visualViewport?.removeEventListener('resize', syncMotion)
+  window.removeEventListener('resize', resize)
+  window.visualViewport?.removeEventListener('resize', schedule)
   cancelAnimationFrame(frame)
 })
 </script>
 
 <template>
-  <div ref="track" class="anatomy-track" :class="{ 'anatomy-track--animated': animated, 'anatomy-track--flow-animated': flowAnimated }">
+  <div ref="track" class="anatomy-track" :class="{ 'anatomy-track--animated': animated, 'anatomy-track--flow-animated': flowAnimated }" :style="{ '--mobile-viewport': `${mobileHeight}px`, '--mobile-pin-top': `${mobilePinTop}px`, '--mobile-pin-padding': `${mobilePinPadding}px` }">
+  <span ref="smallViewport" class="anatomy__viewport" aria-hidden="true" />
   <div class="anatomy" :style="{ '--fill': progress - activeStep }">
     <div v-for="(step, index) in steps" :key="`${gammeId}-${index}`" class="anatomy__row" :style="{ '--reveal': reveals[index] ?? 0 }" :class="{ 'anatomy__row--active': index === activeStep, 'anatomy__row--done': index < activeStep }" :aria-hidden="animated && index !== activeStep ? true : undefined">
       <div class="anatomy__copy">
@@ -124,6 +136,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.anatomy__viewport { position:fixed; top:0; width:0; height:100vh; height:100svh; visibility:hidden; }
 .anatomy { display:flex; flex-direction:column; gap:56px; }
 .anatomy__row { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,720px); align-items:center; gap:56px; }
 .anatomy__copy { display:flex; flex-direction:column; gap:14px; padding:4px 0 4px 24px; border-left:2px solid var(--accent-text); }
@@ -137,27 +150,31 @@ onBeforeUnmount(() => {
 @media(max-width:760px) { .anatomy { gap:48px; }.anatomy__row { grid-template-columns:1fr; gap:24px; }.anatomy__copy { padding-left:20px; }.anatomy__title { font-size:28px; }.anatomy__view { max-height:720px; } }
 
 /* Each scroll segment advances the pinned photograph and its accompanying copy. */
-.anatomy-track--animated { height:340svh; }
-.anatomy-track--animated .anatomy { position:sticky; top:0; height:100svh; box-sizing:border-box; padding-block:96px 24px; display:grid; gap:0; }
-.anatomy-track--animated .anatomy__row { grid-area:1 / 1; grid-template-columns:minmax(0,1fr) min(720px, calc((100svh - 120px) * 720 / 760), 52vw); opacity:0; pointer-events:none; transition:opacity .45s var(--ease-out); }
+.anatomy-track--animated .anatomy { position:sticky; box-sizing:border-box; display:grid; gap:0; }
+.anatomy-track--animated .anatomy__row { grid-area:1 / 1; opacity:0; pointer-events:none; transition:opacity .45s var(--ease-out); }
 .anatomy-track--animated .anatomy__row--active { opacity:1; pointer-events:auto; }
 .anatomy-track--animated .anatomy__copy { position:relative; border-color:var(--line); transform:translateY(24px); transition:transform .6s var(--ease-out); }
 .anatomy-track--animated .anatomy__copy::before { content:''; position:absolute; left:-2px; top:0; bottom:0; width:2px; background:var(--accent-text); transform:scaleY(var(--fill)); transform-origin:top; }
 .anatomy-track--animated .anatomy__row--done .anatomy__copy { transform:translateY(-24px); }
 .anatomy-track--animated .anatomy__row--active .anatomy__copy { transform:none; }
+@media (min-width:901px) {
+  .anatomy-track--animated { height:340svh; }
+  .anatomy-track--animated .anatomy { top:0; height:100svh; padding-block:96px 24px; }
+  .anatomy-track--animated .anatomy__row { grid-template-columns:minmax(0,1fr) min(720px, calc((100svh - 120px) * 720 / 760), 52vw); }
+}
 @media (min-width:901px) and (max-height:820px) {
   .anatomy-track--animated .anatomy__title { font-size:30px; }
   .anatomy-track--animated .anatomy__text { font-size:16px; }
 }
 @media (max-width:900px) {
   .anatomy { gap:36px; }
-  .anatomy__row, .anatomy-track--animated .anatomy__row { display:flex; flex-direction:column-reverse; justify-content:flex-end; gap:16px; }
-  .anatomy__view, .anatomy-track--animated .anatomy__view { flex:none; width:100%; aspect-ratio:16 / 9; max-height:300px; }
-  .anatomy__copy, .anatomy-track--animated .anatomy__copy { flex:none; align-self:stretch; gap:10px; padding:2px 0 2px 16px; }
-  .anatomy__title, .anatomy-track--animated .anatomy__title { max-width:none; font-size:22px; }
-  .anatomy__text, .anatomy-track--animated .anatomy__text { max-width:none; font-size:16px; }
-  .anatomy-track--animated { height:268dvh; }
-  .anatomy-track--animated .anatomy { top:96px; height:calc(100dvh - 96px); padding-block:12px 20px; }
-  .anatomy-track--flow-animated .anatomy__row { opacity:calc(.65 + var(--reveal) * .35); transform:translateY(calc((1 - var(--reveal)) * 20px)); }
+  .anatomy__row { display:flex; flex-direction:column-reverse; justify-content:flex-end; gap:16px; }
+  .anatomy__view { flex:none; width:100%; aspect-ratio:16 / 9; max-height:300px; }
+  .anatomy__copy { flex:none; align-self:stretch; gap:10px; padding:2px 0 2px 16px; }
+  .anatomy__title { max-width:none; font-size:22px; }
+  .anatomy__text { max-width:none; font-size:16px; }
+  .anatomy-track--animated { height:calc(var(--mobile-viewport) * 2.68); }
+  .anatomy-track--animated .anatomy { top:var(--mobile-pin-top); height:calc(var(--mobile-viewport) - var(--mobile-pin-top)); padding-block:12px calc(var(--mobile-pin-padding) - 12px); }
+  .anatomy-track--flow-animated .anatomy__view { opacity:calc(.65 + var(--reveal) * .35); transform:translateY(calc((1 - var(--reveal)) * 12px)); }
 }
 </style>

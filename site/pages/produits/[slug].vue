@@ -21,6 +21,9 @@ const fiche = computed(() => {
   return {
     ...base,
     galerie: vues.filter((image) => {
+      // Une image CMS sans fichier ne doit pas créer de miniature vide.
+      const source = image as typeof image & { asset?: { _ref?: string } }
+      if (!source || !(source.src?.trim() || source.asset?._ref)) return false
       const cle = JSON.stringify(image, ['src', 'asset', '_ref', 'crop', 'hotspot', 'left', 'top', 'right', 'bottom', 'x', 'y', 'width', 'height'])
       if (dejaVues.has(cle)) return false
       dejaVues.add(cle)

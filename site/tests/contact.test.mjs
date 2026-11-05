@@ -16,14 +16,14 @@ const { descriptor } = parse(await readFile(new URL('../pages/contact.vue', impo
 const { limitesDemande, erreurDemande } = await importerContenu('../utils/demande.ts')
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
 // Execute the actual page setup with Vue reactivity and local content; no mail or CMS calls.
-const setup = new AsyncFunction('usePageContact', 'useParametres', 'useProduits', 'useRoute', 'usePageSeo', 'computed', 'reactive', 'ref', 'watch', '$fetch', 'limitesDemande', 'erreurDemande',
+const setup = new AsyncFunction('usePageContact', 'useParametres', 'useProduits', 'useRoute', 'usePageSeo', 'useNuxtApp', 'onMounted', 'computed', 'reactive', 'ref', 'watch', '$fetch', 'limitesDemande', 'erreurDemande',
   `${stripTypeScriptTypes(descriptor.scriptSetup.content).replace(/^import .*$/m, '')}\nreturn { form, produitSelectionne, envoyer, etat, erreur }`)
 
 async function formulaire(produit, fetcher, demande) {
   const route = reactive({ query: { ...(produit === undefined ? {} : { produit }), ...(demande === undefined ? {} : { demande }) } })
   const sent = []
   const page = await setup(
-    async () => ref(pageContact), async () => ref({}), async () => ref(produits), () => route, () => {},
+    async () => ref(pageContact), async () => ref({}), async () => ref(produits), () => route, () => {}, () => ({ isHydrating: false }), () => {},
     computed, reactive, ref, watch, async (url, options) => { sent.push({ url, ...options }); return fetcher?.(url, options) }, limitesDemande, erreurDemande,
   )
   return { ...page, route, sent }

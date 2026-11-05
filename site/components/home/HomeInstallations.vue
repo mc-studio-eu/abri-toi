@@ -23,7 +23,7 @@ const open = ref(0)
         :key="item.titre"
         class="band"
         :class="{ 'band--open': open === i }"
-        @mouseenter="open = i"
+        @pointerenter="($event.pointerType === 'mouse') && (open = i)"
         @focusin="open = i"
       >
         <img :src="img(item.image, 1600)" alt="" class="band__img" />
@@ -212,8 +212,15 @@ const open = ref(0)
   transition: transform 0.6s ease;
 }
 
-.gallery__item:hover img {
-  transform: scale(1.05);
+@media (hover: hover) and (pointer: fine) {
+  .gallery__item:hover img { transform: scale(1.05); }
+}
+
+/* Sur écran tactile, les bandeaux gardent leur hauteur pendant le défilement. */
+@media (hover: none), (pointer: coarse) {
+  .band, .band--open { height: 260px; transition: none; }
+  .band .band__img { filter: none; }
+  .band .band__content { align-items: flex-end; padding-bottom: 28px; transition: none; }
 }
 
 @media (max-width: 1024px) {
@@ -256,5 +263,8 @@ const open = ref(0)
   .gallery__frame {
     height: 220px;
   }
+}
+@media (max-width: 1024px) and (hover: none), (max-width: 1024px) and (pointer: coarse) {
+  .band .band__content { align-items: flex-start; justify-content: flex-end; padding-bottom: 28px; }
 }
 </style>

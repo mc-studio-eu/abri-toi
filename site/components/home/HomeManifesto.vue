@@ -13,21 +13,26 @@ const decoupage = computed(() => {
       ? { em: part.accent, nouvelleLigne: /^Notre objectif\b/i.test(part.texte.trim()), words: part.texte.split(' ').map((w) => ({ w, rank: rank++ })) }
       : { img: img('image' in part ? part.image : null, 400), width: 'largeur' in part ? part.largeur : 132, rank: rank++ }
   })
-  // Le saut de ligne précède aussi la photo qui introduit l'objectif.
-  const objectif = manifeste.value.morceaux.findIndex((part) =>
-    'texte' in part && /^Notre objectif\b/i.test(part.texte.trim()),
-  )
-  if (objectif > 0 && 'img' in tokens[objectif - 1]!) {
-    Object.assign(tokens[objectif - 1]!, { nouvelleLigne: true })
-    Object.assign(tokens[objectif]!, { nouvelleLigne: false })
+  // La photo et « Notre objectif » forment un seul élément de mise en page.
+  const groups: { tokens: typeof tokens; objectif: boolean }[] = []
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i]!
+    const next = tokens[i + 1]
+    if ('img' in token && next && 'nouvelleLigne' in next && next.nouvelleLigne) {
+      groups.push({ tokens: [token, next], objectif: true })
+      i++
+    } else {
+      groups.push({ tokens: [token], objectif: 'nouvelleLigne' in token && Boolean(token.nouvelleLigne) })
+    }
   }
-  return { tokens, total: rank }
+  return { groups, total: rank }
 })
-const tokens = computed(() => decoupage.value.tokens)
+const groups = computed(() => decoupage.value.groups)
 const total = computed(() => decoupage.value.total)
 
 const textEl = ref<HTMLElement | null>(null)
 const shown = ref(0)
+let mobileMotion: MediaQueryList | undefined
 
 function update() {
   const el = textEl.value
@@ -37,7 +42,9 @@ function update() {
   // 0 quand le haut du texte entre à 90 % de l'écran, 1 quand son bas atteint 75 % :
   // la phrase est entièrement lisible avant que la signature n'apparaisse.
   const progress = (vh * 0.9 - top) / (height + vh * 0.15)
-  shown.value = Math.round(Math.min(Math.max(progress, 0), 1) * total.value)
+  const visible = Math.round(Math.min(Math.max(progress, 0), 1) * total.value)
+  // Le texte déjà lu ne redevient pas flou au retour ou au mouvement de la barre mobile.
+  shown.value = mobileMotion?.matches ? Math.max(shown.value, visible) : visible
 }
 
 let frame = 0
@@ -47,6 +54,7 @@ const onScroll = () => {
 }
 
 onMounted(() => {
+  mobileMotion = window.matchMedia('(max-width: 900px), (pointer: coarse)')
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     shown.value = total.value
     return
@@ -66,8 +74,10 @@ onBeforeUnmount(() => {
 <template>
   <section class="manifesto section">
     <p ref="textEl" class="manifesto__text">
-      <template v-for="(token, i) in tokens" :key="i">
-        <span v-if="'nouvelleLigne' in token && token.nouvelleLigne" class="manifesto__break" aria-hidden="true" />
+      <template v-for="(group, i) in groups" :key="i">
+        <span v-if="group.objectif" class="manifesto__break" aria-hidden="true" />
+        <span :class="group.objectif ? 'manifesto__objectif' : 'manifesto__group'">
+        <template v-for="(token, k) in group.tokens" :key="k">
         <img
           v-if="'img' in token"
           class="pill"
@@ -81,6 +91,8 @@ onBeforeUnmount(() => {
             <span class="word" :class="{ 'is-on': word.rank < shown }">{{ word.w }}</span>{{ j < token.words.length - 1 ? ' ' : '' }}
           </template>
         </component>
+        </template>
+        </span>
       </template>
     </p>
 
@@ -137,7 +149,16 @@ onBeforeUnmount(() => {
   white-space: nowrap;
 }
 
-/* L'objectif commence la dernière ligne de la composition sur ordinateur. */
+.manifesto__group { display: contents; }
+.manifesto__objectif {
+  display: inline-flex;
+  align-items: center;
+  gap: inherit;
+}
+.manifesto__objectif > span { white-space: nowrap; }
+.manifesto__objectif .pill { min-width: 40px; }
+
+/* La photo commence la phrase de l'objectif à toutes les tailles. */
 .manifesto__break {
   flex-basis: 100%;
   height: 0;
@@ -184,10 +205,12 @@ onBeforeUnmount(() => {
   transform: none;
 }
 
-.pill.is-on:hover {
-  transform: scale(1.6);
-  position: relative;
-  z-index: 1;
+@media (hover: hover) and (pointer: fine) {
+  .pill.is-on:hover {
+    transform: scale(1.6);
+    position: relative;
+    z-index: 1;
+  }
 }
 
 .manifesto__signature {
@@ -222,10 +245,6 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 1024px) {
-  .manifesto__break {
-    display: none;
-  }
-
   .manifesto {
     --manifesto-unit: 1px;
     padding-inline: var(--gutter);
@@ -254,6 +273,8 @@ onBeforeUnmount(() => {
     font-size: 32px;
     gap: 6px 10px;
   }
+
+  .manifesto__break { margin-bottom: -6px; }
 
   .manifesto__text em {
     font-size: 36px;
