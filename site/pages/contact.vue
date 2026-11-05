@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { limitesDemande, erreurDemande } from '~/utils/demande'
-const page = await usePageContact()
-const parametres = await useParametres()
-const produits = await useProduits()
+const [page, parametres, produits] = await Promise.all([
+  usePageContact(), useParametres(), useProduits(),
+])
 const route = useRoute()
 
 usePageSeo({

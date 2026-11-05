@@ -7,7 +7,7 @@ import { computed, reactive, toValue } from 'vue'
 import { createImageUrlBuilder } from '@sanity/image-url'
 
 const root = new URL('../', import.meta.url)
-async function environnement({ config, fetchedProducts = [], fetchedArticles = [], productError = false, articleError = false } = {}) {
+async function environnement({ config, fetchedProducts = [], fetchedArticles = [], productError = false, articleError = false, client = false, globals = {} } = {}) {
   const route = reactive({ path: '/contact', query: { produit: 'banc-galileo' } })
   let setup = true
   let head
@@ -22,6 +22,7 @@ async function environnement({ config, fetchedProducts = [], fetchedArticles = [
     useHead: (callback) => { head = callback },
     defineEventHandler: (handler) => handler,
     setHeader: (_, key, value) => { headers[key] = value },
+    ...globals,
   })
   const modules = new Map()
   function synthese(exports) {
@@ -47,7 +48,11 @@ async function environnement({ config, fetchedProducts = [], fetchedArticles = [
     if (modules.has(url.href)) return modules.get(url.href)
     const chargement = (async () => {
       const source = stripTypeScriptTypes(await readFile(url, 'utf8'))
-      const module = new SourceTextModule(source, { context, identifier: url.href })
+      const module = new SourceTextModule(source, {
+        context,
+        identifier: url.href,
+        initializeImportMeta: (meta) => { meta.client = client; meta.server = !client },
+      })
       await module.link(async (specifier) => {
         if (externes[specifier]) return externes[specifier]
         const lien = specifier.startsWith('~/') ? new URL(specifier.slice(2), root) : new URL(specifier, url)
@@ -200,4 +205,49 @@ test('reference-mode sitemap and robots use the same configured origin without C
   const escaped = seo.sitemapXml(['/contact?x=1', '/contact', '/a&b'])
   assert.equal((escaped.match(/<url>/g) || []).length, 2)
   assert.ok(escaped.includes('/a&amp;b</loc>'))
+})
+
+test('SSR awaits the Sanity client from the Nuxt context and passes its request signal', async () => {
+  const signal = new AbortController().signal
+  const env = await environnement({ globals: {
+    useAsyncData: async (key, handler, options) => {
+      assert.equal(key, 'ficheProduit')
+      assert.equal(options.timeout, 8000)
+      const nuxtApp = { runWithContext: async (callback) => callback() }
+      return { data: { value: await handler(nuxtApp, { signal }) } }
+    },
+    sanityClient: () => ({ fetch: async (query, _params, options) => {
+      assert.equal(query, '*[_id == "ficheProduit"][0]{...}')
+      assert.equal(options.signal, signal)
+      return { titre: 'Titre publié' }
+    } }),
+    $fetch: () => assert.fail('SSR should query Sanity directly'),
+  } })
+  const { useContenu } = (await env.charger('composables/useContenu.ts')).namespace
+  const resultat = await useContenu('ficheProduit', { titre: 'Secours', legende: 'Description de référence' })
+  assert.equal(resultat.value.titre, 'Titre publié')
+  assert.equal(resultat.value.legende, 'Description de référence')
+})
+
+test('client content uses the same-origin named endpoint with a bounded request and no retry', async () => {
+  const signal = new AbortController().signal
+  const env = await environnement({ client: true, globals: {
+    useAsyncData: async (key, handler, options) => {
+      assert.equal(key, 'article-un-nouvel-article')
+      assert.equal(options.timeout, 8000)
+      return { data: { value: await handler({}, { signal }) } }
+    },
+    sanityClient: () => assert.fail('the browser should use the site API'),
+    $fetch: async (url, options) => {
+      assert.equal(url, '/api/contenu/article')
+      assert.equal(options.query.slug, 'un-nouvel-article')
+      assert.equal(options.signal, signal)
+      assert.equal(options.retry, 0)
+      return false
+    },
+  } })
+  const { useContenu } = (await env.charger('composables/useContenu.ts')).namespace
+  const secours = { titre: 'Article de référence' }
+  const resultat = await useContenu('article', secours, 'un-nouvel-article')
+  assert.equal(resultat.value, secours)
 })

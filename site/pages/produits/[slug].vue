@@ -5,10 +5,9 @@ definePageMeta({ key: (route) => route.path })
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
 
-const produits = await useProduits()
-const gammes = await useGammes()
-const textes = await useFicheProduit()
-const parametres = await useParametres()
+const [produits, gammes, textes, parametres] = await Promise.all([
+  useProduits(), useGammes(), useFicheProduit(), useParametres(),
+])
 
 const produit = computed(() => produits.value.find((p) => p.slug === slug.value && p.fiche))
 if (!produit.value) throw createError({ statusCode: 404, statusMessage: 'Produit introuvable', fatal: true })

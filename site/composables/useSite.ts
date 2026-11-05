@@ -7,19 +7,12 @@ import { ficheProduit, pageAPropos, pageArticles, pageContact, pageProduits, pag
 import { produits, type Produit } from '~/content/produits'
 import { realisations } from '~/content/realisations'
 import { normaliserAccueil } from '~/utils/normaliserAccueil'
-import { cataloguePublic, REQUETE_PRODUITS, REQUETE_ARTICLES, REQUETE_ARTICLE, SLUG_ARTICLE_EXCLU } from '~/utils/contenuPublic'
+import { cataloguePublic, SLUG_ARTICLE_EXCLU } from '~/utils/contenuPublic'
 
-const page = <T>(id: string, secours: T, projection = '...') =>
-  useContenu(id, `*[_id == "${id}"][0]{${projection}}`, secours)
-
-export const useParametres = () => page('parametres', parametres)
+export const useParametres = () => useContenu('parametres', parametres)
 
 export async function useGammes() {
-  const data = await useContenu(
-    'gammes',
-    `*[_type == "gamme"]{ ..., "documentation": documentation.asset->url, "ficheTechnique": ficheTechnique.asset->url }`,
-    [] as (typeof gammes.galileo)[],
-  )
+  const data = await useContenu('gammes', [] as (typeof gammes.galileo)[])
   // Sans PDF dans Sanity, on garde ceux livrés avec le site (public/docs).
   // Retourner le record directement permet aux templates de l'utiliser uniformément.
   const avecSecours = (cle: GammeCle) => {
@@ -35,7 +28,7 @@ export async function useGammes() {
 }
 
 export async function useProduits() {
-  const data = await useContenu('produits', REQUETE_PRODUITS, produits)
+  const data = await useContenu('produits', produits)
   return computed<Produit[]>(() => cataloguePublic(data.value))
 }
 
@@ -43,44 +36,32 @@ export async function useProduits() {
 export const lienProduit = (p?: Pick<Produit, 'slug'>) =>
   p ? `/produits/${p.slug}` : '/produits'
 
-export const useRealisations = () =>
-  useContenu(
-    'realisations',
-    `*[_type == "realisation"] | order(ordre asc){ nom, gamme, description, photo }`,
-    realisations,
-  )
+export const useRealisations = () => useContenu('realisations', realisations)
 
 export const useArticles = () =>
-  useContenu('articles', REQUETE_ARTICLES, articles as Omit<Article, 'corps' | 'intro' | 'auteur'>[])
+  useContenu('articles', articles as Omit<Article, 'corps' | 'intro' | 'auteur'>[])
 
 export const useArticle = (slug: string) =>
   useContenu(
-    `article-${slug}`,
-    REQUETE_ARTICLE,
+    'article',
     (slug === SLUG_ARTICLE_EXCLU ? null : articles.find((a) => a.slug === slug) ?? null) as Article | null,
-    { slug },
+    slug,
   )
 
 export async function usePageAccueil() {
-  const contenu = await page(
-    'pageAccueil',
-    pageAccueil,
-    `...,
-    installations{ ..., bandeaux[]{ ..., "produit": produit->slug.current } },
-    articles{ ..., "selection": selection[]->slug.current }`,
-  )
+  const contenu = await useContenu('pageAccueil', pageAccueil)
   return computed(() => normaliserAccueil(contenu.value, pageAccueil))
 }
-export const usePageProduits = () => page('pageProduits', pageProduits)
-export const useFicheProduit = () => page('ficheProduit', ficheProduit)
-export const usePageRealisations = () => page('pageRealisations', pageRealisations)
-export const usePageAPropos = () => page('pageAPropos', pageAPropos)
-export const usePageArticles = () => page('pageArticles', pageArticles, `..., "aLaUne": aLaUne->slug.current`)
-export const usePageContact = () => page('pageContact', pageContact)
+export const usePageProduits = () => useContenu('pageProduits', pageProduits)
+export const useFicheProduit = () => useContenu('ficheProduit', ficheProduit)
+export const usePageRealisations = () => useContenu('pageRealisations', pageRealisations)
+export const usePageAPropos = () => useContenu('pageAPropos', pageAPropos)
+export const usePageArticles = () => useContenu('pageArticles', pageArticles)
+export const usePageContact = () => useContenu('pageContact', pageContact)
 
 // Mentions légales, confidentialité, cookies (document « legal-<adresse> »)
 export const usePageLegale = (slug: string) =>
-  page(`legal-${slug}`, pagesLegales.find((l) => l.slug === slug) ?? null, `..., "slug": slug.current`)
+  useContenu('pageLegale', pagesLegales.find((l) => l.slug === slug) ?? null, slug)
 
 // Libellés
 export const labelCategorie = (cle: string) =>
