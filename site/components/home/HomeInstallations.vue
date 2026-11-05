@@ -46,7 +46,6 @@ const open = ref(0)
             <div class="gallery__frame">
               <img :src="img(photo.image, 800)" :alt="photo.legende" loading="lazy" />
             </div>
-            <figcaption>{{ photo.legende }}</figcaption>
           </figure>
         </li>
       </ul>
@@ -215,11 +214,6 @@ const open = ref(0)
 
 .gallery__item:hover img {
   transform: scale(1.05);
-}
-
-.gallery__item figcaption {
-  font-size: 14px;
-  color: #e8ded1;
 }
 
 @media (max-width: 1024px) {

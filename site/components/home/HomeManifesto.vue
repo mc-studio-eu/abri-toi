@@ -13,6 +13,14 @@ const decoupage = computed(() => {
       ? { em: part.accent, nouvelleLigne: /^Notre objectif\b/i.test(part.texte.trim()), words: part.texte.split(' ').map((w) => ({ w, rank: rank++ })) }
       : { img: img('image' in part ? part.image : null, 400), width: 'largeur' in part ? part.largeur : 132, rank: rank++ }
   })
+  // Le saut de ligne précède aussi la photo qui introduit l'objectif.
+  const objectif = manifeste.value.morceaux.findIndex((part) =>
+    'texte' in part && /^Notre objectif\b/i.test(part.texte.trim()),
+  )
+  if (objectif > 0 && 'img' in tokens[objectif - 1]!) {
+    Object.assign(tokens[objectif - 1]!, { nouvelleLigne: true })
+    Object.assign(tokens[objectif]!, { nouvelleLigne: false })
+  }
   return { tokens, total: rank }
 })
 const tokens = computed(() => decoupage.value.tokens)

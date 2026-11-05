@@ -69,8 +69,10 @@ function moveTab(event: KeyboardEvent, index: number) {
 .selector__option { position:relative; display:flex; flex-direction:column; align-items:stretch; gap:28px; min-width:0; padding:12px 12px 36px; border:1px solid var(--line); border-radius:20px; background:rgba(251,248,243,.55); text-align:left; }
 .selector__option--active { border:2px solid var(--accent); padding:11px 11px 35px; background:var(--paper); box-shadow:0 16px 20px rgba(168,79,18,.16); }
 .selector__option:focus-visible { outline:3px solid var(--brown-900); outline-offset:5px; }
-.selector__visual { position:relative; display:block; height:420px; border-radius:12px; overflow:hidden; background:white; opacity:.72; }
-.selector__option--active .selector__visual { opacity:1; }
+.selector__visual { position:relative; display:block; height:420px; border-radius:12px; overflow:hidden; background:white; }
+.selector__photo, .selector__copy { opacity:.5; transition:opacity .25s ease; }
+.selector__option--active .selector__photo, .selector__option--active .selector__copy { opacity:1; }
+@media (prefers-reduced-motion:reduce) { .selector__photo, .selector__copy { transition:none; } }
 .selector__photo { width:100%; height:100%; object-fit:contain; }
 .selector__badge { position:absolute; top:16px; right:16px; display:flex; align-items:center; gap:8px; padding:8px 14px 8px 10px; border:1px solid var(--line); border-radius:999px; background:white; box-shadow:0 4px 12px rgba(63,38,29,.12); font-size:14px; font-weight:500; white-space:nowrap; }
 .selector__option--active .selector__badge { border-color:transparent; background:var(--accent); color:var(--paper); }

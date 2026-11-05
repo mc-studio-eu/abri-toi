@@ -16,11 +16,11 @@ export const pageAccueil = {
   },
   manifeste: {
     morceaux: [
-      { image: { src: '/images/manifesto-fotos-lacet.jpg', alt: 'Une femme fait ses lacets sur le banc Fotos' }, largeur: 132 },
       { texte: 'Chaque été,' },
       { texte: 'nos villes et espaces extérieurs' },
       { texte: 'sont désertés', accent: true },
       { texte: 'à cause de la canicule.' },
+      { image: { src: '/images/manifesto-fotos-lacet.jpg', alt: 'Une femme fait ses lacets sur le banc Fotos' }, largeur: 132 },
       { texte: 'Notre objectif' },
       { texte: 'leur' },
       { texte: 'redonner vie.', accent: true },
@@ -104,8 +104,8 @@ export const pageAccueil = {
       'Chaque gamme se combine avec elle-même. Les configurations peuvent accueillir jusqu’à 8 personnes et créer jusqu’à 12 m² d’ombre : banquettes, bancs, tables ou gradins chez Galiléo, bancs et tables sous une arche végétale chez Fotos.',
   },
   process: {
-    titre: 'De votre premier appel',
-    titreSuite: 'à l’inauguration.',
+    titre: 'À 10 degrés de vous',
+    titreSuite: 'sentir bien dehors.',
     duree: '8 semaines',
     note: 'au total*',
     etapes: [
