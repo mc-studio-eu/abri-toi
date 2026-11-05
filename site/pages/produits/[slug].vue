@@ -147,6 +147,7 @@ async function demanderDoc() {
           </dl>
         </div>
 
+        <div class="documents">
         <form id="documentation" class="doc" @submit.prevent="demanderDoc">
           <h2 class="display-h3">{{ textes.documentation.titre }}</h2>
           <p class="body-m doc__texte">{{ textes.documentation.texte }}</p>
@@ -177,6 +178,11 @@ async function demanderDoc() {
             <p v-else>L’envoi n’a pas pu être confirmé. Écrivez-nous à {{ parametres.email }}.</p>
           </div>
         </form>
+        <aside class="doc" aria-labelledby="titre-fichiers">
+          <h2 id="titre-fichiers" class="display-h3">Recevez le fichier DWG ou 3D</h2>
+          <UiButton pill label="Recevoir le fichier" :to="`/contact?demande=dwg&amp;produit=${encodeURIComponent(slug)}#formulaire`" />
+        </aside>
+        </div>
       </section>
 
       <section v-if="similaires.length" class="similaires section">
@@ -395,6 +401,8 @@ async function demanderDoc() {
   margin: 0;
 }
 
+.documents { display:flex; flex-direction:column; gap:24px; width:440px; flex:none; }
+
 .doc {
   display: flex;
   flex-direction: column;
@@ -500,7 +508,7 @@ async function demanderDoc() {
     flex-direction: column;
   }
 
-  .doc {
+  .documents, .doc {
     width: 100%;
   }
 

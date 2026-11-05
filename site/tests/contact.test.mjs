@@ -19,8 +19,8 @@ const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
 const setup = new AsyncFunction('usePageContact', 'useParametres', 'useProduits', 'useRoute', 'usePageSeo', 'computed', 'reactive', 'ref', 'watch', '$fetch', 'limitesDemande', 'erreurDemande',
   `${stripTypeScriptTypes(descriptor.scriptSetup.content).replace(/^import .*$/m, '')}\nreturn { form, produitSelectionne, envoyer, etat, erreur }`)
 
-async function formulaire(produit, fetcher) {
-  const route = reactive({ query: produit === undefined ? {} : { produit } })
+async function formulaire(produit, fetcher, demande) {
+  const route = reactive({ query: { ...(produit === undefined ? {} : { produit }), ...(demande === undefined ? {} : { demande }) } })
   const sent = []
   const page = await setup(
     async () => ref(pageContact), async () => ref({}), async () => ref(produits), () => route, () => {},
@@ -173,4 +173,22 @@ test('both templates contain an unfocusable honeypot and share email bounds with
     assert.match(template, /name="website" tabindex="-1" autocomplete="off"/)
     assert.match(template, /:maxlength="limitesDemande.email"/)
   }
+})
+
+
+test('DWG requests prefill the product and retain their intent when the message is edited', async () => {
+  const page = await formulaire('banc-galileo', undefined, 'dwg')
+  assert.match(page.form.message, /DWG ou 3D du produit Banc Galiléo/)
+  const fotos = produits.find(p => p.gamme === 'fotos' && p.fiche)
+  page.form.produit = fotos.slug
+  await nextTick()
+  assert.ok(page.form.message.includes(fotos.fiche.titre))
+  page.form.message = 'Merci de fournir le modèle pour notre étude.'
+  page.form.produit = 'banc-galileo'
+  await nextTick()
+  assert.equal(page.form.message, 'Merci de fournir le modèle pour notre étude.')
+  await page.envoyer()
+  assert.equal(page.sent[0].body.produit, 'Banc Galiléo')
+  assert.match(page.sent[0].body.message, /^Demande de fichier DWG ou 3D/)
+  assert.ok(page.sent[0].body.message.includes(page.form.message))
 })

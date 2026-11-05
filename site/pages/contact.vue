@@ -4,6 +4,8 @@ const [page, parametres, produits] = await Promise.all([
   usePageContact(), useParametres(), useProduits(),
 ])
 const route = useRoute()
+const prefixeDemandeFichier = 'Demande de fichier DWG ou 3D\n\n'
+const demandeFichier = computed(() => route.query.demande === 'dwg')
 
 usePageSeo({
   titre: 'Votre projet d’ombrage : contactez Abri Toi',
@@ -53,6 +55,15 @@ watch(() => route.query.produit, (slug) => {
   form.gamme = produit ? libelleGamme(produit.gamme) : gammeParDefaut()
 }, { immediate: true })
 
+let messagePrefill = ''
+watch([demandeFichier, produitSelectionne], ([fichier, produit]) => {
+  const message = fichier
+    ? `Bonjour, je souhaite recevoir le fichier DWG ou 3D${produit ? ` du produit ${produit.fiche?.titre}` : ''}.`
+    : ''
+  if (!form.message || form.message === messagePrefill) form.message = message
+  messagePrefill = message
+}, { immediate: true })
+
 async function envoyer() {
   if (etat.value === 'envoi') return
   etat.value = 'envoi'
@@ -60,7 +71,7 @@ async function envoyer() {
   try {
     await $fetch('/api/demande', {
       method: 'POST',
-      body: { type: 'contact', ...form, produit: produitSelectionne.value?.fiche?.titre ?? '' },
+      body: { type: 'contact', ...form, produit: produitSelectionne.value?.fiche?.titre ?? '', message: demandeFichier.value ? `${prefixeDemandeFichier}${form.message}` : form.message },
     })
     etat.value = 'ok'
   } catch (error) {
@@ -76,7 +87,7 @@ async function envoyer() {
       <PageHero :hero="page.hero" />
 
       <section class="contact section">
-        <div class="formulaire">
+        <div id="formulaire" class="formulaire">
           <div v-if="etat === 'ok'" class="merci" role="status">
             <h2 class="display-h3">Merci !</h2>
             <p class="body-l">{{ f.confirmation }}</p>
@@ -88,10 +99,10 @@ async function envoyer() {
               <input v-model="form.website" name="website" tabindex="-1" autocomplete="off" :maxlength="limitesDemande.website" />
             </label>
             <div class="formulaire__entete">
-              <h2 class="formulaire__titre">{{ f.titre }}</h2>
+              <h2 class="formulaire__titre">{{ demandeFichier ? 'Recevoir un fichier DWG ou 3D' : f.titre }}</h2>
               <p class="formulaire__aide">{{ f.sousTitre }}</p>
               <p v-if="produitSelectionne" class="formulaire__produit" role="status">
-                Votre demande concerne : {{ produitSelectionne.fiche?.titre }}
+                {{ demandeFichier ? 'Demande de fichier DWG ou 3D pour :' : 'Votre demande concerne :' }} {{ produitSelectionne.fiche?.titre }}
               </p>
             </div>
 
@@ -171,10 +182,10 @@ async function envoyer() {
             </div>
 
             <label class="champ">
-              <span class="champ__label">Votre projet *</span>
+              <span class="champ__label">{{ demandeFichier ? 'Votre demande de fichier *' : 'Votre projet *' }}</span>
               <textarea
                 v-model="form.message"
-                :maxlength="limitesDemande.message"
+                :maxlength="limitesDemande.message - (demandeFichier ? prefixeDemandeFichier.length : 0)"
                 required
                 rows="5"
                 placeholder="Décrivez le lieu à équiper : une cour d’école, une place, un parc… Nombre de places, surface, contraintes d’ancrage ou d’eau."
