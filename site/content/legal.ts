@@ -30,7 +30,7 @@ export const pagesLegales: PageLegale[] = [
     slug: 'mentions-legales',
     titre: 'Mentions légales',
     chapo: 'Informations sur l’éditeur et l’hébergeur du site www.abritoi.com.',
-    misAJour: '2026-10-27',
+    misAJour: '2026-11-05',
     corps: [
       h2('Éditeur du site'),
       p('Le site www.abritoi.com est édité par la société ABRI TOI SAS.'),
@@ -63,7 +63,7 @@ export const pagesLegales: PageLegale[] = [
         'Les informations recueillies via le formulaire de contact et de demande de documentation sont destinées exclusivement à Abri Toi SAS. Leur traitement est détaillé dans notre politique de confidentialité.',
       ),
       h2('Cookies'),
-      p('Le site ne dépose aucun cookie publicitaire ni de mesure d’audience. Le détail figure dans notre politique de cookies.'),
+      p('Avec votre accord, le site utilise Google Analytics pour mesurer son audience. Aucun cookie publicitaire n’est activé par cette intégration. Le détail figure dans notre politique de cookies.'),
       h2('Responsabilité'),
       p(
         'L’éditeur du site s’efforce de fournir des informations aussi précises que possible. Toutefois, il ne pourra être tenu responsable des omissions, inexactitudes ou carences dans la mise à jour des informations, qu’elles soient de son fait ou du fait des tiers partenaires.',
@@ -77,7 +77,7 @@ export const pagesLegales: PageLegale[] = [
     slug: 'politique-de-confidentialite',
     titre: 'Politique de confidentialité',
     chapo: 'Comment Abri Toi collecte, utilise et protège les données que vous nous confiez.',
-    misAJour: '2026-10-27',
+    misAJour: '2026-11-05',
     corps: [
       h2('Responsable du traitement'),
       p(
@@ -85,7 +85,7 @@ export const pagesLegales: PageLegale[] = [
       ),
       p('Pour toute question relative à vos données : saracenop@abritoi.com.'),
       h2('Données collectées'),
-      p('Nous collectons uniquement les données que vous saisissez dans le formulaire de contact ou de demande de documentation :'),
+      p('Nous collectons les données que vous saisissez dans le formulaire de contact ou de demande de documentation :'),
       ...li(
         'identité : prénom, nom, fonction ;',
         'coordonnées : adresse e-mail, téléphone ;',
@@ -117,6 +117,8 @@ export const pagesLegales: PageLegale[] = [
       p(
         'Les données des demandes sont conservées pendant trois ans à compter du dernier échange avec vous, puis supprimées. Les données des clients sont conservées pendant la durée de la relation commerciale, augmentée des durées de prescription légales.',
       ),
+      h2('Mesure d’audience'),
+      p('Avec votre consentement, Google Analytics reçoit des informations de navigation, notamment les pages consultées et des informations sur votre navigateur et votre appareil, associées à un identifiant de cookie. Ces informations servent à comprendre la fréquentation du site. Google est le prestataire de cette mesure ; les fonctionnalités publicitaires et Google Signals sont désactivés. Vous pouvez refuser ou retirer votre accord via « Gérer les cookies » en pied de page.'),
       h2('Polices de caractères'),
       p(
         'Le site utilise des polices fournies par Google Fonts. Leur chargement transmet votre adresse IP aux serveurs de Google, sans dépôt de cookie.',
@@ -139,7 +141,7 @@ export const pagesLegales: PageLegale[] = [
     slug: 'politique-de-cookies',
     titre: 'Politique de cookies',
     chapo: 'Ce que le site dépose, ou non, sur votre appareil.',
-    misAJour: '2026-10-27',
+    misAJour: '2026-11-05',
     corps: [
       h2('Qu’est-ce qu’un cookie ?'),
       p(
@@ -147,10 +149,10 @@ export const pagesLegales: PageLegale[] = [
       ),
       h2('Les cookies de ce site'),
       p(
-        'Le site www.abritoi.com ne dépose aucun cookie publicitaire, de réseaux sociaux ou de mesure d’audience. C’est pourquoi aucun bandeau de consentement ne s’affiche lors de votre visite.',
+        'Google Analytics (identifiant G-STB0MGR5RF) est chargé uniquement après votre acceptation. Il utilise les cookies _ga et _ga_* pour distinguer les visites et mesurer la fréquentation. Leur durée est configurée à 180 jours et peut être renouvelée lors des visites. Aucun chargement de cette balise n’a lieu avant votre accord ou si vous refusez.',
       ),
       p(
-        'Seuls des éléments strictement nécessaires au fonctionnement du site peuvent être utilisés. Conformément aux recommandations de la CNIL, ils ne nécessitent pas votre consentement.',
+        'Le cookie abritoi-analytics-consent mémorise votre acceptation ou votre refus pendant 180 jours. Il sert uniquement à respecter votre choix. Le bouton « Gérer les cookies » en pied de page permet de modifier ce choix ; le retrait de votre accord supprime les cookies de cette mesure et recharge la page pour arrêter la balise.',
       ),
       h2('Liens vers des sites tiers'),
       p(
@@ -162,7 +164,7 @@ export const pagesLegales: PageLegale[] = [
       ),
       h2('Évolution de cette politique'),
       p(
-        'Si nous ajoutons un jour un outil de mesure d’audience ou un contenu tiers déposant des cookies, cette page sera mise à jour et votre consentement vous sera demandé au préalable.',
+        'Cette page sera mise à jour si les outils de mesure d’audience ou les cookies utilisés évoluent.',
       ),
       h2('Contact'),
       p('Pour toute question : Paul Saraceno, ABRI TOI SAS, 16 rue Fénelon, 69006 Lyon, saracenop@abritoi.com.'),

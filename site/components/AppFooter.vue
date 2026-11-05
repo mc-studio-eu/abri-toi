@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const parametres = await useParametres()
+const analyticsPreferencesOpen = useState('analytics-preferences-open', () => false)
 const tel = computed(() => `tel:+33${parametres.value.telephone?.replace(/\D/g, '').replace(/^0/, '')}`)
 
 const columns = [
@@ -66,6 +67,7 @@ const legal = [
           <template v-if="i"> · </template>
           <NuxtLink :to="lien.to">{{ lien.label }}</NuxtLink>
         </template>
+        · <button type="button" class="footer__cookies" @click="analyticsPreferencesOpen = true">Gérer les cookies</button>
       </p>
     </div>
   </footer>
@@ -155,6 +157,9 @@ const legal = [
 .footer__legal a:hover {
   color: var(--orange-500);
 }
+
+.footer__cookies { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+.footer__cookies:hover { color: var(--orange-500); }
 
 @media (max-width: 1024px) {
   .footer__top {

@@ -1,5 +1,6 @@
 <template>
   <NuxtPage :page-key="(route) => route.fullPath" :transition="{ name: 'page', mode: 'out-in' }" />
+  <ClientOnly><AnalyticsConsent /></ClientOnly>
 </template>
 
 <style>
