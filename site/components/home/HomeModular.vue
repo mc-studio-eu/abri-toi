@@ -3,7 +3,7 @@ const page = await usePageProduits()
 const ranges = computed(() => page.value.modulaire.gammes.map((gamme) => ({
   ...gamme,
   moduleSize: gamme.gamme === 'fotos' ? 256.5 : 242.25,
-  spaceSize: gamme.gamme === 'fotos' ? 160 : 155,
+  titleParts: gamme.titre.split(/(Galiléo|Fotos)/gi),
 })))
 </script>
 
@@ -16,7 +16,7 @@ const ranges = computed(() => page.value.modulaire.gammes.map((gamme) => ({
 
     <div>
       <article v-for="range in ranges" :key="range._key" v-reveal class="range">
-        <h3 class="range__name">{{ range.titre }}</h3>
+        <h3 class="range__name"><span v-for="(part, index) in range.titleParts" :key="index" :class="{ 'range__collection': /^(Galiléo|Fotos)$/i.test(part) }">{{ part }}</span></h3>
         <div class="range__equation">
           <template v-for="(mod, i) in range.modules" :key="mod._key">
             <figure class="range__item">
@@ -35,14 +35,14 @@ const ranges = computed(() => page.value.modulaire.gammes.map((gamme) => ({
               v-for="configuration in range.configurations"
               :key="configuration._key"
               class="range__visual"
-              :style="{ width: `${range.spaceSize}px` }"
+              :style="{ width: `${range.moduleSize}px` }"
             >
               <img
-                :src="img(configuration.image, 400)"
+                :src="img(configuration.image, 600)"
                 loading="lazy"
                 :alt="alt(configuration.image)"
-                :width="range.spaceSize"
-                :height="range.spaceSize"
+                :width="range.moduleSize"
+                :height="range.moduleSize"
               />
             </div>
             <figcaption>
@@ -101,9 +101,11 @@ const ranges = computed(() => page.value.modulaire.gammes.map((gamme) => ({
   color: var(--cream);
 }
 
+.range__collection { color: var(--orange-500); }
+
 .range__equation {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
 }
@@ -163,7 +165,7 @@ const ranges = computed(() => page.value.modulaire.gammes.map((gamme) => ({
   justify-content: center;
   width: 48px;
   height: 48px;
-  margin-bottom: 90px;
+  margin-bottom: 0;
   font-size: 40px;
   color: var(--cream);
   opacity: 0.5;
