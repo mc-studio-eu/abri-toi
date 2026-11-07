@@ -4,26 +4,36 @@ import type { GammeCle } from '~/content/commun'
 const page = await usePageRealisations()
 const realisations = await useRealisations()
 const gammes = await useGammes()
+const gammesDisponibles = computed(() => (['galileo', 'fotos'] as GammeCle[]).filter((cle) => gammes.value[cle]))
+
+const une = computed(() => page.value.aLaUne)
+const realisationALaUne = computed(() => realisations.value.find((r) =>
+  r.nomProjet === une.value.nomProjet || r.nom === une.value.nomProjet,
+))
+const lienALaUne = computed(() => realisationALaUne.value
+  ? { label: 'Voir la réalisation', url: `/realisations/${realisationALaUne.value.slug}` }
+  : une.value.lien,
+)
+
+// Pagination rendue côté serveur, liens explorables.
+const PAR_PAGE = 9
+const filtreGamme = ref<GammeCle | ''>('')
+
+const filtrees = computed(() =>
+  realisations.value.filter((r) => !filtreGamme.value || r.gamme === filtreGamme.value),
+)
+const pagination = usePagination(() => filtrees.value.length, PAR_PAGE)
+const visibles = computed(() => filtreGamme.value ? filtrees.value : filtrees.value.slice(pagination.debut.value, pagination.debut.value + PAR_PAGE))
 
 usePageSeo(() => ({
-  titre: 'Réalisations : des espaces de pause ombragés | Abri Toi',
+  titre: `Réalisations : des espaces de pause ombragés${pagination.courante.value > 1 ? ` — page ${pagination.courante.value}` : ''} | Abri Toi`,
+  chemin: pagination.lien(pagination.courante.value),
   description: 'Découvrez les installations Galiléo et Fotos : des espaces de pause et d’ombrage adaptés aux lieux de vie, aux collectivités et aux jardins.',
   image: page.value.aLaUne.photo,
   fil: [{ nom: 'Réalisations', chemin: '/realisations' }],
 }))
 
-const une = computed(() => page.value.aLaUne)
 
-// Filtres et pagination côté navigateur
-const PAR_PAGE = 9
-const filtreGamme = ref<GammeCle | ''>('')
-const affiches = ref(PAR_PAGE)
-watch(filtreGamme, () => (affiches.value = PAR_PAGE))
-
-const filtrees = computed(() =>
-  realisations.value.filter((r) => !filtreGamme.value || r.gamme === filtreGamme.value),
-)
-const visibles = computed(() => filtrees.value.slice(0, affiches.value))
 
 </script>
 
@@ -32,31 +42,20 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
     <main>
       <PageHero :hero="page.hero" />
 
-      <section id="a-la-une" class="une section">
+      <section v-if="pagination.courante.value === 1" id="a-la-une" class="une section">
         <header v-reveal class="entete">
           <h2 class="display-h2 entete__titre">{{ une.titre }}</h2>
         </header>
 
-        <div class="une__projet">
-          <img v-reveal :src="img(une.photo, 1600)" :alt="alt(une.photo) || une.nomProjet" class="une__photo" />
-          <div v-reveal="120" class="fiche">
-            <p class="label-mono fiche__label">{{ une.label }}</p>
-            <h3 class="display-h3">{{ une.nomProjet }}</h3>
-            <dl class="fiche__infos">
-              <div v-for="info in une.infos" :key="info.label" class="fiche__info">
-                <dt class="label-mono">{{ info.label }}</dt>
-                <dd>{{ info.valeur }}</dd>
-              </div>
-            </dl>
-            <UiLink v-if="une.lien?.url" :label="une.lien.label" :to="une.lien.url" />
-          </div>
-        </div>
-
-        <ul class="une__galerie">
-          <li v-for="(photo, i) in une.galerie" :key="i" v-reveal="i * 90">
-            <img :src="img(photo, 700)" :alt="alt(photo)" loading="lazy" />
-          </li>
-        </ul>
+        <RealisationProjet
+          :photo="une.photo"
+          :nom-projet="une.nomProjet"
+          titre-balise="h3"
+          :label="une.label"
+          :infos="une.infos"
+          :galerie="une.galerie"
+          :lien="lienALaUne"
+        />
       </section>
 
       <section id="projets" class="projets section">
@@ -70,14 +69,14 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
             <span class="label-mono filtres__label">Gamme</span>
             <button type="button" class="filtre" :aria-pressed="!filtreGamme" @click="filtreGamme = ''">Toutes</button>
             <button
-              v-for="cle in (['galileo', 'fotos'] as GammeCle[])"
+              v-for="cle in gammesDisponibles"
               :key="cle"
               type="button"
               class="filtre"
               :aria-pressed="filtreGamme === cle"
               @click="filtreGamme = cle"
             >
-              {{ gammes[cle].nom }}
+              {{ gammes[cle]?.nom }}
             </button>
           </div>
           <p class="label-mono filtres__compte" aria-live="polite">
@@ -86,22 +85,23 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
         </div>
 
         <ul v-if="visibles.length" class="grille">
-          <li v-for="r in visibles" :key="r.nom" class="carte">
-            <img :src="img(r.photo, 900, 600)" :alt="alt(r.photo) || r.nom" loading="lazy" class="carte__photo" />
+          <li v-for="r in visibles" :key="r.slug" class="carte">
+            <img :src="img(r.photo, 900, 600)" :srcset="imgSrcset(r.photo, 1600, 1067)" sizes="(min-width: 1440px) 405px, (max-width: 640px) calc(100vw - 40px), (max-width: 1024px) calc((100vw - 112px) / 2), calc((100vw - 224px) / 3)" :alt="alt(r.photo) || r.nom" loading="lazy" class="carte__photo" />
             <div class="carte__contenu">
               <h3 class="display-h4">{{ r.nom }}</h3>
               <p class="carte__description">{{ r.description }}</p>
+              <UiLink
+                class="carte__lien"
+                label="Voir la réalisation"
+                :to="`/realisations/${r.slug}`"
+                :aria-label="`Voir la réalisation : ${r.nom}`"
+              />
             </div>
           </li>
         </ul>
         <p v-else class="body-m projets__vide">Aucune réalisation ne correspond à ces filtres pour l’instant.</p>
 
-        <div v-if="filtrees.length > affiches" class="projets__plus">
-          <button type="button" class="plus" @click="affiches += PAR_PAGE">
-            <UiTextSlide :text="page.liste.boutonPlus" />
-            <img src="/images/arrow-brown-900.svg" alt="" width="16" height="16" />
-          </button>
-        </div>
+        <ListePagination v-if="!filtreGamme" :courante="pagination.courante.value" :pages="pagination.pages.value" :lien="pagination.lien" />
       </section>
 
 
@@ -120,7 +120,7 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
   padding-top: 96px;
   padding-bottom: 96px;
   background: var(--paper);
-  scroll-margin-top: 0;
+  scroll-margin-top: var(--nav-content-offset);
 }
 
 .projets {
@@ -142,72 +142,6 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
 .entete__intro {
   max-width: 420px;
   color: var(--brown-700);
-}
-
-.une__projet {
-  display: flex;
-  gap: 32px;
-}
-
-.une__photo {
-  width: calc((100% - 32px) * 5 / 8);
-  height: 560px;
-  flex: none;
-  border-radius: 20px;
-  object-fit: cover;
-}
-
-.fiche {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 24px;
-  padding: 40px;
-  border-radius: 20px;
-  background: var(--cream);
-}
-
-.fiche__label {
-  color: var(--orange-700);
-}
-
-.fiche__infos {
-  width: 100%;
-  margin: 0;
-}
-
-.fiche__info {
-  display: grid;
-  grid-template-columns: 120px minmax(0, 1fr);
-  gap: 16px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.fiche__info dt {
-  color: var(--brown-500);
-}
-
-.fiche__info dd {
-  margin: 0;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 1.3;
-}
-
-
-.une__galerie {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 32px;
-}
-
-.une__galerie img {
-  width: 100%;
-  height: 200px;
-  border-radius: 12px;
-  object-fit: cover;
 }
 
 .filtres {
@@ -236,6 +170,7 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
 }
 
 .filtre {
+  min-height: 44px;
   padding: 10px 18px;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -262,6 +197,7 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
 }
 
 .carte {
+  position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -277,6 +213,8 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
 }
 
 .carte__contenu {
+  flex: 1;
+  align-items: flex-start;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -285,9 +223,29 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
 
 
 .carte__description {
+  flex: 1;
   font-size: 14px;
   line-height: 1.5;
   color: var(--brown-700);
+}
+
+.carte__lien {
+  margin-top: 8px;
+}
+
+.carte__lien::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+}
+
+.carte:focus-within {
+  outline: 3px solid var(--orange-700);
+  outline-offset: 4px;
+}
+
+.carte:hover :deep(.link__icon) {
+  transform: translateX(3px);
 }
 
 .projets__vide {
@@ -323,16 +281,6 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
     gap: 20px;
   }
 
-  .une__projet {
-    flex-direction: column;
-  }
-
-  .une__photo {
-    width: 100%;
-    height: 420px;
-  }
-
-  .une__galerie,
   .grille {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -353,24 +301,14 @@ const visibles = computed(() => filtrees.value.slice(0, affiches.value))
     gap: 24px;
   }
 
-  .une__projet {
-    align-items: stretch;
-  }
-
-  .fiche__info {
-    grid-template-columns: 1fr;
-  }
-
   .grille {
     grid-template-columns: 1fr;
   }
 
-  .une__photo {
-    height: 280px;
+  .carte__photo {
+    height: auto;
+    aspect-ratio: 3 / 2;
   }
 
-  .fiche {
-    padding: 28px 24px;
-  }
 }
 </style>

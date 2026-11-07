@@ -1,18 +1,15 @@
 <script setup lang="ts">
-const pistes = [
-  { titre: 'Des solutions pour les espaces artificiels', texte: 'Fréquentez de nouveau les rues et espaces publics de votre commune.', image: '/images/figma-home/426-19739-imgVisuel.png', alt: 'Abri végétalisé dans une place publique' },
-  { titre: 'Travailler en plein air', texte: 'Une nouvelle manière d’imaginer vos réunions ou un nouvel endroit pour déjeuner entre collègues.', image: '/images/figma-home/426-19739-imgVisuel1.png', alt: 'Abris Galiléo installés dans le jardin d’un lieu de travail' },
-  { titre: 'Valoriser l’existant', texte: 'Intégrez de la brumisation à votre ombrière et créez un véritable espace d’ombrage.', image: '/images/figma-home/426-19739-imgVisuel2.png', alt: 'Espace de détente ombragé et brumisé au bord d’un jardin' },
-]
+const page = await usePageAccueil()
+const sujets = computed(() => page.value.sujets)
 </script>
 
 <template>
   <section class="ideas section" aria-labelledby="ideas-title">
-    <h2 id="ideas-title" class="ideas__title">Nos sujets en cours de réflexion</h2>
-    <p class="ideas__intro">Des pistes d’aménagement pour nourrir la réflexion. Chaque étude d’intégration est adaptée au lieu et à ses usages.</p>
+    <h2 id="ideas-title" class="ideas__title">{{ sujets.titre }}</h2>
+    <p class="ideas__intro">{{ sujets.intro }}</p>
     <ul class="ideas__grid">
-      <li v-for="piste in pistes" :key="piste.titre" class="idea">
-        <img :src="piste.image" :alt="piste.alt" loading="lazy" />
+      <li v-for="piste in sujets.cartes" :key="piste._key" class="idea">
+        <img :src="img(piste.image, 1200, 650)" :srcset="imgSrcset(piste.image, 1600, 867)" sizes="(min-width: 1440px) 411px, (max-width: 640px) calc(100vw - 40px), (max-width: 760px) calc(100vw - 80px), (max-width: 1024px) calc((100vw - 104px) / 2), (max-width: 1100px) calc((100vw - 184px) / 2), calc((100vw - 208px) / 3)" :alt="alt(piste.image)" loading="lazy" />
         <div class="idea__copy">
           <h3 class="display-h3">{{ piste.titre }}</h3>
           <p>{{ piste.texte }}</p>
@@ -31,6 +28,6 @@ const pistes = [
 .idea img { display:block; width:100%; height:300px; object-fit:cover; }
 .idea__copy { display:flex; flex-direction:column; gap:14px; padding:24px 28px 28px; }
 .idea__copy p { color:var(--brown-700); font-size:14px; line-height:1.5; }
-@media(max-width:1100px) { .idea { height:auto; min-height:532px; } .idea__copy h3 { font-size:26px; } }
-@media(max-width:760px) { .ideas__title { font-size:34px; } .ideas__grid { grid-template-columns:1fr; } .idea { min-height:0; } .idea img { height:280px; } }
+@media(max-width:1100px) { .ideas__grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .idea { height:auto; min-height:532px; } .idea__copy h3 { font-size:26px; } }
+@media(max-width:760px) { .ideas__title { font-size:34px; } .ideas__grid { grid-template-columns:1fr; } .idea { min-height:0; } .idea img { height:auto; aspect-ratio: 6 / 5; max-height:320px; } .idea__copy { padding:24px; } }
 </style>

@@ -155,7 +155,7 @@ async function main() {
   }
 
   await collection('realisation', realisations, (r) => r.nom, async (r, i) =>
-    convertir({ ...r, ordre: i + 1 }) as Promise<object>,
+    convertir({ ...r, slug: slug(r.slug), ordre: i + 1 }) as Promise<object>,
   )
 
   const idsArticles = await collection('article', articles, (a) => a.slug, async (a) =>

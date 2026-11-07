@@ -7,7 +7,7 @@ defineProps<{ titre: string; description?: string; visuel?: Img; to: string }>()
 <template>
   <article class="carte">
     <NuxtLink :to="to" class="carte__visuel" tabindex="-1" aria-hidden="true">
-      <img :src="img(visuel, 900)" :alt="alt(visuel)" loading="lazy" />
+      <img :src="img(visuel, 900)" :srcset="imgSrcset(visuel, 1600)" :sizes="taillesImageCarte" decoding="async" :alt="alt(visuel)" loading="lazy" />
     </NuxtLink>
     <div class="carte__contenu">
       <h3 class="display-h3 carte__nom">{{ titre }}</h3>

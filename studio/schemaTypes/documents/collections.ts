@@ -1,6 +1,6 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 import { categories, fondsCouverture } from '../../../site/content/articles'
-import { gammeChamp, image, liste, lignes, objet, paragraphe, texte } from '../champs'
+import { gammeChamp, image, liste, lignes, listeTextes, objet, paragraphe, texte } from '../champs'
 
 const slug = (source: string) =>
   defineField({
@@ -8,7 +8,9 @@ const slug = (source: string) =>
     title: 'Adresse de la page',
     type: 'slug',
     options: { source, maxLength: 80 },
-    validation: (r) => r.required(),
+    description: 'Utiliser une adresse courte en minuscules séparées par des tirets. Après publication, prévoir une redirection avant tout changement.',
+    validation: (r) => r.required().custom((value) => !value?.current || /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value.current)
+      ? true : 'Utiliser des minuscules sans accents, des chiffres et des tirets (exemple : banc-galileo).'),
   })
 
 export const parametres = defineType({
@@ -158,9 +160,26 @@ export const realisation = defineType({
   type: 'document',
   fields: [
     texte('nom', 'Nom du projet', { validation: (r: any) => r.required() }),
+    slug('nom'),
     gammeChamp(),
     paragraphe('description', 'Description courte'),
     image('photo', 'Photo', { validation: (r: any) => r.required() }),
+    texte('titre', 'Titre de la fiche', { description: 'Facultatif : le nom du projet est utilisé si ce champ est vide.' }),
+    texte('nomProjet', 'Nom du lieu ou du projet'),
+    lignes('infos', 'Informations du projet'),
+    defineField({
+      name: 'galerie',
+      title: 'Galerie de la réalisation',
+      description: 'Ajouter uniquement des photos de ce projet. Les quatre premières apparaissent sur la fiche.',
+      type: 'array',
+      of: [defineArrayMember({
+        type: 'image',
+        options: { hotspot: true },
+        fields: [texte('alt', 'Description de l’image (accessibilité)')],
+      })],
+      options: { layout: 'grid' },
+    }),
+    listeTextes('contenu', 'Texte de la réalisation', { of: [defineArrayMember({ type: 'text', rows: 4 })] }),
     defineField({ name: 'ordre', title: 'Ordre d’affichage', type: 'number' }),
   ],
   orderings: [{ title: 'Ordre d’affichage', name: 'ordre', by: [{ field: 'ordre', direction: 'asc' }] }],

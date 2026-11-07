@@ -1,17 +1,17 @@
-import { createClient } from '@sanity/client'
-import { DELAI_CONTENU, requeteContenu } from '../../../utils/requetesContenu'
+import { requeteContenu, type NomContenu } from '../../../utils/requetesContenu'
+import { contenuPourNavigateur, lireContenu } from '../../utils/contenu'
 
 export default defineEventHandler(async (event) => {
-  const lecture = requeteContenu(getRouterParam(event, 'nom'), getQuery(event).slug)
-  if (!lecture) throw createError({ statusCode: 404, statusMessage: 'Contenu introuvable' })
-
-  const { contentSource, sanity } = useRuntimeConfig(event).public
-  if (contentSource === 'reference' || !sanity.projectId) return false
-
-  const client = createClient({ ...sanity, perspective: 'published', useCdn: false })
+  setHeader(event, 'Cache-Control', 'no-store')
+  const nom = getRouterParam(event, 'nom')
+  const slug = getQuery(event).slug
+  if (!requeteContenu(nom, slug)) throw createError({ statusCode: 404, statusMessage: 'Contenu introuvable' })
   try {
-    return (await client.fetch<unknown>(lecture.groq, lecture.params ?? {}, { signal: AbortSignal.timeout(DELAI_CONTENU) })) ?? false
+    const valeur = await lireContenu(useRuntimeConfig(event).public, nom as NomContenu, slug as string | undefined)
+    // Envelopper null évite une deuxième lecture Nuxt lors de l'hydratation.
+    return { contenu: contenuPourNavigateur(nom as NomContenu, valeur) }
   } catch (cause) {
-    throw createError({ statusCode: 502, statusMessage: 'Contenu indisponible', cause })
+    if ((cause as { statusCode?: number }).statusCode === 503) setHeader(event, 'Retry-After', '60')
+    throw cause
   }
 })

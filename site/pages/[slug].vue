@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { pagesLegales } from '~/content/legal'
+definePageMeta({ key: (route) => route.path })
 // Pages légales : mentions légales, politique de confidentialité, politique de cookies.
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
-const page = computed(() => pagesLegales.find((p) => p.slug === slug.value) ?? null)
+const page = await usePageLegale(slug.value)
 if (!page.value) throw createError({ statusCode: 404, statusMessage: 'Page introuvable', fatal: true })
 const l = computed(() => page.value!)
 
@@ -54,7 +54,7 @@ const sommaire = computed(() => corps.value?.intertitres ?? [])
 
 .aside {
   position: sticky;
-  top: 32px;
+  top: var(--nav-content-offset);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -94,6 +94,8 @@ const sommaire = computed(() => corps.value?.intertitres ?? [])
   gap: 48px;
   width: 720px;
   max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .contenu__maj {
@@ -114,6 +116,12 @@ const sommaire = computed(() => corps.value?.intertitres ?? [])
   .aside {
     position: static;
     width: 100%;
+  }
+
+  .aside__sommaire a {
+    min-height: 44px;
+    align-items: baseline;
+    padding-block: 6px;
   }
 }
 </style>

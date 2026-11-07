@@ -3,6 +3,12 @@
 const page = await usePageAccueil()
 const installations = computed(() => page.value.installations)
 const gammes = await useGammes()
+const realisations = await useRealisations()
+
+const lienBandeau = (slug?: string) => {
+  const projet = realisations.value.find((r) => r.slug === slug)
+  return projet ? `/realisations/${projet.slug}` : '/realisations'
+}
 
 const open = ref(0)
 </script>
@@ -26,13 +32,18 @@ const open = ref(0)
         @pointerenter="($event.pointerType === 'mouse') && (open = i)"
         @focusin="open = i"
       >
-        <img :src="img(item.image, 1600)" alt="" class="band__img" />
+        <img :src="img(item.image, 1600)" :srcset="imgSrcset(item.image, 2560)" :sizes="taillesImageSection" loading="lazy" alt="" class="band__img" />
         <div class="band__shade" />
         <div class="band__content">
           <h3 class="display-h3 band__title">{{ item.titre }}</h3>
           <div class="band__actions">
             <span class="band__tag">Gamme {{ gammes[item.gamme as 'galileo' | 'fotos']?.nom }}</span>
-            <UiLink tone="dark" :to="item.produit ? `/produits/${item.produit}` : '/produits'" />
+            <UiLink
+              tone="dark"
+              label="Voir la réalisation"
+              :to="lienBandeau(item.realisation)"
+              :aria-label="`Voir la réalisation : ${item.titre}`"
+            />
           </div>
         </div>
       </li>
@@ -44,7 +55,7 @@ const open = ref(0)
         <li v-for="(photo, i) in installations.galerie" :key="i" v-reveal="(i % 4) * 90">
           <figure class="gallery__item">
             <div class="gallery__frame">
-              <img :src="img(photo.image, 800)" :alt="photo.legende" loading="lazy" />
+              <img :src="img(photo.image, 800)" :srcset="imgSrcset(photo.image, 1200)" sizes="(min-width: 1440px) 247px, (max-width: 640px) calc((100vw - 52px) / 2), (max-width: 1024px) calc((100vw - 104px) / 3), calc((100vw - 208px) / 5)" :alt="photo.legende" loading="lazy" />
             </div>
           </figure>
         </li>
@@ -104,6 +115,17 @@ const open = ref(0)
 
 .band--open {
   height: 260px;
+}
+
+.band:focus-within {
+  outline: 3px solid var(--orange-500);
+  outline-offset: 4px;
+}
+
+.band__actions :deep(.link)::after {
+  position: absolute;
+  inset: 0;
+  content: '';
 }
 
 .band__img {

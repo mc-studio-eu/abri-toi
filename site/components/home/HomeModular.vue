@@ -1,29 +1,10 @@
 <script setup lang="ts">
-const page = await usePageAccueil()
-const ranges = [
-  {
-    name: 'Gamme Galiléo',
-    modules: [
-      { src: '/images/modular/galileo-solo.png', size: 242.25 },
-      { src: '/images/modular/galileo-solo.png', size: 242.25 },
-    ],
-    space: {
-      configurations: ['/images/modular/galileo-a.png', '/images/modular/galileo-b.png'],
-      size: 155, label: 'Espace Galiléo',
-    },
-  },
-  {
-    name: 'Gamme Fotos',
-    modules: [
-      { src: '/images/modular/fotos-solo.png', size: 256.5 },
-      { src: '/images/modular/fotos-solo.png', size: 256.5 },
-    ],
-    space: {
-      configurations: ['/images/modular/fotos-a.png', '/images/modular/fotos-b.png'],
-      size: 160, label: 'Espace Fotos',
-    },
-  },
-]
+const page = await usePageProduits()
+const ranges = computed(() => page.value.modulaire.gammes.map((gamme) => ({
+  ...gamme,
+  moduleSize: gamme.gamme === 'fotos' ? 256.5 : 242.25,
+  spaceSize: gamme.gamme === 'fotos' ? 160 : 155,
+})))
 </script>
 
 <template>
@@ -34,38 +15,39 @@ const ranges = [
     </header>
 
     <div>
-      <article v-for="range in ranges" :key="range.name" v-reveal class="range">
-        <h3 class="range__name">{{ range.name }}</h3>
+      <article v-for="range in ranges" :key="range._key" v-reveal class="range">
+        <h3 class="range__name">{{ range.titre }}</h3>
         <div class="range__equation">
-          <template v-for="(mod, i) in range.modules" :key="i">
+          <template v-for="(mod, i) in range.modules" :key="mod._key">
             <figure class="range__item">
-              <div class="range__visual" :style="{ width: `${mod.size}px` }">
-                <img :src="mod.src" alt="" :width="mod.size" :height="mod.size" />
+              <div class="range__visual" :style="{ width: `${range.moduleSize}px` }">
+                <img :src="img(mod.image, 600)" loading="lazy" :alt="alt(mod.image)" :width="range.moduleSize" :height="range.moduleSize" />
               </div>
               <figcaption>
-                <span class="range__label">Module</span>
-                <span class="range__meta">3 places</span>
+                <span class="range__label">{{ mod.titre }}</span>
+                <span class="range__meta">{{ mod.texte }}</span>
               </figcaption>
             </figure>
             <span class="range__op" aria-hidden="true">{{ i === 0 ? '+' : '=' }}</span>
           </template>
           <figure class="range__item range__item--space">
             <div
-              v-for="(configuration, i) in range.space.configurations"
-              :key="configuration"
+              v-for="configuration in range.configurations"
+              :key="configuration._key"
               class="range__visual"
-              :style="{ width: `${range.space.size}px` }"
+              :style="{ width: `${range.spaceSize}px` }"
             >
               <img
-                :src="configuration"
-                :alt="`${range.space.label}, configuration ${i + 1}`"
-                :width="range.space.size"
-                :height="range.space.size"
+                :src="img(configuration.image, 400)"
+                loading="lazy"
+                :alt="alt(configuration.image)"
+                :width="range.spaceSize"
+                :height="range.spaceSize"
               />
             </div>
             <figcaption>
-              <span class="range__label">{{ range.space.label }}</span>
-              <span class="range__meta">Jusqu’à 8 personnes · 12 m² d’ombre</span>
+              <span class="range__label">{{ range.titreEspace }}</span>
+              <span class="range__meta">{{ range.texteEspace }}</span>
             </figcaption>
           </figure>
         </div>
@@ -159,7 +141,9 @@ const ranges = [
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  white-space: nowrap;
+  max-width: 100%;
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .range__label {
@@ -184,6 +168,12 @@ const ranges = [
   color: var(--cream);
   opacity: 0.5;
   flex: none;
+}
+
+@media (min-width: 761px) and (max-width: 1200px) {
+  .range__equation { gap: 12px; }
+  .range__item { flex: 1 1 0; }
+  .range__op { width: 32px; font-size: 32px; }
 }
 
 @media (max-width: 1024px) {

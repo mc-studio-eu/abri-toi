@@ -11,7 +11,7 @@ usePageSeo({
   fil: [{ nom: 'Produits', chemin: '/produits' }],
 })
 
-const ordre: GammeCle[] = ['galileo', 'fotos']
+const ordre = computed(() => (['galileo', 'fotos'] as GammeCle[]).filter((cle) => gammes.value[cle]))
 const collection = (gamme: GammeCle, categorie: 'modele' | 'espace') =>
   produits.value.filter((p) => p.gamme === gamme && p.categorie === categorie)
 </script>
@@ -29,8 +29,8 @@ const collection = (gamme: GammeCle, categorie: 'modele' | 'espace') =>
 
         <div v-for="cle in ordre" :id="cle" :key="cle" class="gamme">
           <div v-reveal class="gamme__titre">
-            <h3 class="display-h3">{{ gammes[cle].nom }}</h3>
-            <p class="label-mono" :class="`gamme__tag--${cle}`">{{ gammes[cle].tag }}</p>
+            <h3 class="display-h3">{{ gammes[cle]?.nom }}</h3>
+            <p class="label-mono" :class="`gamme__tag--${cle}`">{{ gammes[cle]?.tag }}</p>
           </div>
 
           <ul class="grille grille--3">
@@ -53,7 +53,7 @@ const collection = (gamme: GammeCle, categorie: 'modele' | 'espace') =>
           </div>
 
           <div class="espaces">
-            <p v-reveal class="label-mono espaces__label">{{ gammes[cle].labelEspaces }}</p>
+            <p v-reveal class="label-mono espaces__label">{{ gammes[cle]?.labelEspaces }}</p>
             <ul class="grille" :class="collection(cle, 'espace').length > 3 ? 'grille--4' : 'grille--3'">
               <li v-for="(p, i) in collection(cle, 'espace')" :key="p.slug" v-reveal="i * 100">
                 <ProduitCarte :titre="p.nom" :description="p.carte.description" :visuel="p.carte.visuel" :to="lienProduit(p)" />
@@ -121,7 +121,7 @@ const collection = (gamme: GammeCle, categorie: 'modele' | 'espace') =>
   display: flex;
   flex-direction: column;
   gap: 24px;
-  scroll-margin-top: 24px;
+  scroll-margin-top: var(--nav-content-offset);
 }
 
 .gamme__titre {
@@ -148,6 +148,7 @@ const collection = (gamme: GammeCle, categorie: 'modele' | 'espace') =>
 .grille > li,
 .grille > li > * {
   height: 100%;
+  min-width: 0;
 }
 
 .grille--3 {
@@ -202,7 +203,7 @@ const collection = (gamme: GammeCle, categorie: 'modele' | 'espace') =>
   padding-top: 96px;
   padding-bottom: 96px;
   background: var(--paper);
-  scroll-margin-top: 0;
+  scroll-margin-top: var(--nav-content-offset);
 }
 
 .comparatif__titre {

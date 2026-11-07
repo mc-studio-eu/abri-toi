@@ -111,7 +111,7 @@ const legal = [
 .footer__cols {
   display: flex;
   gap: 96px;
-  white-space: nowrap;
+  min-width: 0;
 }
 
 .footer__col ul {
@@ -121,6 +121,8 @@ const legal = [
 }
 
 .footer__col {
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -162,6 +164,18 @@ const legal = [
 .footer__cookies:hover { color: var(--orange-500); }
 
 @media (max-width: 1024px) {
+  .footer__col a,
+  .footer__legal a,
+  .footer__cookies {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .footer__col ul {
+    gap: 0;
+  }
+
   .footer__top {
     flex-direction: column;
   }
@@ -173,6 +187,29 @@ const legal = [
 
   .footer__bottom {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer {
+    padding-top: 48px;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+    gap: 32px;
+  }
+
+  .footer__cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 28px 20px;
+  }
+
+  .footer__col:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .footer__bottom {
+    line-height: 1.6;
   }
 }
 </style>

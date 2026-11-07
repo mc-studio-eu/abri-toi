@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { Article } from '~/content/articles'
 
-defineProps<{ article: Pick<Article, 'slug' | 'titre' | 'categorie' | 'tempsLecture' | 'couverture' | 'couvertureFond' | 'couvertureInset'> }>()
+defineProps<{ article: Pick<Article, 'slug' | 'titre' | 'categorie' | 'tempsLecture' | 'couverture' | 'couvertureFond' | 'couvertureInset'>; sizes?: string }>()
 </script>
 
 <template>
   <NuxtLink :to="`/articles/${article.slug}`" class="carte">
-    <ArticleCouverture :article="article" :full-width="article.slug === 'brumisation-haute-pression'" class="carte__couv" />
+    <ArticleCouverture :article="article" :sizes="sizes" :full-width="article.slug === 'brumisation-haute-pression'" class="carte__couv" />
     <span class="label-mono carte__tag">{{ labelCategorie(article.categorie) }}&nbsp;&nbsp;·&nbsp;&nbsp;{{ article.tempsLecture }} min</span>
     <h3 class="display-h4 carte__titre">{{ article.titre }}</h3>
   </NuxtLink>

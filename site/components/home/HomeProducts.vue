@@ -56,6 +56,6 @@ const gammes = [
 .home-products__copy h3 { margin-top:12px; font-size:clamp(32px,3vw,48px); }
 .home-products__description { margin-top:14px; color:var(--brown-700); line-height:1.6; }
 .home-products__link { display:flex; justify-content:space-between; gap:12px; padding-top:18px; border-top:1px solid var(--line); font-weight:500; }
-@media(max-width:900px) { .home-products__grid { grid-template-columns:1fr; } }
+@media(max-width:1100px) { .home-products__grid { grid-template-columns:1fr; } }
 @media(max-width:560px) { .home-products__card { grid-template-columns:1fr; } .home-products__image img { min-height:230px; max-height:300px; } .home-products__copy { padding:22px; } }
 </style>

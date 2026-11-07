@@ -52,6 +52,21 @@ const etat = ref<'' | 'envoi' | 'ok' | 'erreur'>('')
 const erreur = ref('')
 const produitSelectionne = computed(() => catalogue.value.find((produit) => produit.slug === form.produit))
 
+let validationPlanifiee = false
+function montrerChampInvalide(event: Event) {
+  if (validationPlanifiee) return
+  const formulaire = event.currentTarget as HTMLFormElement
+  validationPlanifiee = true
+  // La validation native défile d'abord ; replacer ensuite le champ sous la navigation.
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    validationPlanifiee = false
+    if (!formulaire.isConnected) return
+    const champ = formulaire.querySelector<HTMLElement>('input:invalid, select:invalid, textarea:invalid')
+    champ?.focus({ preventScroll: true })
+    champ?.scrollIntoView({ block: 'center', behavior: 'instant' })
+  }))
+}
+
 watch(produitSelectionne, (produit) => {
   if (produit) form.gamme = libelleGamme(produit.gamme)
 }, { flush: 'sync' })
@@ -104,7 +119,7 @@ async function envoyer() {
             <p class="body-l">{{ f.confirmation }}</p>
           </div>
 
-          <form v-else @submit.prevent="envoyer">
+          <form v-else @submit.prevent="envoyer" @invalid.capture="montrerChampInvalide">
             <label class="form-trap" aria-hidden="true">
               Laisser ce champ vide
               <input v-model="form.website" name="website" tabindex="-1" autocomplete="off" :maxlength="limitesDemande.website" />
@@ -220,13 +235,6 @@ async function envoyer() {
         </div>
 
         <div class="coordonnees">
-          <div class="rdv">
-            <p class="label-mono rdv__label">{{ page.rendezVous.label }}</p>
-            <h2 class="rdv__titre">{{ page.rendezVous.titre }}</h2>
-            <p class="rdv__texte">{{ page.rendezVous.texte }}</p>
-            <UiButton pill :label="page.rendezVous.bouton" :to="page.rendezVous.lien || tel" />
-          </div>
-
           <dl class="contacts">
             <div class="contacts__ligne">
               <dt class="label-mono">Téléphone</dt>
@@ -323,6 +331,7 @@ form {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
 }
 
 .champ__label {
@@ -353,6 +362,12 @@ form {
   resize: vertical;
 }
 
+.champ input,
+.champ select,
+.champ textarea {
+  min-width: 0;
+}
+
 .champ ::placeholder {
   color: rgba(63, 38, 29, 0.4);
 }
@@ -372,6 +387,7 @@ form {
   margin: 0;
   padding: 0;
   border: 0;
+  min-inline-size: 0;
 }
 
 .choix legend {
@@ -392,6 +408,8 @@ form {
 
 .puce span {
   display: inline-block;
+  min-height: 44px;
+  max-width: 100%;
   padding: 10px 18px;
   border: 1px solid rgba(63, 38, 29, 0.22);
   border-radius: 999px;
@@ -462,34 +480,6 @@ form {
   flex: none;
 }
 
-.rdv {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 40px 32px;
-  border-radius: 20px;
-  background: var(--brown-900);
-  color: var(--cream);
-}
-
-.rdv__label {
-  color: var(--orange-500);
-}
-
-.rdv__titre {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 28px;
-  line-height: 1.15;
-}
-
-.rdv__texte {
-  font-size: 16px;
-  line-height: 1.5;
-  color: rgba(244, 238, 229, 0.8);
-}
-
 .contacts {
   margin: 0;
   padding: 8px 32px;
@@ -518,6 +508,7 @@ form {
   font-family: var(--font-display);
   font-weight: 500;
   font-size: 20px;
+  overflow-wrap: anywhere;
 }
 
 .contacts a:hover {
@@ -565,6 +556,7 @@ form {
     flex-direction: column;
   }
 
+  .formulaire,
   .coordonnees {
     width: 100%;
   }
@@ -591,8 +583,12 @@ form {
 
   .choix__options--profils {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 24px;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .choix__options--profils .puce span {
+    width: 100%;
   }
 
   .ligne {
@@ -601,17 +597,13 @@ form {
 
   .envoi {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
   }
 
-  .rdv,
   .contacts,
   .ensuite {
     padding-inline: 24px;
   }
 
-  .rdv__titre {
-    font-size: 24px;
-  }
 }
 </style>

@@ -6,6 +6,7 @@ import { DESCRIPTION_ACCUEIL, descriptionCourte, imageAbsolue, origineSeo, seria
 type FilAriane = { nom: string; chemin: string }
 type OptionsSeo = {
   titre: string
+  chemin?: string
   description: string
   image?: string | Visuel
   type?: 'website' | 'article'
@@ -20,13 +21,14 @@ export function usePageSeo(options: MaybeRefOrGetter<OptionsSeo>) {
   const origine = origineSeo(config.seoSiteUrl)
   // Capturer la configuration dans setup : Unhead peut évaluer son getter hors contexte Nuxt.
   const images = config.sanity.projectId ? createImageUrlBuilder(config.sanity) : null
-  const canonical = computed(() => urlCanonique(route.path, origine))
+  const canonical = computed(() => urlCanonique(toValue(options).chemin || route.path, origine))
   useHead(() => {
     const seo = toValue(options)
     const description = descriptionCourte(seo.description, DESCRIPTION_ACCUEIL)
     const visuel = seo.image
-    const source = typeof visuel === 'string' ? visuel : visuel && 'src' in visuel ? visuel.src
-      : visuel?.asset && images ? images.image(visuel).auto('format').fit('max').width(1200).url() : undefined
+    const source = typeof visuel === 'string' ? visuel
+      : visuel?.asset && images ? images.image(visuel).auto('format').fit('max').width(1200).url()
+      : visuel && 'src' in visuel ? visuel.src : undefined
     const image = imageAbsolue(source, origine)
     const organisation = {
       '@type': 'Organization', '@id': `${origine}/#organization`,

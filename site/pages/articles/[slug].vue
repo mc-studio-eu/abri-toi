@@ -66,7 +66,7 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
       </PageHero>
 
       <section class="couverture section">
-        <ArticleCouverture :article="a" :image="a.illustration" :full-width="slug === 'brumisation-haute-pression'" class="couverture__visuel" :class="{ 'couverture__visuel--illu': a.illustration }" />
+        <ArticleCouverture :article="a" :image="a.illustration" loading="eager" :sizes="taillesImageSection" :full-width="slug === 'brumisation-haute-pression'" class="couverture__visuel" :class="{ 'couverture__visuel--illu': a.illustration }" />
         <p v-if="a.legendeIllustration" class="label-mono couverture__legende">{{ a.legendeIllustration }}</p>
       </section>
 
@@ -84,21 +84,19 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
             <hr class="aside__trait" />
           </template>
           <p class="label-mono aside__titre">Partager</p>
-          <p class="aside__partage">
+          <div class="aside__partage">
             <a :href="partage.linkedin" target="_blank" rel="noopener">LinkedIn</a>
-            &nbsp;·&nbsp;
             <a :href="partage.email">E-mail</a>
-            &nbsp;·&nbsp;
             <button type="button" @click="copierLien">{{ copie ? 'Lien copié' : 'Copier le lien' }}</button>
-          </p>
+          </div>
         </aside>
 
         <div class="contenu">
           <p v-if="a.intro" class="contenu__intro">{{ a.intro }}</p>
           <ArticleCorps ref="corps" :blocs="a.corps" />
           <div v-if="a.auteur?.nom" class="auteur">
-            <img v-if="a.auteur.photo" :src="img(a.auteur.photo, 112, 112)" alt="" class="auteur__photo" />
-            <img v-else src="/images/figma-secondary/paul-saraceno.png" alt="" width="56" height="56" class="auteur__photo" />
+            <img v-if="a.auteur.photo" :src="img(a.auteur.photo, 112, 112)" loading="lazy" width="56" height="56" alt="" class="auteur__photo" />
+            <img v-else src="/images/figma-secondary/paul-saraceno.png" loading="lazy" alt="" width="56" height="56" class="auteur__photo" />
             <div>
               <p class="auteur__nom">{{ a.auteur.nom }}</p>
               <p class="body-m">{{ a.auteur.bio }}</p>
@@ -212,8 +210,18 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
 }
 
 .aside__partage {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 16px;
   font-size: 16px;
   line-height: 1.55;
+}
+
+.aside__partage a,
+.aside__partage button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 .aside__partage a:hover,
@@ -227,6 +235,8 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
   gap: 24px;
   width: 720px;
   max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .contenu__intro {
@@ -263,6 +273,7 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .a-lire {
@@ -302,8 +313,18 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
     height: 400px;
   }
 
+  .couverture__visuel--illu {
+    height: auto;
+  }
+
   .a-lire__grille {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aside__sommaire a {
+    min-height: 44px;
+    align-items: baseline;
+    padding-block: 6px;
   }
 }
 
@@ -316,6 +337,10 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
   .couverture__visuel {
     height: auto;
     aspect-ratio: 1280 / 560;
+  }
+
+  .couverture__visuel--illu {
+    aspect-ratio: auto;
   }
 
   .article,
@@ -338,6 +363,10 @@ const aLire = computed(() => tous.value.filter((x) => x.slug !== slug).slice(0, 
 
   .a-lire {
     gap: 32px;
+  }
+
+  .a-lire__grille {
+    grid-template-columns: 1fr;
   }
 
   .a-lire__entete {

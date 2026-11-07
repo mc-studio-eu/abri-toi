@@ -4,12 +4,16 @@ const page = await usePageAccueil()
 const noms = await useGammes()
 const solution = computed(() => page.value.solution)
 const gammeId = ref<GammeId>('galileo')
-const gammes = computed(() => (['galileo', 'fotos'] as GammeId[]).map(id => ({
+const gammes = computed(() => (['galileo', 'fotos'] as GammeId[]).filter(id => noms.value[id]).map(id => ({
   id, thumb: `/images/figma-home/anatomy/${id}-selector`,
-  nom: noms.value[id].nom, ...solution.value[id],
+  nom: noms.value[id]!.nom, ...solution.value[id],
 })))
+watch(gammes, (disponibles) => {
+  if (!disponibles.some(g => g.id === gammeId.value) && disponibles[0]) gammeId.value = disponibles[0].id
+}, { immediate: true })
 const syncHash = () => {
-  if (location.hash === '#fotos' || location.hash === '#galileo') gammeId.value = location.hash.slice(1) as GammeId
+  const id = location.hash.slice(1) as GammeId
+  if (gammes.value.some(g => g.id === id)) gammeId.value = id
 }
 onMounted(() => {
   syncHash()
@@ -20,14 +24,16 @@ function select(id: GammeId) { gammeId.value = id }
 function moveTab(event: KeyboardEvent, index: number) {
   if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return
   event.preventDefault()
-  const next = event.key === 'Home' ? 0 : event.key === 'End' ? 1 : 1 - index
-  select(next === 0 ? 'galileo' : 'fotos')
+  const total = gammes.value.length
+  if (!total) return
+  const next = event.key === 'Home' ? 0 : event.key === 'End' ? total - 1 : (index + (event.key === 'ArrowLeft' ? -1 : 1) + total) % total
+  select(gammes.value[next]!.id)
   document.getElementById(`gamme-tab-${gammeId.value}`)?.focus()
 }
 </script>
 
 <template>
-  <section id="solution" class="solution section" :class="`solution--${gammeId}`">
+  <section v-if="gammes.length" id="solution" class="solution section" :class="`solution--${gammeId}`">
     <header class="solution__header">
       <h2 class="display-h2">{{ solution.titre }}<br />{{ solution.titreSuite }}</h2>
       <p class="body-l solution__intro">{{ solution.intro }}</p>
@@ -39,7 +45,7 @@ function moveTab(event: KeyboardEvent, index: number) {
         :aria-selected="gammeId === g.id" :tabindex="gammeId === g.id ? 0 : -1" aria-controls="gamme-anatomie"
         @click="select(g.id)" @keydown="moveTab($event, index)">
         <span class="selector__visual">
-          <img class="selector__photo" :src="`${g.thumb}-720.webp`" :srcset="`${g.thumb}-720.webp 720w, ${g.thumb}-1440.webp 1440w`" sizes="(min-width: 1440px) 600px, (min-width: 641px) 45vw, calc(100vw - 64px)" :alt="`Abri ${g.nom}`" width="600" height="420" />
+          <img class="selector__photo" loading="lazy" :src="`${g.thumb}-720.webp`" :srcset="`${g.thumb}-720.webp 720w, ${g.thumb}-1440.webp 1440w`" sizes="(min-width: 1440px) 600px, (min-width: 641px) 45vw, calc(100vw - 64px)" :alt="`Abri ${g.nom}`" width="600" height="420" />
           <span class="selector__badge">
             <img v-if="gammeId === g.id" src="/images/figma-home/426-21774-imgIcone.svg" alt="" width="20" height="20" />
             <span v-else class="selector__circle" aria-hidden="true" />

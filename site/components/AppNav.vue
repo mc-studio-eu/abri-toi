@@ -63,7 +63,7 @@ const surveiller = () => (flottante.value = window.scrollY > 80)
 onMounted(() => {
   surveiller()
   window.addEventListener('scroll', surveiller, { passive: true })
-  ecranMobile = window.matchMedia('(max-width: 1024px)')
+  ecranMobile = window.matchMedia('(max-width: 1100px)')
   ecranMobile.addEventListener('change', surveillerEcran)
 })
 onBeforeUnmount(() => {
@@ -207,6 +207,13 @@ onBeforeUnmount(() => {
   gap: 48px;
 }
 
+.nav__gauche > a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  flex-shrink: 0;
+}
+
 .nav__logo {
   width: 130px;
   height: 23px;
@@ -286,7 +293,7 @@ onBeforeUnmount(() => {
   top: 7px;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
   .nav__burger {
     display: block;
   }
@@ -297,6 +304,11 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 640px) {
+  .nav--flottante {
+    padding-inline: 12px;
+    background: rgba(63, 38, 29, 0.9);
+  }
+
   .nav__cta {
     display: none;
   }
@@ -343,6 +355,7 @@ onBeforeUnmount(() => {
   gap: 24px;
   min-height: 100%;
   padding: 22px clamp(18px, 6vw, 28px);
+  padding-bottom: max(22px, env(safe-area-inset-bottom));
 }
 
 .nav-tiroir__entete {

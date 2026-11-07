@@ -9,6 +9,29 @@ const titreIntro = [texte('titre', 'Titre'), paragraphe('intro', 'Texte d’intr
 const refArticle = (name: string, title: string) =>
   defineField({ name, title, type: 'reference', to: [{ type: 'article' }] })
 
+const systemeModulaire = objet('modulaire', 'Système modulaire', [
+    texte('titre', 'Titre'),
+    paragraphe('texte', 'Texte'),
+    liste('gammes', 'Schémas des gammes', [
+      gammeChamp(),
+      texte('titre', 'Titre de la gamme'),
+      liste('modules', 'Les deux modules à combiner', [
+        image('image', 'Image du module', { validation: (r: any) => r.required() }),
+        texte('titre', 'Légende du module'),
+        texte('texte', 'Capacité du module'),
+      ], { title: 'titre', subtitle: 'texte', media: 'image' }, {
+        validation: (r: any) => r.required().length(2),
+      }),
+      liste('configurations', 'Les deux configurations obtenues', [
+        image('image', 'Image de la configuration', { validation: (r: any) => r.required() }),
+      ], { title: 'image.alt', media: 'image' }, {
+        validation: (r: any) => r.required().length(2),
+      }),
+      texte('titreEspace', 'Légende de l’espace'),
+      texte('texteEspace', 'Capacité et surface d’ombre'),
+    ], { title: 'titre' }),
+  ])
+
 export const pageAccueil = page('pageAccueil', 'Accueil', [
   objet('hero', 'Grand visuel', [
     image('photo', 'Photo de fond'),
@@ -72,7 +95,7 @@ export const pageAccueil = page('pageAccueil', 'Accueil', [
       ]),
     ),
   ]),
-  objet('modulaire', 'Système modulaire', [texte('titre', 'Titre'), paragraphe('texte', 'Texte')]),
+  { ...systemeModulaire, hidden: true, readOnly: true, deprecated: { reason: 'Déplacé dans Pages → Produits → Système modulaire.' } },
   objet('process', 'Process', [
     texte('titre', 'Titre (1re ligne)'),
     texte('titreSuite', 'Titre (2e ligne)'),
@@ -92,6 +115,7 @@ export const pageAccueil = page('pageAccueil', 'Accueil', [
         texte('titre', 'Titre'),
         gammeChamp(),
         image('image', 'Photo'),
+        defineField({ name: 'realisation', title: 'Réalisation liée', type: 'reference', to: [{ type: 'realisation' }], description: 'Ouvre la fiche de cette réalisation. Si vide, le lien vers le produit est utilisé.' }),
         defineField({ name: 'produit', title: 'Fiche produit liée', type: 'reference', to: [{ type: 'produit' }] }),
       ],
       { title: 'titre', media: 'image' },
@@ -100,6 +124,17 @@ export const pageAccueil = page('pageAccueil', 'Accueil', [
     liste('galerie', 'Galerie', [image('image', 'Photo'), texte('legende', 'Légende')], {
       title: 'legende',
       media: 'image',
+    }),
+  ]),
+  objet('sujets', 'Nos sujets en cours de réflexion', [
+    texte('titre', 'Titre de la section'),
+    paragraphe('intro', 'Texte d’introduction'),
+    liste('cartes', 'Cartes', [
+      texte('titre', 'Titre', { validation: (r: any) => r.required() }),
+      paragraphe('texte', 'Texte'),
+      image('image', 'Image', { validation: (r: any) => r.required() }),
+    ], { title: 'titre', media: 'image' }, {
+      description: 'Modifiez les textes et les images, ou glissez les cartes pour changer leur ordre.',
     }),
   ]),
   objet('faq', 'Questions fréquentes', [
@@ -130,6 +165,7 @@ export const pageAccueil = page('pageAccueil', 'Accueil', [
 ])
 
 export const pageProduits = page('pageProduits', 'Page Produits', [
+  systemeModulaire,
   hero(true),
   objet('collection', 'Toute la collection', titreIntro),
   objet('usages', 'Usages par gamme', [

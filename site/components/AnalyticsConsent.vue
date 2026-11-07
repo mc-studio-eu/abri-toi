@@ -93,6 +93,7 @@ onMounted(() => {
 .analytics-consent a { display: inline-block; margin-top: 8px; text-decoration: underline; }
 .analytics-consent__actions { display: flex; gap: 12px; margin-top: 20px; }
 .analytics-consent button {
+  min-height: 44px;
   flex: 1;
   padding: 10px 16px;
   border: 1px solid currentColor;
@@ -103,4 +104,26 @@ onMounted(() => {
   background: transparent;
 }
 .analytics-consent button:hover { background: var(--sand); }
+
+@media (max-width: 640px) {
+  .analytics-consent {
+    left: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: calc(100% - 24px);
+    max-height: calc(100dvh - 24px - env(safe-area-inset-bottom));
+    padding: 16px;
+    overscroll-behavior: contain;
+  }
+
+  .analytics-consent a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    margin-top: 0;
+  }
+
+  .analytics-consent__actions {
+    margin-top: 8px;
+  }
+}
 </style>

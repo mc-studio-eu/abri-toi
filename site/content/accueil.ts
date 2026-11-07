@@ -1,6 +1,7 @@
 import type { Img } from './commun'
 
 type MorceauManifeste = { texte: string; accent?: boolean } | { image: Img; largeur: number }
+type BandeauInstallation = { titre: string; gamme: string; image: Img; produit: string; realisation?: string }
 
 export const pageAccueil = {
   hero: {
@@ -98,11 +99,6 @@ export const pageAccueil = {
       badge: 'Sans ancrage · Déplaçable au chariot · Réservoir 120 L',
     },
   },
-  modulaire: {
-    titre: 'Des abris combinables et modulables.',
-    texte:
-      'Chaque gamme se combine avec elle-même. Les configurations peuvent accueillir jusqu’à 8 personnes et créer jusqu’à 12 m² d’ombre : banquettes, bancs, tables ou gradins chez Galiléo, bancs et tables sous une arche végétale chez Fotos.',
-  },
   process: {
     titre: 'À 10 degrés de vous',
     titreSuite: 'sentir bien dehors.',
@@ -147,7 +143,7 @@ export const pageAccueil = {
         image: { src: '/images/bandeau-galileo-premiers-usagers.jpg' } as Img,
         produit: 'banc-galileo',
       },
-    ],
+    ] as BandeauInstallation[],
     labelGalerie: 'Fotos · en détail',
     galerie: [
       { image: { src: '/images/photo-structure-aluminium-brun.jpg' } as Img, legende: 'Structure aluminium brun' },
@@ -155,6 +151,30 @@ export const pageAccueil = {
       { image: { src: '/images/photo-grimpantes-et-fleurs.jpg' } as Img, legende: 'Grimpantes et fleurs' },
       { image: { src: '/images/photo-la-pergola-vue-den-bas.jpg' } as Img, legende: 'La pergola, vue d’en bas' },
       { image: { src: '/images/photo-assise-en-bois-kebony.jpg' } as Img, legende: 'Assise en bois Kebony' },
+    ],
+  },
+  sujets: {
+    titre: 'Nos sujets en cours de réflexion',
+    intro: 'Des pistes d’aménagement pour nourrir la réflexion. Chaque étude d’intégration est adaptée au lieu et à ses usages.',
+    cartes: [
+      {
+        _key: 'espaces-artificiels',
+        titre: 'Des solutions pour les espaces artificiels',
+        texte: 'Fréquentez de nouveau les rues et espaces publics de votre commune.',
+        image: { src: '/images/figma-home/426-19739-imgVisuel.png', alt: 'Abri végétalisé dans une place publique' } as Img,
+      },
+      {
+        _key: 'plein-air',
+        titre: 'Travailler en plein air',
+        texte: 'Une nouvelle manière d’imaginer vos réunions ou un nouvel endroit pour déjeuner entre collègues.',
+        image: { src: '/images/figma-home/426-19739-imgVisuel1.png', alt: 'Abris Galiléo installés dans le jardin d’un lieu de travail' } as Img,
+      },
+      {
+        _key: 'existant',
+        titre: 'Valoriser l’existant',
+        texte: 'Intégrez de la brumisation à votre ombrière et créez un véritable espace d’ombrage.',
+        image: { src: '/images/figma-home/426-19739-imgVisuel2.png', alt: 'Espace de détente ombragé et brumisé au bord d’un jardin' } as Img,
+      },
     ],
   },
   faq: {

@@ -17,7 +17,7 @@ const selection = computed(() => {
 
     <ul class="articles__grid">
       <li v-for="(article, i) in selection" :key="article.slug" v-reveal="i * 120">
-        <ArticleCarte :article="article" />
+        <ArticleCarte :article="article" sizes="(min-width: 1440px) 411px, (max-width: 640px) calc(100vw - 40px), (max-width: 1024px) calc(100vw - 80px), calc((100vw - 208px) / 3)" />
       </li>
     </ul>
   </section>

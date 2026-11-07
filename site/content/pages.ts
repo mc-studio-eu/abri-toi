@@ -1,6 +1,31 @@
 import type { Hero, Img, Ligne } from './commun'
 
 export const pageProduits = {
+  modulaire: {
+    titre: 'Des abris combinables et modulables.',
+    texte:
+      'Chaque gamme se combine avec elle-même. Les configurations peuvent accueillir jusqu’à 8 personnes et créer jusqu’à 12 m² d’ombre : banquettes, bancs, tables ou gradins chez Galiléo, bancs et tables sous une arche végétale chez Fotos.',
+    gammes: [
+      ...(['galileo', 'fotos'] as const).map((gamme) => ({
+        _key: gamme,
+        gamme,
+        titre: gamme === 'galileo' ? 'Gamme Galiléo' : 'Gamme Fotos',
+        modules: [1, 2].map((numero) => ({
+          _key: `module-${numero}`,
+          titre: 'Module',
+          texte: '3 places',
+          image: { src: `/images/modular/${gamme}-solo.png`, alt: `Module ${gamme === 'galileo' ? 'Galiléo' : 'Fotos'}` } as Img,
+        })),
+        configurations: ['a', 'b'].map((variante, index) => ({
+          _key: variante,
+          image: { src: `/images/modular/${gamme}-${variante}.png`, alt: `Espace ${gamme === 'galileo' ? 'Galiléo' : 'Fotos'}, configuration ${index + 1}` } as Img,
+        })),
+        titreEspace: gamme === 'galileo' ? 'Espace Galiléo' : 'Espace Fotos',
+        texteEspace: 'Jusqu’à 8 personnes · 12 m² d’ombre',
+      })),
+    ],
+  },
+
   hero: {
     titre: 'Deux gammes de mobilier abrité pour valoriser vos extérieurs',
     ancres: [

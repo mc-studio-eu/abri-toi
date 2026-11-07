@@ -68,7 +68,7 @@ defineExpose({ intertitres: computed(() => elements.value.filter((e) => e.numero
         <footer class="label-mono">{{ el.auteur }}</footer>
       </blockquote>
       <figure v-else-if="el._type === 'imageLegendee'" class="photo">
-        <img :src="img(el.image, 1440)" :alt="alt(el.image) || el.legende" loading="lazy" />
+        <img :src="img(el.image, 1440)" :srcset="imgSrcset(el.image, 1440)" sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 800px) calc(100vw - 80px), 720px" :alt="alt(el.image) || el.legende" loading="lazy" />
         <figcaption class="label-mono">{{ el.legende }}</figcaption>
       </figure>
     </template>
@@ -77,6 +77,8 @@ defineExpose({ intertitres: computed(() => elements.value.filter((e) => e.numero
 
 <style scoped>
 .corps {
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -163,6 +165,18 @@ defineExpose({ intertitres: computed(() => elements.value.filter((e) => e.numero
 }
 
 @media (max-width: 640px) {
+  .photo img {
+    height: auto;
+    max-height: 480px;
+    object-fit: contain;
+  }
+
+  .corps__p,
+  .corps__liste {
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
   .corps__h2 {
     font-size: 26px;
   }

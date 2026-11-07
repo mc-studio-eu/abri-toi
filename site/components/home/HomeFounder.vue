@@ -5,7 +5,7 @@ const fondateur = computed(() => page.value.fondateur)
 
 <template>
   <section id="fondateur" class="founder section">
-    <img :src="img(fondateur.portrait, 1000)" :alt="alt(fondateur.portrait)" v-reveal class="founder__portrait" />
+    <img :src="img(fondateur.portrait, 1000)" :srcset="imgSrcset(fondateur.portrait, 1000)" sizes="(max-width: 480px) calc(100vw - 40px), 440px" loading="lazy" :alt="alt(fondateur.portrait)" v-reveal class="founder__portrait" />
     <div v-reveal="150" class="founder__body">
       <blockquote class="display-h3 founder__quote">{{ fondateur.citation }}</blockquote>
       <p class="body-l founder__text">{{ fondateur.texte }}</p>

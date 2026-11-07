@@ -10,6 +10,55 @@ const temps = [
   { value: 30, label: 'L’ombre se dessine', left: 680, color: '#8c6a44' },
   { value: 26, label: 'Installé · il fait bon', left: 1004, color: 'var(--sage-500)', big: true },
 ]
+// Une seule progression pilote la jauge et les cartes : aucun délai indépendant.
+const stepsElement = ref<HTMLOListElement | null>(null)
+const progress = ref(1)
+const stepStyle = (index: number) => {
+  const visibility = Math.min(1, Math.max(0, (progress.value - thermoStops[index] / 1280) / .07))
+  return { opacity: visibility, transform: `translateY(${(1 - visibility) * 12}px)` }
+}
+let cleanupMotion = () => {}
+onMounted(() => {
+  const motion = window.matchMedia('(min-width: 1025px) and (prefers-reduced-motion: no-preference)')
+  let frame = 0
+  let started = false
+  const stopWaiting = () => {
+    window.removeEventListener('scroll', check)
+    window.removeEventListener('resize', check)
+  }
+  const check = () => {
+    if (started || !stepsElement.value || stepsElement.value.getBoundingClientRect().top > window.innerHeight * .85) return
+    started = true
+    stopWaiting()
+    let start: number | undefined
+    const tick = (now: number) => {
+      start ??= now
+      progress.value = Math.min(1, (now - start) / 2800)
+      if (progress.value < 1) frame = requestAnimationFrame(tick)
+    }
+    frame = requestAnimationFrame(tick)
+  }
+  const configure = () => {
+    cancelAnimationFrame(frame)
+    stopWaiting()
+    if (!motion.matches || started) {
+      progress.value = 1
+      return
+    }
+    progress.value = 0
+    window.addEventListener('scroll', check, { passive: true })
+    window.addEventListener('resize', check)
+    check()
+  }
+  motion.addEventListener('change', configure)
+  configure()
+  cleanupMotion = () => {
+    cancelAnimationFrame(frame)
+    stopWaiting()
+    motion.removeEventListener('change', configure)
+  }
+})
+onBeforeUnmount(() => cleanupMotion())
 const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'], ['Orientation', 'sud-ouest']]
 </script>
 
@@ -20,7 +69,7 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
       <p class="process__total"><span class="process__weeks">{{ process.duree }}</span><span class="label-mono process__note">{{ process.note }}</span></p>
     </header>
 
-    <div v-reveal="100" class="thermo" aria-hidden="true">
+    <div class="thermo" aria-hidden="true">
       <svg class="thermo__rule" viewBox="0 0 1280 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient :id="thermoGradientId" x1="0" y1="0" x2="1280" y2="0" gradientUnits="userSpaceOnUse">
@@ -33,7 +82,7 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
         <path v-for="tick in 81" :key="tick" :d="`M${(tick - 1) * 16} 80v${(tick - 1) % 5 === 0 ? 14 : 8}`" stroke="var(--brown-900)" :stroke-opacity="(tick - 1) % 5 === 0 ? .35 : .18" />
         <rect y="62" width="1280" height="10" rx="5" fill="var(--line)" />
         <circle v-for="stop in thermoStops" :key="stop" :cx="stop" cy="67" r="11" fill="var(--sand)" stroke="var(--cream)" stroke-width="4" />
-        <g class="thermo__fill">
+        <g class="thermo__fill" :style="{ clipPath: `inset(0 ${(1 - progress) * 100}% 0 0)` }">
           <rect y="62" width="1280" height="10" rx="5" :fill="`url(#${thermoGradientId})`" />
           <circle v-for="(stop, i) in thermoStops" :key="stop" :cx="stop" cy="67" r="11" :fill="temps[i].color" stroke="var(--cream)" stroke-width="4" />
         </g>
@@ -44,19 +93,19 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
       </div>
     </div>
 
-    <ol class="steps">
-      <li class="step">
-        <div class="step__visual"><img :src="img(process.photoContact, 800)" alt="" class="step__photo" /></div>
+    <ol ref="stepsElement" class="steps">
+      <li class="step" :style="stepStyle(0)">
+        <div class="step__visual"><img :src="img(process.photoContact, 800)" :srcset="imgSrcset(process.photoContact, 1200)" sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 1024px) calc((100vw - 104px) / 2), (max-width: 1390px) calc((100vw - 256px) / 4), 240px" loading="lazy" alt="" class="step__photo" /></div>
         <h3 class="step__title">{{ etape(0).titre }}</h3><p class="step__text">{{ etape(0).texte }}</p>
       </li>
-      <li class="step">
+      <li class="step" :style="stepStyle(1)">
         <div class="step__visual step__visual--paper">
           <img src="/images/plan-solaire.svg" alt="" width="302" height="201" class="solar__plan" />
           <span class="solar__txt" style="left:92.33%;top:-0.5%;color:var(--brown-900)">N</span><span class="solar__txt" style="left:83.67%;top:48.5%">9H</span><span class="solar__txt" style="left:53%;top:68.5%">13H</span><span class="solar__txt" style="left:9.67%;top:48.5%">17H</span><span class="solar__txt solar__txt--muted" style="left:19%;top:45.5%">OMBRE 9H</span><span class="solar__txt solar__txt--muted" style="left:62.33%;top:45.5%">OMBRE 17H</span>
         </div>
         <h3 class="step__title">{{ etape(1).titre }}</h3><p class="step__text">{{ etape(1).texte }}</p>
       </li>
-      <li class="step">
+      <li class="step" :style="stepStyle(2)">
         <div class="step__visual step__visual--sand"><div class="proposal__back" /><div class="proposal">
           <div class="proposal__head"><span class="proposal__kind">PROPOSITION</span><span class="proposal__num">N° 026</span></div>
           <div class="proposal__plan"><img src="/images/illustration-iso.svg" alt="" width="176" height="117" /></div><p class="proposal__place">Place du Marché</p>
@@ -64,8 +113,8 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
         </div></div>
         <h3 class="step__title step__title--conclusion">{{ etape(2).titre.replace(/^Marché\s+/, 'Marché\n') }}</h3><p class="step__text">{{ etape(2).texte }}</p>
       </li>
-      <li class="step">
-        <div class="step__visual"><img :src="img(process.photoPose, 800)" alt="" class="step__photo step__photo--plain" /><div class="step__tint" /><span class="step__badge">Installé · à l’ombre</span></div>
+      <li class="step" :style="stepStyle(3)">
+        <div class="step__visual"><img :src="img(process.photoPose, 800)" :srcset="imgSrcset(process.photoPose, 1200)" sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 1024px) calc((100vw - 104px) / 2), (max-width: 1390px) calc((100vw - 256px) / 4), 240px" loading="lazy" alt="" class="step__photo step__photo--plain" /><div class="step__tint" /><span class="step__badge">Installé · à l’ombre</span></div>
         <h3 class="step__title">{{ etape(3).titre }}</h3><p class="step__text">{{ etape(3).texte }}</p>
       </li>
     </ol>
@@ -73,7 +122,7 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
 </template>
 
 <style scoped>
-.process { --thermo-duration:2.8s; --thermo-delay:.3s; display:flex; flex-direction:column; gap:56px; padding-top:160px; padding-bottom:46px; }
+.process { display:flex; flex-direction:column; gap:56px; padding-top:160px; padding-bottom:46px; }
 .process__header { display:flex; align-items:flex-end; justify-content:space-between; gap:32px; }
 .process__title { font-family:var(--font-display); font-weight:500; font-size:72px; line-height:1; letter-spacing:-.03em; }
 .process__total { display:flex; flex-direction:column; align-items:flex-end; gap:4px; white-space:nowrap; }
@@ -82,24 +131,8 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
 .thermo { position:relative; width:100%; aspect-ratio:1280 / 100; }.thermo__rule { position:absolute; inset:0; width:100%; height:100%; }
 .thermo__mark { position:absolute; top:0; display:flex; flex-direction:column; white-space:nowrap; }.thermo__value { font-family:var(--font-display); font-weight:500; font-size:36px; line-height:normal; letter-spacing:-.02em; }.thermo__mark--big { top:-4px; }.thermo__mark--big .thermo__value { font-size:44px; }
 .thermo__fill { clip-path:inset(0); }
-:global(.js .thermo__fill) { clip-path:inset(0 100% 0 0); }
-.thermo[data-revealed] .thermo__fill { animation:thermo-fill var(--thermo-duration) cubic-bezier(.45,0,.2,1) var(--thermo-delay) both; }
-@keyframes thermo-fill { from { clip-path:inset(0 100% 0 0); } to { clip-path:inset(0); } }
 .thermo__label { margin-top:-2px; font-family:var(--font-mono); font-weight:500; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--brown-700); }
 .steps { display:flex; gap:97px; margin:0; padding:0; list-style:none; }.step { flex:0 0 240px; min-width:0; display:flex; flex-direction:column; gap:16px; }
-@media (min-width:1025px) and (prefers-reduced-motion:no-preference) {
-  :global(.js .process .step) { opacity:0; transform:translateY(12px); }
-  /* Arrival times at each marker for the fill's cubic-bezier(.45,0,.2,1). */
-  .step:nth-child(1) { --step-arrival:0; }
-  .step:nth-child(2) { --step-arrival:.282152; }
-  .step:nth-child(3) { --step-arrival:.374669; }
-  .step:nth-child(4) { --step-arrival:.505863; }
-  .thermo[data-revealed] + .steps .step {
-    animation:process-step-in .55s cubic-bezier(.2,.8,.2,1) both;
-    animation-delay:calc(var(--thermo-delay) + var(--thermo-duration) * var(--step-arrival));
-  }
-}
-@keyframes process-step-in { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 .step__visual { position:relative; height:201px; overflow:hidden; border:1px solid var(--line); border-radius:16px; }.step__visual--paper { background:var(--paper); }.step__visual--sand { background:var(--sand); }
 .step__photo { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .6s ease; }.step__photo--plain { border:0; }.step:hover .step__photo { transform:scale(1.04); }
 .step__title { font-family:var(--font-display); font-weight:500; min-height:62px; font-size:26px; line-height:1.2; letter-spacing:-.01em; }.step__text { font-size:15px; line-height:1.55; color:var(--brown-700); }
@@ -114,6 +147,6 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
 .step__badge { position:absolute; left:12px; bottom:12px; padding:6px 12px; border-radius:999px; background:var(--sage-500); color:var(--paper); font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; }
 @media(min-width:1025px) and (max-width:1390px) { .steps { gap:32px; } .step { flex:1 1 0; } }
 @media(max-width:1024px) { .process { padding-top:100px; padding-bottom:100px; }.process__title { font-size:52px; }.process__weeks { font-size:44px; }.thermo { display:none; }.steps { flex-wrap:wrap; gap:24px; }.step { flex-basis:calc(50% - 12px); } }
-@media(max-width:640px) { .process__header { flex-direction:column; align-items:flex-start; }.process__title { font-size:40px; }.process__total { align-items:flex-start; }.step { flex-basis:100%; } }
-@media(prefers-reduced-motion:reduce) { :global(.js .thermo__fill), .thermo[data-revealed] .thermo__fill { animation:none; clip-path:inset(0); } }
+@media(max-width:640px) { .process__header { flex-direction:column; align-items:flex-start; }.process__title { font-size:40px; }.process__total { align-items:flex-start; max-width:100%; white-space:normal; }.step { flex-basis:100%; } }
+
 </style>

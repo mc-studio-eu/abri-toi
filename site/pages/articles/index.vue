@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import { categories, type Categorie } from '~/content/articles'
+import { categories, type Categorie } from '~/utils/categoriesArticles'
 
 const page = await usePageArticles()
 const articles = await useArticles()
-
-usePageSeo({
-  titre: 'Articles : ombrage et fraîcheur en ville | Abri Toi',
-  description: 'Explorez les articles Abri Toi sur l’ombrage, la végétalisation et la conception d’espaces publics plus agréables pendant les périodes de chaleur.',
-  fil: [{ nom: 'Articles', chemin: '/articles' }],
-})
 
 const une = computed(() => articles.value.find((a) => a.slug === page.value.aLaUne) ?? articles.value[0])
 
 const PAR_PAGE = 9
 const filtre = ref<Categorie | ''>('')
-const affiches = ref(PAR_PAGE)
-watch(filtre, () => (affiches.value = PAR_PAGE))
 const liste = computed(() =>
   articles.value.filter((a) => a.slug !== une.value?.slug && (!filtre.value || a.categorie === filtre.value)),
 )
+const pagination = usePagination(() => liste.value.length, PAR_PAGE)
+const visibles = computed(() => filtre.value ? liste.value : liste.value.slice(pagination.debut.value, pagination.debut.value + PAR_PAGE))
+usePageSeo(() => ({
+  titre: `Articles : ombrage et fraîcheur en ville${pagination.courante.value > 1 ? ` — page ${pagination.courante.value}` : ''} | Abri Toi`,
+  chemin: pagination.lien(pagination.courante.value),
+  description: 'Explorez les articles Abri Toi sur l’ombrage, la végétalisation et la conception d’espaces publics plus agréables pendant les périodes de chaleur.',
+  fil: [{ nom: 'Articles', chemin: '/articles' }],
+}))
+
 </script>
 
 <template>
@@ -26,9 +27,9 @@ const liste = computed(() =>
     <main>
       <PageHero :hero="page.hero" />
 
-      <section v-if="une" class="une section">
+      <section v-if="une && pagination.courante.value === 1" class="une section">
         <NuxtLink :to="`/articles/${une.slug}`" class="une__lien">
-          <ArticleCouverture v-reveal :article="une" :full-width="une.slug === 'brumisation-haute-pression'" class="une__couv" />
+          <ArticleCouverture v-reveal :article="une" loading="eager" sizes="(min-width: 1201px) 720px, (max-width: 640px) calc(100vw - 40px), (max-width: 1024px) calc(100vw - 80px), calc(100vw - 160px)" :full-width="une.slug === 'brumisation-haute-pression'" class="une__couv" />
           <div v-reveal="120" class="une__texte">
             <p class="label-mono une__meta">
               {{ page.labelALaUne }}&nbsp;&nbsp;·&nbsp;&nbsp;{{ labelCategorie(une.categorie) }}&nbsp;&nbsp;·&nbsp;&nbsp;{{ une.tempsLecture }} min
@@ -60,15 +61,13 @@ const liste = computed(() =>
         </header>
 
         <ul v-if="liste.length" class="grille">
-          <li v-for="(article, i) in liste.slice(0, affiches)" :key="article.slug" v-reveal="(i % 3) * 100">
+          <li v-for="(article, i) in visibles" :key="article.slug" v-reveal="(i % 3) * 100">
             <ArticleCarte :article="article" />
           </li>
         </ul>
         <p v-else class="body-m tous__vide">Pas encore d’article sur ce thème.</p>
 
-        <div v-if="liste.length > affiches" class="tous__plus">
-          <button type="button" class="plus" @click="affiches += PAR_PAGE"><UiTextSlide :text="page.boutonPlus" /></button>
-        </div>
+        <ListePagination v-if="!filtre" :courante="pagination.courante.value" :pages="pagination.pages.value" :lien="pagination.lien" />
       </section>
 
       <ContactCta />
@@ -101,6 +100,8 @@ const liste = computed(() =>
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .une__meta {
@@ -162,6 +163,7 @@ const liste = computed(() =>
 }
 
 .filtre {
+  min-height: 44px;
   padding: 11px 18px;
   border: 1px solid rgba(63, 38, 29, 0.25);
   border-radius: 999px;
@@ -185,6 +187,10 @@ const liste = computed(() =>
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 56px 24px;
+}
+
+.grille > li {
+  min-width: 0;
 }
 
 .tous__vide {

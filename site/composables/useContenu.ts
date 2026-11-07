@@ -1,33 +1,26 @@
-import { completerContenu } from '~/utils/contenuPublic'
-import { DELAI_CONTENU, requeteContenu, type NomContenu } from '~/utils/requetesContenu'
+import { DELAI_CONTENU, type NomContenu } from '~/utils/requetesContenu'
 
-// Lit un contenu dans Sanity. Tant que Sanity n'est pas configuré, ou si le document n'existe pas
-// encore, le contenu de référence (dossier content/) est affiché à la place.
-export async function useContenu<T>(nom: NomContenu, secours: T, slug?: string) {
-  const { contentSource, sanity } = useRuntimeConfig().public
-  const cle = nom === 'article' ? `article-${slug}` : nom === 'pageLegale' ? `legal-${slug}` : nom
-  // `false` plutôt que null : useAsyncData attend une valeur pour ne pas refaire la requête côté navigateur.
-  const { data } = await useAsyncData<T | false>(cle, async (nuxtApp, { signal }) => {
-    if (contentSource === 'reference' || !sanity.projectId) return false
-    if (import.meta.client) {
-      return $fetch<T | false>(`/api/contenu/${nom}`, { query: slug === undefined ? undefined : { slug }, signal, retry: 0 })
-    }
-    const lecture = requeteContenu(nom, slug)
-    if (!lecture) return false
-    const client = await nuxtApp.runWithContext(sanityClient)
-    if (!client) return false
-    return (await client.fetch<T | null>(lecture.groq, lecture.params ?? {}, { signal })) ?? false
-  }, {
-    // Réutiliser les contenus déjà lus (y compris pendant le rendu serveur).
-    // Une navigation ne doit pas relancer les mêmes requêtes ni invalider la page sortante.
-    getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key] ?? nuxtApp.static.data[key],
+// SSR et navigations lisent le même résolveur serveur et son cache partagé.
+// Aucune référence éditoriale ni gestion silencieuse des pannes dans le navigateur.
+export async function useContenu<T>(nom: NomContenu, slug?: string) {
+  const cle = slug === undefined ? nom : `${nom === 'pageLegale' ? 'legal' : nom}-${slug}`
+  const fetchContenu = useRequestFetch()
+  const { data, error } = await useAsyncData<{ contenu: T }>(cle, (_nuxtApp, { signal }) =>
+    fetchContenu<{ contenu: T }>(`/api/contenu/${nom}`, { query: slug === undefined ? undefined : { slug }, signal, retry: 0 }), {
+    // Réutiliser le résultat SSR à l'hydratation, relire ensuite pour respecter
+    // la fraîcheur et les dépublications, même dans une longue session SPA.
+    getCachedData: (key, nuxtApp) => nuxtApp.isHydrating ? nuxtApp.payload.data[key] : undefined,
     dedupe: 'defer',
-    timeout: DELAI_CONTENU,
+    timeout: DELAI_CONTENU + 1000,
   })
-  return computed<T>(() => {
-    const valeur = data.value
-    if (!valeur) return secours
-
-    return completerContenu(valeur, secours)
+  if (error.value) throw createError({
+    statusCode: error.value.statusCode || 503,
+    statusMessage: error.value.statusCode === 404 ? 'Contenu introuvable' : 'Contenu temporairement indisponible',
+    fatal: true,
   })
+  if (!data.value) throw createError({ statusCode: 503, statusMessage: 'Contenu temporairement indisponible', fatal: true })
+  if (data.value.contenu === null && !['article', 'realisation', 'pageLegale'].includes(nom)) {
+    throw createError({ statusCode: 404, statusMessage: 'Contenu introuvable', fatal: true })
+  }
+  return computed<T>(() => data.value!.contenu)
 }

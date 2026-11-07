@@ -181,7 +181,7 @@ async function main() {
       similaires: product.fiche.similaires.map((item) => ({ ...item, produit: reference('produit', item.produit) })),
     } } : {}),
   }))
-  for (const [index, realization] of realisations.entries()) add(find('realisation', realization.nom, (doc) => doc.nom), () => ({ ...realization, ordre: index + 1 }))
+  for (const [index, realization] of realisations.entries()) add(find('realisation', realization.nom, (doc) => doc.nom), () => ({ ...realization, slug: { _type: 'slug', current: realization.slug }, ordre: index + 1 }))
   for (const article of articles) add(find('article', article.slug, (doc) => doc.slug?.current), () => ({
     titre: article.titre, categorie: article.categorie, tempsLecture: article.tempsLecture, date: article.date,
     ...(article.extrait ? { extrait: article.extrait } : {}), couverture: article.couverture,

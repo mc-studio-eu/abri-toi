@@ -38,7 +38,7 @@ usePageSeo(() => ({
     'banc-galileo': 'Banc Galiléo avec toiture d’ombrage | Abri Toi',
     'banc-fotos': 'Banc Fotos avec pergola végétalisée | Abri Toi',
   } as Record<string, string>)[slug.value] || `${fiche.value.titre} : mobilier ombragé | Abri Toi`,
-  description: fiche.value.description || `${produit.value!.nom} : découvrez cette configuration de mobilier abrité ${gamme.value.nom}, conçue pour vos espaces extérieurs.`,
+  description: fiche.value.description || `${produit.value!.nom} : découvrez cette configuration de mobilier abrité ${(gamme.value?.nom || '')}, conçue pour vos espaces extérieurs.`,
   image: produit.value!.carte.visuel,
   fil: [{ nom: 'Produits', chemin: '/produits' }, { nom: fiche.value.titre, chemin: `/produits/${slug.value}` }],
 }))
@@ -62,9 +62,24 @@ const website = ref('')
 const erreur = ref('')
 const etat = ref<'' | 'envoi' | 'emailed' | 'download-only' | 'erreur'>('')
 const documentsRecus = ref<{ label: string; url: string }[] | null>(null)
+let validationPlanifiee = false
+function montrerChampInvalide(event: Event) {
+  if (validationPlanifiee) return
+  const formulaire = event.currentTarget as HTMLFormElement
+  validationPlanifiee = true
+  // Laisser la validation native finir son défilement avant de recentrer le champ.
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    validationPlanifiee = false
+    if (!formulaire.isConnected) return
+    const champ = formulaire.querySelector<HTMLElement>('input:invalid, select:invalid, textarea:invalid')
+    champ?.focus({ preventScroll: true })
+    champ?.scrollIntoView({ block: 'center', behavior: 'instant' })
+  }))
+}
+
 const pdfs = computed(() => documentsRecus.value ?? [
-  { label: `Documentation ${gamme.value.nom}`, url: gamme.value.documentation },
-  { label: `Fiches techniques ${gamme.value.nom}`, url: gamme.value.ficheTechnique },
+  { label: `Documentation ${(gamme.value?.nom || '')}`, url: gamme.value?.documentation },
+  { label: `Fiches techniques ${(gamme.value?.nom || '')}`, url: gamme.value?.ficheTechnique },
 ].filter((p) => p.url))
 watch(slug, () => { etat.value = ''; documentsRecus.value = null })
 async function demanderDoc() {
@@ -111,7 +126,7 @@ async function demanderDoc() {
           </ul>
           <div class="galerie__photo">
             <Transition name="fondu" mode="out-in">
-              <img :key="choisie" :src="img(photo, 1400)" :alt="alt(photo) || fiche.titre" />
+              <img :key="choisie" :src="img(photo, 1400)" :srcset="imgSrcset(photo, 2400)" sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 1200px) calc(100vw - 160px), 700px" loading="eager" fetchpriority="high" :alt="alt(photo) || fiche.titre" />
             </Transition>
           </div>
         </div>
@@ -123,16 +138,16 @@ async function demanderDoc() {
           </div>
           <p class="body-l infos__description">{{ fiche.description }}</p>
           <div class="infos__actions">
-            <UiButton pill label="Demander un devis" :to="`/contact?produit=${encodeURIComponent(produit.slug)}`" />
-            <UiButton pill variant="outline-dark" :label="`Documentation ${gamme.nom}`" to="#documentation" />
+            <UiButton v-if="gamme" pill :label="`Documentation ${gamme.nom}`" to="#documentation" />
+            <UiButton pill variant="outline-dark" label="Fiches tech / 3D / DWG" :to="`/contact?demande=dwg&produit=${encodeURIComponent(produit.slug)}#formulaire`" />
           </div>
         </div>
       </section>
 
       <HomePartners />
 
-      <section class="reassurance section">
-        <div v-for="(r, i) in gamme.reassurance" :key="r.titre" v-reveal="i * 100" class="reassurance__item">
+      <section v-if="gamme?.reassurance?.length" class="reassurance section">
+        <div v-for="(r, i) in gamme?.reassurance" :key="r.titre" v-reveal="i * 100" class="reassurance__item">
           <img :src="img(r.icone, 144)" alt="" width="72" height="72" />
           <h2 class="display-h4">{{ r.titre }}</h2>
           <p class="reassurance__texte">{{ r.texte }}</p>
@@ -150,8 +165,8 @@ async function demanderDoc() {
           </dl>
         </div>
 
-        <div class="documents">
-        <form id="documentation" class="doc" @submit.prevent="demanderDoc">
+        <div v-if="gamme" class="documents">
+        <form id="documentation" class="doc" @submit.prevent="demanderDoc" @invalid.capture="montrerChampInvalide">
           <h2 class="display-h3">{{ textes.documentation.titre }}</h2>
           <p class="body-m doc__texte">{{ textes.documentation.texte }}</p>
           <template v-if="etat !== 'emailed' && etat !== 'download-only'">
@@ -181,10 +196,6 @@ async function demanderDoc() {
             <p v-else>L’envoi n’a pas pu être confirmé. Écrivez-nous à {{ parametres.email }}.</p>
           </div>
         </form>
-        <aside class="doc" aria-labelledby="titre-fichiers">
-          <h2 id="titre-fichiers" class="display-h3">Recevez le fichier DWG ou 3D</h2>
-          <UiButton pill label="Recevoir le fichier" :to="`/contact?demande=dwg&amp;produit=${encodeURIComponent(slug)}#formulaire`" />
-        </aside>
         </div>
       </section>
 
@@ -246,6 +257,7 @@ async function demanderDoc() {
   gap: 12px;
   width: 720px;
   max-width: 100%;
+  min-width: 0;
   flex: none;
 }
 
@@ -273,6 +285,11 @@ async function demanderDoc() {
 
 .galerie__vignette:hover {
   opacity: 1;
+}
+
+.galerie__vignette:focus-visible {
+  outline: 2px solid var(--brown-900);
+  outline-offset: -4px;
 }
 
 .galerie__vignette--active {
@@ -331,6 +348,7 @@ async function demanderDoc() {
   font-size: 68px;
   line-height: 1;
   letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
 }
 
 .infos__sous-titre,
@@ -402,22 +420,24 @@ async function demanderDoc() {
 
 .caracteristiques__ligne dd {
   margin: 0;
+  overflow-wrap: anywhere;
 }
 
-.documents { display:flex; flex-direction:column; gap:24px; width:440px; flex:none; }
+.documents { display:flex; flex-direction:column; gap:24px; width:440px; min-width:0; max-width:100%; flex:none; }
 
 .doc {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;
-  width: 440px;
+  width: 100%;
+  min-width: 0;
   flex: none;
   padding: 32px;
   border-radius: 20px;
   background: var(--brown-900);
   color: var(--cream);
-  scroll-margin-top: 24px;
+  scroll-margin-top: var(--nav-content-offset);
 }
 
 .doc__texte {
@@ -455,6 +475,7 @@ async function demanderDoc() {
 .doc__message {
   font-size: 15px;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .doc__message a {
@@ -497,27 +518,26 @@ async function demanderDoc() {
 }
 
 @media (max-width: 1200px) {
-  .hero {
-    flex-direction: column;
-  }
-
-  .galerie {
-    width: 100%;
-  }
-}
-
-@media (max-width: 1024px) {
+  .hero,
   .technique {
     flex-direction: column;
   }
 
-  .documents, .doc {
+  .galerie,
+  .infos,
+  .caracteristiques,
+  .documents {
     width: 100%;
   }
 
-  .reassurance,
+  .technique {
+    gap: 40px;
+  }
+}
+
+@media (max-width: 1024px) {
   .similaires__grille {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -542,6 +562,14 @@ async function demanderDoc() {
     flex-direction: row;
     gap: 10px;
     width: 100%;
+    padding-block: 4px;
+    scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain;
+  }
+
+  .galerie__vignettes > li {
+    flex: none;
+    scroll-snap-align: start;
   }
 
   .galerie__vignette {
@@ -552,22 +580,26 @@ async function demanderDoc() {
   .galerie__photo {
     flex: none;
     width: 100%;
-    height: 520px;
+    height: auto;
+    aspect-ratio: 1;
+    max-height: 420px;
   }
 
   .infos__nom {
     font-size: 40px;
   }
 
-  .infos__actions { flex-direction: column; align-items: flex-start; gap: 24px; }
+  .infos__actions { flex-direction: column; align-items: stretch; gap: 12px; }
   .caracteristiques { width: 100%; }
   .caracteristiques > h2, .doc > h2, .similaires__entete > h2 { font-size: 26px; }
 
   .caracteristiques__ligne {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 8px;
   }
 
+  .reassurance,
+  .similaires__grille { grid-template-columns: 1fr; }
   .doc { padding: 24px; }
   .similaires__entete { flex-direction: column; align-items: stretch; gap: 24px; }
   .similaires__entete :deep(.link) { align-self: flex-end; }

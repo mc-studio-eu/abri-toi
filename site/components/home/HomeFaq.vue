@@ -92,6 +92,7 @@ function toggle(i: number) {
   justify-content: space-between;
   gap: 24px;
   width: 100%;
+  min-height: 44px;
   text-align: left;
 }
 
@@ -133,5 +134,9 @@ function toggle(i: number) {
   .faq__list {
     width: 100%;
   }
+}
+@media (max-width: 640px) {
+  .faq__question { gap: 16px; }
+  .faq__question .display-h4 { font-size: 20px; }
 }
 </style>

@@ -42,6 +42,7 @@ const tel = computed(() => `tel:+33${parametres.value.telephone?.replace(/\D/g, 
 }
 
 .cta__body {
+  min-width: 0;
   position: relative;
   z-index: 1;
   display: flex;
@@ -100,6 +101,17 @@ const tel = computed(() => `tel:+33${parametres.value.telephone?.replace(/\D/g, 
 }
 
 @media (max-width: 640px) {
+  .cta__btn {
+    width: 100%;
+  }
+
+  .cta__infos a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    overflow-wrap: anywhere;
+  }
+
   .contact {
     padding-top: 48px;
     padding-bottom: 48px;

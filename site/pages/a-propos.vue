@@ -15,7 +15,7 @@ usePageSeo(() => ({
       <PageHero :hero="page.hero" />
 
       <section class="histoire section">
-        <img v-reveal :src="img(page.histoire.portrait, 1000)" :alt="alt(page.histoire.portrait)" class="histoire__portrait" />
+        <img v-reveal :src="img(page.histoire.portrait, 1000)" :srcset="imgSrcset(page.histoire.portrait, 1200)" sizes="(max-width: 640px) calc(100vw - 40px), 500px" loading="eager" :alt="alt(page.histoire.portrait)" class="histoire__portrait" />
         <div v-reveal="120" class="histoire__texte">
           <h2 class="display-h2">{{ page.histoire.titre }}</h2>
           <div class="histoire__paragraphes">
@@ -29,16 +29,6 @@ usePageSeo(() => ({
             </div>
           </div>
         </div>
-      </section>
-
-      <section class="chiffres section">
-        <h2 v-reveal class="display-h3 chiffres__titre">{{ page.chiffres.titre }}</h2>
-        <dl class="chiffres__grille">
-          <div v-for="(c, i) in page.chiffres.items" :key="c.valeur" v-reveal="i * 90" class="chiffre">
-            <dt class="display-h2 chiffre__valeur">{{ c.valeur }}</dt>
-            <dd class="body-m">{{ c.texte }}</dd>
-          </div>
-        </dl>
       </section>
 
       <section class="engagements section">
@@ -91,7 +81,7 @@ usePageSeo(() => ({
         <ul class="terrain__photos">
           <li v-for="(photo, i) in page.terrain.photos" :key="i" v-reveal="i * 90">
             <figure>
-              <img :src="img(photo.image, 700, 1000)" :alt="photo.legende" loading="lazy" />
+              <img :src="img(photo.image, 700, 1000)" :srcset="imgSrcset(photo.image, 1200, 1714)" sizes="(min-width: 1440px) 302px, (max-width: 640px) calc(100vw - 40px), (max-width: 1024px) calc((100vw - 104px) / 2), calc((100vw - 232px) / 4)" :alt="photo.legende" loading="lazy" />
               <figcaption class="label-mono">{{ photo.legende }}</figcaption>
             </figure>
           </li>
@@ -126,6 +116,7 @@ usePageSeo(() => ({
   display: flex;
   flex-direction: column;
   gap: 28px;
+  min-width: 0;
 }
 
 .histoire__paragraphes {
@@ -157,44 +148,6 @@ usePageSeo(() => ({
   font-size: 14px;
   line-height: 1.5;
   color: var(--brown-700);
-}
-
-.chiffres {
-  display: flex;
-  flex-direction: column;
-  gap: 56px;
-  padding-top: 96px;
-  padding-bottom: 96px;
-  background: var(--brown-900);
-  color: var(--cream);
-}
-
-.chiffres__titre {
-  max-width: 560px;
-}
-
-.chiffres__grille {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 32px;
-  margin: 0;
-}
-
-.chiffre {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(244, 238, 229, 0.3);
-}
-
-.chiffre__valeur {
-  color: var(--orange-500);
-  white-space: nowrap;
-}
-
-.chiffre dd {
-  margin: 0;
 }
 
 .engagements,
@@ -244,6 +197,8 @@ usePageSeo(() => ({
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--cream);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .engagement__odd {
@@ -327,6 +282,7 @@ usePageSeo(() => ({
   flex-direction: column;
   gap: 10px;
   padding: 24px 24px 28px;
+  overflow-wrap: anywhere;
 }
 
 .partenaire__role {
@@ -401,7 +357,6 @@ usePageSeo(() => ({
     width: auto;
   }
 
-  .chiffres__grille,
   .terrain__photos,
   .partenaires__grille {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -432,11 +387,6 @@ usePageSeo(() => ({
     aspect-ratio: 350 / 434;
   }
 
-  .chiffres {
-    gap: 32px;
-    padding-block: 64px;
-  }
-
   .engagements,
   .partenaires,
   .terrain {
@@ -452,14 +402,19 @@ usePageSeo(() => ({
     padding-inline: 24px;
   }
 
-  .chiffres__grille,
   .partenaires__grille,
   .terrain__photos {
     grid-template-columns: 1fr;
   }
 
   .partenaire__logo {
+    min-height: 120px;
+    padding-block: 20px;
+  }
+
+  .terrain__photos img {
     height: auto;
+    aspect-ratio: 4 / 3;
   }
 
   .terrain__entete {

@@ -1,13 +1,8 @@
 import type { Img } from './commun'
 
-export type Categorie = 'collectivites' | 'sante' | 'conception' | 'vegetation'
-
-export const categories: { cle: Categorie; label: string }[] = [
-  { cle: 'collectivites', label: 'Collectivités' },
-  { cle: 'sante', label: 'Santé' },
-  { cle: 'conception', label: 'Conception' },
-  { cle: 'vegetation', label: 'Végétation' },
-]
+import type { Categorie } from '../utils/categoriesArticles'
+export { categories } from '../utils/categoriesArticles'
+export type { Categorie } from '../utils/categoriesArticles'
 
 // Fonds proposés dans Sanity pour les couvertures illustrées
 export const fondsCouverture = [

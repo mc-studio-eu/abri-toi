@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   // Ancienne adresse du site WordPress
-  routeRules: { '/politique-de-cookies-ue': { redirect: '/politique-de-cookies' } },
+  routeRules: { '/politique-de-cookies-ue': { redirect: { to: '/politique-de-cookies', statusCode: 308 } } },
   runtimeConfig: {
     // Jeton d'écriture Sanity, côté serveur uniquement : enregistre les demandes envoyées depuis le site.
     sanityWriteToken: '',

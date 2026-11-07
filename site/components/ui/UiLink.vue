@@ -32,6 +32,7 @@ withDefaults(
   font-weight: 500;
   font-size: 16px;
   white-space: nowrap;
+  max-width: 100%;
 }
 
 .link--light {
@@ -45,7 +46,15 @@ withDefaults(
 }
 
 .link__icon {
+  flex-shrink: 0;
   transition: transform 0.2s;
+}
+
+@media (max-width: 1024px) {
+  .link {
+    min-height: 44px;
+    white-space: normal;
+  }
 }
 
 .link:hover .link__icon {

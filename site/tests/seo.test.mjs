@@ -7,7 +7,7 @@ import { computed, reactive, toValue } from 'vue'
 import { createImageUrlBuilder } from '@sanity/image-url'
 
 const root = new URL('../', import.meta.url)
-async function environnement({ config, fetchedProducts = [], fetchedArticles = [], productError = false, articleError = false, client = false, globals = {} } = {}) {
+async function environnement({ config, fetchedProducts = [], fetchedArticles = [], fetchedRealisations = [], realisationError = false, productError = false, articleError = false, fetcher, client = false, globals = {} } = {}) {
   const route = reactive({ path: '/contact', query: { produit: 'banc-galileo' } })
   let setup = true
   let head
@@ -16,11 +16,15 @@ async function environnement({ config, fetchedProducts = [], fetchedArticles = [
   const clients = []
   const runtime = config || { public: { seoSiteUrl: 'https://abritoi.com', contentSource: 'sanity', sanity: { projectId: 'test123', dataset: 'production', apiVersion: '2026-10-01' } } }
   const context = createContext({
-    URL, console, computed,
+    URL, console, computed, AbortSignal,
     useRoute: () => route,
     useRuntimeConfig: () => { assert.ok(setup, 'runtime config must be captured in setup, before Unhead evaluation'); return runtime },
     useHead: (callback) => { head = callback },
     defineEventHandler: (handler) => handler,
+    createError: (options) => Object.assign(new Error(options.statusMessage), options),
+    useRequestFetch: () => globals.$fetch,
+    getRouterParam: (event, key) => event.params?.[key],
+    getQuery: (event) => event.query || {},
     setHeader: (_, key, value) => { headers[key] = value },
     ...globals,
   })
@@ -37,6 +41,12 @@ async function environnement({ config, fetchedProducts = [], fetchedArticles = [
       clients.push(options)
       return { fetch: async (query) => {
         queries.push(query)
+        if (fetcher) return fetcher(query)
+        if (!query.includes('_type ==')) return null
+        if (query.includes('_type == "realisation"')) {
+          if (realisationError) throw new Error('CMS unavailable')
+          return fetchedRealisations
+        }
         const article = query.includes('_type == "article"')
         if (article ? articleError : productError) throw new Error('CMS unavailable')
         return article ? fetchedArticles : fetchedProducts
@@ -105,16 +115,39 @@ test('partial CMS completion preserves explicit false, empty text and arrays', (
   assert.equal(resultat.nested.title, 'Titre de secours')
 })
 
-test('product merging retains all served reference routes, accepts complete published additions and rejects incomplete additions', () => {
+test('CMS image completion keeps the HD asset without introducing a local fallback src', () => {
+  const photo = { asset: { _ref: 'image-photo-6000x4000-jpg' } }
+  const fallback = { src: '/images/hero.png', alt: 'Hero' }
+  const result = contenu.completerContenu({ photo }, { photo: fallback })
+  assert.equal(result.photo.src, undefined)
+  assert.equal(result.photo.asset._ref, photo.asset._ref)
+  assert.equal(result.photo.alt, 'Hero')
+  assert.equal(photo.alt, undefined)
+  assert.equal(contenu.completerContenu({ photo: null }, { photo: fallback }).photo.src, fallback.src)
+})
+
+test('image URLs prefer a Sanity asset even when the CMS also stores a local src', async () => {
+  const isolated = await environnement()
+  const { img } = (await isolated.charger('utils/sanity.ts')).namespace
+  const image = { asset: { _ref: 'image-08eace22fb56224d53a3998a691b9e8b9c59cb95-6000x4000-jpg' }, src: '/images/fallback.jpg' }
+  const url = new URL(img(image, 1600))
+  assert.equal(url.hostname, 'cdn.sanity.io')
+  assert.equal(url.searchParams.get('w'), '1600')
+  assert.equal(img({ src: '/images/local.svg' }, 400), '/images/local.svg')
+  assert.equal(img(null), '')
+})
+
+test('published products are authoritative, reject incomplete additions and normalize the permanent alias', () => {
   const reference = produits[0]
   const publie = { ...reference, nom: 'Nom publié' }
   const ajout = { ...reference, slug: 'nouveau-produit', nom: 'Nouveau produit' }
   const incomplet = { ...reference, slug: 'incomplet', fiche: null }
   const resultat = contenu.cataloguePublic([publie, ajout, incomplet])
-  assert.equal(resultat.length, produits.length + 1)
+  assert.equal(resultat.length, 2)
   assert.equal(resultat.find((p) => p.slug === reference.slug).nom, 'Nom publié')
   assert.equal(resultat.some((p) => p.slug === 'incomplet'), false)
-  assert.equal(contenu.cataloguePublic([{ ...publie, lienVers: 'ancien-modele' }])[0].nom, reference.nom)
+  assert.equal(contenu.cataloguePublic([]).length, 0)
+  assert.equal(contenu.cataloguePublic().length, 0)
   const paths = cheminsSitemap([publie, ajout, incomplet], [])
   assert.ok(paths.includes('/produits/nouveau-produit'))
   assert.equal(paths.some((path) => path.includes('incomplet')), false)
@@ -128,21 +161,20 @@ test('article completeness distinguishes real content without intro from placeho
   assert.ok(contenu.texteArticle(nouveau).includes('éditorial complet'))
 })
 
-test('article sitemap matches the actual partial-document fallback, while excluding provisional and forbidden articles', () => {
+test('article lists and sitemap exclude absent, incomplete, provisional and forbidden publications', () => {
   const reference = articles.find((a) => contenu.articleComplet(a))
   const partiel = { slug: reference.slug, titre: 'Titre publié partiellement' }
-  const rendu = contenu.articlePublic(reference.slug, partiel)
-  assert.equal(rendu.titre, partiel.titre)
-  assert.ok(rendu.corps.length)
-  assert.equal(contenu.articleComplet(rendu), true)
+  assert.equal(contenu.articlePublic(reference.slug), null)
+  assert.equal(contenu.articlePublic(reference.slug, null), null)
+  assert.equal(contenu.articlePublic(reference.slug, partiel).corps, undefined)
   const placeholder = { ...reference, corps: [bloc('Article en cours de rédaction.')] }
   const interdit = { ...nouveau, slug: contenu.SLUG_ARTICLE_EXCLU }
-  const paths = cheminsSitemap([], [placeholder, nouveau, interdit])
+  const paths = cheminsSitemap([], [placeholder, partiel, nouveau, interdit])
   assert.equal(paths.includes(`/articles/${reference.slug}`), false)
   assert.ok(paths.includes('/articles/un-nouvel-article'))
   assert.equal(paths.some((path) => path.includes(contenu.SLUG_ARTICLE_EXCLU)), false)
   assert.equal(contenu.articlePublic(contenu.SLUG_ARTICLE_EXCLU, interdit), null)
-  assert.ok(cheminsSitemap([], [partiel]).includes(`/articles/${reference.slug}`))
+  assert.equal(cheminsSitemap([], [], []).length, 6)
 })
 
 test('head resolves Sanity images after setup without accessing Nuxt context, and follows canonical route changes', async () => {
@@ -178,28 +210,35 @@ test('provisional pages emit noindex without Article schema and complete article
   assert.equal(article.dateModified, undefined)
 })
 
-test('dynamic Nitro sitemap requests published CMS content and preserves fallback independently after a collection failure', async () => {
+test('dynamic sitemap uses published CMS collections and omits absent reference products and legal documents', async () => {
   const ajout = { ...produits[0], slug: 'addition-cms' }
-  const env = await environnement({ fetchedProducts: [ajout], articleError: true })
+  const env = await environnement({ fetchedProducts: [ajout], fetchedArticles: [nouveau] })
   const handler = (await env.charger('server/routes/sitemap.xml.get.ts')).namespace.default
   const xml = await handler({})
-  assert.equal(env.queries.length, 2)
+  assert.equal(env.queries.length, 6)
   assert.equal(env.clients[0].perspective, 'published')
-  assert.ok(env.queries.every((query) => query.includes('drafts.**')))
+  assert.equal(env.clients[0].useCdn, false)
   assert.ok(xml.includes('/produits/addition-cms</loc>'))
-  assert.ok(xml.includes('/produits/banc-galileo</loc>'))
-  assert.ok(xml.includes('/articles/vegetation-barriere-pollution</loc>'))
-  assert.ok(!xml.includes('/articles/seniors-ehpad-canicules'))
+  assert.equal(xml.includes('/produits/banc-galileo</loc>'), false)
+  assert.ok(xml.includes('/articles/un-nouvel-article</loc>'))
+  assert.equal(xml.includes('/mentions-legales</loc>'), false)
   assert.ok(!xml.includes('<lastmod>'))
   assert.equal(env.headers['Content-Type'], 'application/xml; charset=utf-8')
+  // Shared server cache: a second request does not query Sanity again.
+  assert.equal(await handler({}), xml)
+  assert.equal(env.queries.length, 6)
 })
 
-test('reference-mode sitemap and robots use the same configured origin without CMS access', async () => {
+test('reference-mode sitemap and robots use the configured origin without CMS access', async () => {
   const env = await environnement({ config: { public: { seoSiteUrl: 'https://www.exemple.fr', contentSource: 'reference', sanity: { projectId: 'test123' } } } })
   const sitemap = (await env.charger('server/routes/sitemap.xml.get.ts')).namespace.default
   const robots = (await env.charger('server/routes/robots.txt.get.ts')).namespace.default
   const xml = await sitemap({})
   assert.ok(xml.includes('<loc>https://www.exemple.fr/</loc>'))
+  assert.ok(xml.includes('/mentions-legales</loc>'))
+  assert.ok(xml.includes('/produits/banc-galileo</loc>'))
+  assert.ok(xml.includes('/articles/vegetation-barriere-pollution</loc>'))
+  assert.equal(xml.includes('/articles/seniors-ehpad-canicules'), false)
   assert.equal(env.queries.length, 0)
   assert.equal(robots({}), 'User-agent: *\nAllow: /\n\nSitemap: https://www.exemple.fr/sitemap.xml\n')
   const escaped = seo.sitemapXml(['/contact?x=1', '/contact', '/a&b'])
@@ -207,47 +246,108 @@ test('reference-mode sitemap and robots use the same configured origin without C
   assert.ok(escaped.includes('/a&amp;b</loc>'))
 })
 
-test('SSR awaits the Sanity client from the Nuxt context and passes its request signal', async () => {
-  const signal = new AbortController().signal
-  const env = await environnement({ globals: {
-    useAsyncData: async (key, handler, options) => {
-      assert.equal(key, 'ficheProduit')
-      assert.equal(options.timeout, 8000)
-      const nuxtApp = { runWithContext: async (callback) => callback() }
-      return { data: { value: await handler(nuxtApp, { signal }) } }
-    },
-    sanityClient: () => ({ fetch: async (query, _params, options) => {
-      assert.equal(query, '*[_id == "ficheProduit"][0]{...}')
-      assert.equal(options.signal, signal)
-      return { titre: 'Titre publié' }
-    } }),
-    $fetch: () => assert.fail('SSR should query Sanity directly'),
-  } })
-  const { useContenu } = (await env.charger('composables/useContenu.ts')).namespace
-  const resultat = await useContenu('ficheProduit', { titre: 'Secours', legende: 'Description de référence' })
-  assert.equal(resultat.value.titre, 'Titre publié')
-  assert.equal(resultat.value.legende, 'Description de référence')
+test('cold CMS failure returns 503 and Retry-After rather than a changed sitemap or local routes', async () => {
+  const env = await environnement({ articleError: true })
+  const handler = (await env.charger('server/routes/sitemap.xml.get.ts')).namespace.default
+  await assert.rejects(handler({}), (error) => error.statusCode === 503)
+  assert.equal(env.headers['Retry-After'], '60')
 })
 
-test('client content uses the same-origin named endpoint with a bounded request and no retry', async () => {
-  const signal = new AbortController().signal
-  const env = await environnement({ client: true, globals: {
-    useAsyncData: async (key, handler, options) => {
-      assert.equal(key, 'article-un-nouvel-article')
-      assert.equal(options.timeout, 8000)
-      return { data: { value: await handler({}, { signal }) } }
-    },
-    sanityClient: () => assert.fail('the browser should use the site API'),
-    $fetch: async (url, options) => {
-      assert.equal(url, '/api/contenu/article')
-      assert.equal(options.query.slug, 'un-nouvel-article')
-      assert.equal(options.signal, signal)
-      assert.equal(options.retry, 0)
-      return false
-    },
+test('sitemap includes only published realisation routes and preserves an empty collection', async () => {
+  const document = { slug: 'sanary-publie', nom: 'Sanary' }
+  const env = await environnement({ fetchedRealisations: [document] })
+  const handler = (await env.charger('server/routes/sitemap.xml.get.ts')).namespace.default
+  const xml = await handler({})
+  assert.ok(xml.includes('/realisations/sanary-publie</loc>'))
+  assert.equal(xml.includes('/realisations/galileo-banquette-brumisee</loc>'), false)
+  const vide = await environnement()
+  const sitemap = (await vide.charger('server/routes/sitemap.xml.get.ts')).namespace.default
+  assert.equal((await sitemap({})).includes('/realisations/galileo-banquette-brumisee</loc>'), false)
+})
+
+test('cache expires at 60 seconds, reuses last good values during a transient outage, and stops after 15 minutes', async () => {
+  const { creerCacheContenu, FRAICHEUR_CONTENU, AGE_MAX_SECOURS } = (await env.charger('server/utils/cacheContenu.ts')).namespace
+  let now = 0
+  const cache = creerCacheContenu(() => now)
+  let calls = 0
+  let outage = false
+  const load = async () => { calls++; if (outage) throw new Error('network'); return ['nouveau-cms'] }
+  assert.deepEqual(await cache('articles', load), ['nouveau-cms'])
+  now = FRAICHEUR_CONTENU - 1
+  await cache('articles', load)
+  assert.equal(calls, 1)
+  now = FRAICHEUR_CONTENU
+  outage = true
+  assert.deepEqual(await cache('articles', load), ['nouveau-cms'])
+  assert.equal(calls, 2)
+  now += 1000
+  await cache('articles', load)
+  assert.equal(calls, 2)
+  now = AGE_MAX_SECOURS
+  await assert.rejects(cache('articles', load), /network/)
+  await assert.rejects(cache('new-slug', load), /network/)
+})
+
+test('successful empty publications and missing documents replace last good entries; nontransient errors never use stale data', async () => {
+  const { creerCacheContenu, FRAICHEUR_CONTENU } = (await env.charger('server/utils/cacheContenu.ts')).namespace
+  let now = 0
+  const cache = creerCacheContenu(() => now)
+  await cache('list', async () => [nouveau])
+  await cache('detail', async () => nouveau)
+  now += FRAICHEUR_CONTENU
+  assert.equal((await cache('list', async () => [])).length, 0)
+  assert.equal(await cache('detail', async () => null), null)
+  now += FRAICHEUR_CONTENU
+  const outage = async () => { throw new Error('network') }
+  assert.equal((await cache('list', outage)).length, 0)
+  assert.equal(await cache('detail', outage), null)
+  now += FRAICHEUR_CONTENU
+  await assert.rejects(cache('detail', async () => { throw Object.assign(new Error('Unauthorized'), { statusCode: 401 }) }), /Unauthorized/)
+})
+
+test('content API filters article lists before stripping full bodies, and missing CMS details stay null', async () => {
+  const placeholder = { ...nouveau, slug: 'provisoire', corps: [bloc('Article en cours de rédaction.')] }
+  const env = await environnement({ fetchedArticles: [nouveau, placeholder] })
+  const handler = (await env.charger('server/api/contenu/[nom].get.ts')).namespace.default
+  const result = await handler({ params: { nom: 'articles' } })
+  assert.equal(result.contenu.length, 1)
+  assert.equal(result.contenu[0].slug, nouveau.slug)
+  assert.equal('corps' in result.contenu[0], false)
+  assert.equal('auteur' in result.contenu[0], false)
+  const absent = await environnement({ fetcher: () => null })
+  const missing = (await absent.charger('server/api/contenu/[nom].get.ts')).namespace.default
+  assert.equal((await missing({ params: { nom: 'article' }, query: { slug: articles[0].slug } })).contenu, null)
+})
+
+test('SSR and client use the same named API, propagate request signal and do not reuse old SPA payloads', async () => {
+  for (const client of [false, true]) {
+    const signal = new AbortController().signal
+    const env = await environnement({ client, globals: {
+      useAsyncData: async (key, handler, options) => {
+        assert.equal(key, 'article-un-nouvel-article')
+        assert.equal(options.timeout, 9000)
+        const cached = { contenu: { titre: 'Old title' } }
+        assert.equal(options.getCachedData(key, { isHydrating: true, payload: { data: { [key]: cached } } }), cached)
+        assert.equal(options.getCachedData(key, { isHydrating: false, payload: { data: { [key]: cached } } }), undefined)
+        return { data: { value: await handler({}, { signal }) }, error: { value: null } }
+      },
+      $fetch: async (url, options) => {
+        assert.equal(url, '/api/contenu/article')
+        assert.equal(options.query.slug, 'un-nouvel-article')
+        assert.equal(options.signal, signal)
+        assert.equal(options.retry, 0)
+        return { contenu: nouveau }
+      },
+    } })
+    const { useContenu } = (await env.charger('composables/useContenu.ts')).namespace
+    assert.equal((await useContenu('article', 'un-nouvel-article')).value, nouveau)
+  }
+})
+
+test('content composable propagates 503 instead of producing a false 404 or reference detail', async () => {
+  const env = await environnement({ globals: {
+    useAsyncData: async () => ({ data: { value: undefined }, error: { value: { statusCode: 503 } } }),
   } })
   const { useContenu } = (await env.charger('composables/useContenu.ts')).namespace
-  const secours = { titre: 'Article de référence' }
-  const resultat = await useContenu('article', secours, 'un-nouvel-article')
-  assert.equal(resultat.value, secours)
+  await assert.rejects(useContenu('article', articles[0].slug), (error) => error.statusCode === 503)
 })

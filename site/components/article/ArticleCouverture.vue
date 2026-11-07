@@ -1,17 +1,22 @@
 <script setup lang="ts">
 import type { Article } from '~/content/articles'
 
-defineProps<{
+withDefaults(defineProps<{
   article: Pick<Article, 'couverture' | 'couvertureFond' | 'couvertureInset'>
   image?: Article['illustration']
   fullWidth?: boolean
-}>()
+  loading?: 'lazy' | 'eager'
+  sizes?: string
+}>(), { loading: 'lazy', sizes: taillesImageCarte })
 </script>
 
 <template>
   <div class="couv" :style="{ background: article.couvertureFond || 'var(--paper)' }">
     <img
       :src="img(image || article.couverture, 1400)"
+      :srcset="imgSrcset(image || article.couverture, 2560)"
+      :sizes="sizes"
+      :loading="loading"
       :alt="alt(image || article.couverture)"
       class="couv__illu"
       :class="{ 'couv__illu--inset': article.couvertureInset && !image && !fullWidth }"

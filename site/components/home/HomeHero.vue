@@ -1,11 +1,28 @@
 <script setup lang="ts">
 const page = await usePageAccueil()
 const hero = computed(() => page.value.hero)
+const photoSrcset = computed(() => {
+  const photo = hero.value.photo
+  // Le fichier local n’a pas de variantes redimensionnées.
+  if (!photo || !('asset' in photo) || !(photo.asset as { _ref?: string })?._ref) return undefined
+  return [1080, 1440, 1920, 2400, 3200, 3840, 4800, 6000]
+    .map((width) => `${img(photo, width)} ${width}w`)
+    .join(', ')
+})
 </script>
 
 <template>
   <section class="hero">
-    <img class="hero__photo" :src="img(hero.photo, 2400)" :alt="alt(hero.photo)" />
+    <!-- Photo 3:2 : tenir compte de l’agrandissement lié à object-fit: cover. -->
+    <img
+      class="hero__photo"
+      :src="img(hero.photo, 2400)"
+      :srcset="photoSrcset"
+      sizes="(max-width: 1024px) max(100vw, 1080px), max(100vw, 1208px)"
+      :alt="alt(hero.photo)"
+      fetchpriority="high"
+      loading="eager"
+    />
     <div class="hero__shade" aria-hidden="true" />
 
     <AppNav class="hero__nav" />
@@ -154,17 +171,50 @@ const hero = computed(() => page.value.hero)
   }
 
   .hero__title {
-    font-size: 64px;
+    font-size: clamp(48px, 6.25vw, 64px);
+  }
+
+  .hero__shade {
+    background: linear-gradient(90deg, rgba(18, 11, 8, .8), rgba(18, 11, 8, .3));
   }
 }
 
 @media (max-width: 640px) {
+  .hero {
+    min-height: 100svh;
+    padding-top: 20px;
+    padding-bottom: 48px;
+  }
+
+  .hero__content {
+    gap: 22px;
+    margin-top: 48px;
+  }
+
   .hero__title {
-    font-size: 44px;
+    font-size: clamp(40px, 9vw, 56px);
+    overflow-wrap: anywhere;
+  }
+
+  .hero__lead {
+    font-size: 17px;
+    min-height: 0;
   }
 
   .hero__shade {
-    background: linear-gradient(180deg, rgba(18, 11, 8, 0.75) 0%, rgba(18, 11, 8, 0.35) 100%);
+    background: linear-gradient(180deg, rgba(18, 11, 8, 0.75) 0%, rgba(18, 11, 8, 0.55) 100%);
+  }
+}
+@media (max-width: 480px) {
+  .hero__ctas {
+    flex-direction: column;
+    align-self: stretch;
+    padding-top: 6px;
+  }
+
+  .hero__ctas :deep(.btn) {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>

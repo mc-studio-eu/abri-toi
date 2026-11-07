@@ -36,6 +36,9 @@ const classes = computed(() => ['btn', `btn--${props.variant}`, { 'btn--pill': p
 <style scoped>
 .btn {
   display: inline-flex;
+  justify-content: center;
+  min-height: 48px;
+  max-width: 100%;
   align-items: center;
   gap: 10px;
   padding: 14px 20px 14px 22px;
@@ -57,7 +60,15 @@ const classes = computed(() => ['btn', `btn--${props.variant}`, { 'btn--pill': p
 }
 
 .btn__icon {
+  flex-shrink: 0;
   transition: transform 0.2s;
+}
+
+@media (max-width: 1024px) {
+  .btn {
+    white-space: normal;
+    text-align: center;
+  }
 }
 
 .btn:hover .btn__icon {

@@ -49,6 +49,8 @@ defineProps<{ hero: Hero; large?: boolean }>()
 }
 
 .page-hero__titre {
+  min-width: 0;
+  overflow-wrap: anywhere;
   max-width: 720px;
   font-family: var(--font-display);
   font-weight: 500;
@@ -87,6 +89,7 @@ defineProps<{ hero: Hero; large?: boolean }>()
 
 .page-hero__ancre {
   display: inline-flex;
+  min-height: 44px;
   align-items: center;
   gap: 8px;
   padding: 10px 18px;
@@ -149,8 +152,26 @@ defineProps<{ hero: Hero; large?: boolean }>()
 }
 
 @media (max-width: 640px) {
+  .page-hero {
+    gap: 40px;
+    padding-bottom: 48px;
+  }
+
   .page-hero__titre {
-    font-size: 40px;
+    font-size: clamp(34px, 9vw, 40px);
+    line-height: 1.08;
+  }
+
+  .page-hero__ancres li {
+    max-width: 100%;
+  }
+
+  .page-hero__ancre {
+    white-space: normal;
+  }
+
+  .page-hero__point {
+    flex-shrink: 0;
   }
 }
 </style>

@@ -42,7 +42,6 @@ const reveals = ref<number[]>([])
 let frame = 0
 let desktopQuery: MediaQueryList | undefined
 let mobileQuery: MediaQueryList | undefined
-let mobileWidth = 0
 
 const mobilePinTop = 96
 const mobilePinPadding = 32
@@ -71,12 +70,11 @@ function schedule() {
 }
 function syncMotion() {
   const mobile = mobileQuery?.matches ?? false
-  if (mobile && mobileWidth !== window.innerWidth) {
-    // La barre du navigateur peut changer la hauteur visible pendant le scroll.
-    mobileWidth = window.innerWidth
+  if (mobile) {
+    // Le petit viewport reste stable quand la barre du navigateur se replie,
+    // mais se recalcule après une rotation ou un redimensionnement de fenêtre.
     mobileHeight.value = smallViewport.value?.offsetHeight ?? window.innerHeight
   }
-  if (!mobile) mobileWidth = 0
 
   const available = mobileHeight.value - mobilePinTop - mobilePinPadding
   const mobileFits = mobile && mobileHeight.value >= 550 && Array.from(
@@ -91,7 +89,7 @@ function syncMotion() {
   nextTick(schedule)
 }
 function resize() {
-  if (mobileQuery?.matches && mobileWidth !== window.innerWidth) syncMotion()
+  syncMotion()
   schedule()
 }
 watch(steps, syncMotion, { flush: 'post' })
@@ -174,7 +172,8 @@ onBeforeUnmount(() => {
   .anatomy__title { max-width:none; font-size:22px; }
   .anatomy__text { max-width:none; font-size:16px; }
   .anatomy-track--animated { height:calc(var(--mobile-viewport) * 2.68); }
-  .anatomy-track--animated .anatomy { top:var(--mobile-pin-top); height:calc(var(--mobile-viewport) - var(--mobile-pin-top)); padding-block:12px calc(var(--mobile-pin-padding) - 12px); }
+  .anatomy-track--animated .anatomy { top:var(--mobile-pin-top); height:calc(var(--mobile-viewport) - var(--mobile-pin-top)); padding-block:calc(var(--mobile-pin-padding) / 2); }
+  .anatomy-track--animated .anatomy__row { justify-content:center; }
   .anatomy-track--flow-animated .anatomy__view { opacity:calc(.65 + var(--reveal) * .35); transform:translateY(calc((1 - var(--reveal)) * 12px)); }
 }
 </style>

@@ -83,6 +83,7 @@ onBeforeUnmount(() => {
           class="pill"
           :class="{ 'is-on': token.rank < shown }"
           :src="token.img"
+          loading="lazy"
           alt=""
           :style="{ width: `calc(${token.width} * var(--manifesto-unit))` }"
         />
@@ -107,8 +108,8 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-@font-face { font-family:'Bricolage Manifesto'; font-style:normal; font-weight:400; font-display:swap; src:url('/fonts/bricolage-regular.ttf') format('truetype'); }
-@font-face { font-family:'Bricolage Manifesto'; font-style:normal; font-weight:500; font-display:swap; src:url('/fonts/bricolage-medium.ttf') format('truetype'); }
+@font-face { font-family:'Bricolage Manifesto'; font-style:normal; font-weight:400; font-display:swap; src:url('/fonts/bricolage-regular.woff2') format('woff2'); }
+@font-face { font-family:'Bricolage Manifesto'; font-style:normal; font-weight:500; font-display:swap; src:url('/fonts/bricolage-medium.woff2') format('woff2'); }
 
 .manifesto {
   --manifesto-unit: min(1px, calc((100vw - 240px) / 1200));
@@ -275,6 +276,15 @@ onBeforeUnmount(() => {
   }
 
   .manifesto__break { margin-bottom: -6px; }
+
+  .manifesto__objectif {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .manifesto__objectif > span {
+    white-space: normal;
+  }
 
   .manifesto__text em {
     font-size: 36px;

@@ -1,3 +1,5 @@
+import { cheminPublic } from './routesPubliques'
+
 export const ORIGINE_SITE = 'https://abritoi.com'
 export const IMAGE_PARTAGE = '/images/hero-v5-photo-plein-fond.png'
 export const TITRE_ACCUEIL = 'Abris d’ombrage pour espaces publics | Abri Toi'
@@ -16,7 +18,12 @@ export function origineSeo(configuration?: unknown): string {
 export function urlCanonique(chemin: string, origine?: unknown): string {
   const propre = chemin.split(/[?#]/, 1)[0] || '/'
   const url = new URL(propre.startsWith('/') && !propre.startsWith('//') ? propre : '/', origineSeo(origine))
-  return `${url.origin}${url.pathname === '/' ? '/' : url.pathname.replace(/\/+$/, '')}`
+  const path = cheminPublic(url.pathname)
+  const query = new URL(`https://pagination.invalid/?${chemin.split('?')[1]?.split('#')[0] || ''}`).searchParams
+  const page = query.get('page') || ''
+  const pagination = ['/articles', '/realisations'].includes(path) && /^[1-9]\d*$/.test(page) && Number.isSafeInteger(Number(page)) && Number(page) > 1
+    ? `?page=${Number(page)}` : ''
+  return `${url.origin}${path}${pagination}`
 }
 
 export function imageAbsolue(image: string | undefined, origine?: unknown): string {
