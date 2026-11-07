@@ -3,12 +3,6 @@
 const page = await usePageAccueil()
 const installations = computed(() => page.value.installations)
 const gammes = await useGammes()
-const realisations = await useRealisations()
-
-const lienBandeau = (slug?: string) => {
-  const projet = realisations.value.find((r) => r.slug === slug)
-  return projet ? `/realisations/${projet.slug}` : '/realisations'
-}
 
 const open = ref(0)
 </script>
@@ -20,7 +14,6 @@ const open = ref(0)
         <h2 class="display-h2 installs__title">{{ installations.titre }}</h2>
         <p class="body-l installs__text">{{ installations.texte }}</p>
       </div>
-      <UiLink tone="dark" label="Toutes les réalisations" to="/realisations" />
     </header>
 
     <ul v-reveal="100" class="bands">
@@ -30,21 +23,12 @@ const open = ref(0)
         class="band"
         :class="{ 'band--open': open === i }"
         @pointerenter="($event.pointerType === 'mouse') && (open = i)"
-        @focusin="open = i"
       >
         <img :src="img(item.image, 1600)" :srcset="imgSrcset(item.image, 2560)" :sizes="taillesImageSection" loading="lazy" alt="" class="band__img" />
         <div class="band__shade" />
         <div class="band__content">
           <h3 class="display-h3 band__title">{{ item.titre }}</h3>
-          <div class="band__actions">
-            <span class="band__tag">Gamme {{ gammes[item.gamme as 'galileo' | 'fotos']?.nom }}</span>
-            <UiLink
-              tone="dark"
-              label="Voir la réalisation"
-              :to="lienBandeau(item.realisation)"
-              :aria-label="`Voir la réalisation : ${item.titre}`"
-            />
-          </div>
+          <span class="band__tag">Gamme {{ gammes[item.gamme as 'galileo' | 'fotos']?.nom }}</span>
         </div>
       </li>
     </ul>
@@ -117,17 +101,6 @@ const open = ref(0)
   height: 260px;
 }
 
-.band:focus-within {
-  outline: 3px solid var(--orange-500);
-  outline-offset: 4px;
-}
-
-.band__actions :deep(.link)::after {
-  position: absolute;
-  inset: 0;
-  content: '';
-}
-
 .band__img {
   position: absolute;
   inset: 0;
@@ -173,14 +146,8 @@ const open = ref(0)
   color: var(--paper);
 }
 
-.band__actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: none;
-}
-
 .band__tag {
+  flex: none;
   padding: 6px 12px;
   border: 1px solid var(--paper);
   border-radius: 999px;
