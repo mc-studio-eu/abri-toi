@@ -11,7 +11,11 @@ const temps = [
   { value: 26, label: 'Installé · il fait bon', left: 1004, color: 'var(--sage-500)', big: true },
 ]
 // Une seule progression pilote la jauge et les cartes : aucun délai indépendant.
-const stepsElement = ref<HTMLOListElement | null>(null)
+const scrollTrack = ref<HTMLElement | null>(null)
+const scrollPanel = ref<HTMLElement | null>(null)
+const pinned = ref(false)
+const trackHeight = ref(0)
+const scrollDistance = ref(0)
 const progress = ref(1)
 const stepStyle = (index: number) => {
   const visibility = Math.min(1, Math.max(0, (progress.value - thermoStops[index] / 1280) / .07))
@@ -23,34 +27,37 @@ onMounted(() => {
   let frame = 0
   const update = () => {
     frame = 0
-    if (!stepsElement.value || !motion.matches) return
-    const top = stepsElement.value.getBoundingClientRect().top
-    const viewport = window.innerHeight
-    // Étaler les quatre étapes sur 70 % de la hauteur de l'écran.
-    // Le remplissage s'arrête avec le scroll et suit aussi le retour en arrière.
-    progress.value = Math.min(1, Math.max(0, (viewport * .85 - top) / (viewport * .70)))
+    if (!scrollTrack.value || !pinned.value) return
+    // La jauge reste à l'écran pendant 1,8 hauteur d'écran de défilement.
+    const top = scrollTrack.value.getBoundingClientRect().top
+    progress.value = Math.min(1, Math.max(0, (96 - top) / scrollDistance.value))
   }
   const onScroll = () => {
     if (!frame) frame = requestAnimationFrame(update)
   }
   const stopWaiting = () => {
     window.removeEventListener('scroll', onScroll)
-    window.removeEventListener('resize', onScroll)
+    window.removeEventListener('resize', configure)
   }
   const configure = () => {
     cancelAnimationFrame(frame)
     frame = 0
     stopWaiting()
-    if (!motion.matches) {
+    const panelHeight = scrollPanel.value?.offsetHeight ?? 0
+    pinned.value = motion.matches && panelHeight > 0 && panelHeight <= window.innerHeight - 120
+    scrollDistance.value = window.innerHeight * 1.8
+    trackHeight.value = panelHeight + scrollDistance.value
+    if (!pinned.value) {
       progress.value = 1
       return
     }
     window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
+    window.addEventListener('resize', configure)
     update()
   }
   motion.addEventListener('change', configure)
   configure()
+  document.fonts.ready.then(() => { if (scrollPanel.value) configure() })
   cleanupMotion = () => {
     cancelAnimationFrame(frame)
     stopWaiting()
@@ -68,6 +75,8 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
       <p v-if="process.note" class="label-mono process__note">{{ process.note }}</p>
     </header>
 
+    <div ref="scrollTrack" class="process__track" :class="{ 'process__track--pinned': pinned }" :style="pinned ? { height: `${trackHeight}px` } : undefined">
+    <div ref="scrollPanel" class="process__panel">
     <div class="thermo" aria-hidden="true">
       <svg class="thermo__rule" viewBox="0 0 1280 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -92,7 +101,7 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
       </div>
     </div>
 
-    <ol ref="stepsElement" class="steps">
+    <ol class="steps">
       <li class="step" :style="stepStyle(0)">
         <div class="step__visual"><img :src="img(process.photoContact, 800)" :srcset="imgSrcset(process.photoContact, 1200)" sizes="(max-width: 640px) calc(100vw - 40px), (max-width: 1024px) calc((100vw - 104px) / 2), (max-width: 1390px) calc((100vw - 256px) / 4), 240px" loading="lazy" alt="" class="step__photo" /></div>
         <h3 class="step__title">{{ etape(0).titre }}</h3><p class="step__text">{{ etape(0).texte }}</p>
@@ -117,11 +126,15 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
         <h3 class="step__title">{{ etape(3).titre }}</h3><p class="step__text">{{ etape(3).texte }}</p>
       </li>
     </ol>
+    </div>
+    </div>
   </section>
 </template>
 
 <style scoped>
 .process { display:flex; flex-direction:column; gap:56px; padding-top:160px; padding-bottom:46px; }
+.process__panel { display:flex; flex-direction:column; gap:56px; }
+.process__track--pinned .process__panel { position:sticky; top:96px; }
 .process__header { display:flex; align-items:flex-end; justify-content:space-between; gap:32px; }
 .process__note { flex:0 1 320px; color:var(--brown-700); text-align:right; }
 .process__title { font-family:var(--font-display); font-weight:500; font-size:72px; line-height:1; letter-spacing:-.03em; }
