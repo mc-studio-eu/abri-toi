@@ -174,6 +174,9 @@ onBeforeUnmount(() => {
   .anatomy-track--animated { height:calc(var(--mobile-viewport) * 2.68); }
   .anatomy-track--animated .anatomy { top:var(--mobile-pin-top); height:calc(var(--mobile-viewport) - var(--mobile-pin-top)); padding-block:calc(var(--mobile-pin-padding) / 2); }
   .anatomy-track--animated .anatomy__row { justify-content:center; }
+  /* Masquer immédiatement l'étape sortante : deux textes ne doivent jamais se superposer. */
+  .anatomy-track--animated .anatomy__row { visibility:hidden; }
+  .anatomy-track--animated .anatomy__row--active { visibility:visible; }
   .anatomy-track--flow-animated .anatomy__view { opacity:calc(.65 + var(--reveal) * .35); transform:translateY(calc((1 - var(--reveal)) * 12px)); }
 }
 </style>
