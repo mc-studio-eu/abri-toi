@@ -14,6 +14,7 @@ const temps = [
 const scrollTrack = ref<HTMLElement | null>(null)
 const scrollPanel = ref<HTMLElement | null>(null)
 const pinned = ref(false)
+const pinTop = ref(96)
 const trackHeight = ref(0)
 const scrollDistance = ref(0)
 const progress = ref(1)
@@ -30,7 +31,7 @@ onMounted(() => {
     if (!scrollTrack.value || !pinned.value) return
     // La jauge reste à l'écran pendant 1,8 hauteur d'écran de défilement.
     const top = scrollTrack.value.getBoundingClientRect().top
-    progress.value = Math.min(1, Math.max(0, (96 - top) / scrollDistance.value))
+    progress.value = Math.min(1, Math.max(0, (pinTop.value - top) / scrollDistance.value))
   }
   const onScroll = () => {
     if (!frame) frame = requestAnimationFrame(update)
@@ -45,6 +46,7 @@ onMounted(() => {
     stopWaiting()
     const panelHeight = scrollPanel.value?.offsetHeight ?? 0
     pinned.value = motion.matches && panelHeight > 0 && panelHeight <= window.innerHeight - 120
+    pinTop.value = 96 + Math.max(0, (window.innerHeight - 120 - panelHeight) / 2)
     scrollDistance.value = window.innerHeight * 1.8
     trackHeight.value = panelHeight + scrollDistance.value
     if (!pinned.value) {
@@ -70,7 +72,7 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
 
 <template>
   <section class="process section">
-    <div ref="scrollTrack" class="process__track" :class="{ 'process__track--pinned': pinned }" :style="pinned ? { height: `${trackHeight}px` } : undefined">
+    <div ref="scrollTrack" class="process__track" :class="{ 'process__track--pinned': pinned }" :style="pinned ? { height: `${trackHeight}px`, '--process-pin-top': `${pinTop}px` } : undefined">
     <div ref="scrollPanel" class="process__panel">
     <header v-reveal class="process__header">
       <h2 class="process__title">{{ process.titre }}<br />{{ process.titreSuite }}</h2>
@@ -134,7 +136,7 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
 <style scoped>
 .process { display:flex; flex-direction:column; gap:56px; padding-top:160px; padding-bottom:46px; }
 .process__panel { display:flex; flex-direction:column; gap:56px; }
-.process__track--pinned .process__panel { position:sticky; top:96px; }
+.process__track--pinned .process__panel { position:sticky; top:var(--process-pin-top, 96px); }
 .process__header { display:flex; align-items:flex-end; justify-content:space-between; gap:32px; }
 .process__note { flex:0 1 320px; color:var(--brown-700); text-align:right; }
 .process__title { font-family:var(--font-display); font-weight:500; font-size:72px; line-height:1; letter-spacing:-.03em; }
