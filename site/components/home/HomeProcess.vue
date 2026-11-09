@@ -70,13 +70,13 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
 
 <template>
   <section class="process section">
+    <div ref="scrollTrack" class="process__track" :class="{ 'process__track--pinned': pinned }" :style="pinned ? { height: `${trackHeight}px` } : undefined">
+    <div ref="scrollPanel" class="process__panel">
     <header v-reveal class="process__header">
       <h2 class="process__title">{{ process.titre }}<br />{{ process.titreSuite }}</h2>
       <p v-if="process.note" class="label-mono process__note">{{ process.note }}</p>
     </header>
 
-    <div ref="scrollTrack" class="process__track" :class="{ 'process__track--pinned': pinned }" :style="pinned ? { height: `${trackHeight}px` } : undefined">
-    <div ref="scrollPanel" class="process__panel">
     <div class="thermo" aria-hidden="true">
       <svg class="thermo__rule" viewBox="0 0 1280 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -166,4 +166,11 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
   .step { flex-basis:100%; }
 }
 
+@media (min-width:1025px) and (prefers-reduced-motion:no-preference) {
+  .process__panel { gap:24px; }
+  .process__title { font-size:clamp(32px, 5vh, 48px); }
+  .step__visual { height:clamp(120px, 20vh, 201px); }
+  .step__title { font-size:22px; min-height:53px; }
+  .step__text { font-size:14px; line-height:1.45; }
+}
 </style>
