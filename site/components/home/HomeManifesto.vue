@@ -14,12 +14,19 @@ const decoupage = computed(() => {
       : { img: img('image' in part ? part.image : null, 400), width: 'largeur' in part ? part.largeur : 132, rank: rank++ }
   })
   // La photo et « Notre objectif » forment un seul élément de mise en page.
-  const groups: { tokens: typeof tokens; objectif: boolean }[] = []
+  const groups: { tokens: typeof tokens; objectif: boolean; attached?: boolean }[] = []
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i]!
     const next = tokens[i + 1]
     if ('img' in token && next && 'nouvelleLigne' in next && next.nouvelleLigne) {
-      groups.push({ tokens: [token, next], objectif: true })
+      const [first, ...rest] = next.words!
+      groups.push({ tokens: [token, { ...next, words: [first!] }], objectif: true, attached: true })
+      if (rest.length) groups.push({ tokens: [{ ...next, words: rest }], objectif: false })
+      i++
+    } else if ('words' in token && token.words?.length && next && 'img' in next && !tokens[i + 2]?.nouvelleLigne) {
+      const words = token.words
+      if (words.length > 1) groups.push({ tokens: [{ ...token, words: words.slice(0, -1) }], objectif: false })
+      groups.push({ tokens: [{ ...token, words: words.slice(-1) }, next], objectif: false, attached: true })
       i++
     } else {
       groups.push({ tokens: [token], objectif: 'nouvelleLigne' in token && Boolean(token.nouvelleLigne) })
@@ -75,8 +82,8 @@ onBeforeUnmount(() => {
   <section class="manifesto section">
     <p ref="textEl" class="manifesto__text">
       <template v-for="(group, i) in groups" :key="i">
-        <span v-if="group.objectif" class="manifesto__break" aria-hidden="true" />
-        <span :class="group.objectif ? 'manifesto__objectif' : 'manifesto__group'">
+        <br v-if="group.objectif" />
+        <span :class="group.attached ? 'manifesto__attached' : 'manifesto__group'">
         <template v-for="(token, k) in group.tokens" :key="k">
         <img
           v-if="'img' in token"
@@ -91,9 +98,9 @@ onBeforeUnmount(() => {
           <template v-for="(word, j) in token.words" :key="j">
             <span class="word" :class="{ 'is-on': word.rank < shown }">{{ word.w }}</span>{{ j < token.words.length - 1 ? ' ' : '' }}
           </template>
-        </component>
+        </component>{{ k < group.tokens.length - 1 ? ' ' : '' }}
         </template>
-        </span>
+        </span>{{ i < groups.length - 1 ? ' ' : '' }}
       </template>
     </p>
 
@@ -125,15 +132,11 @@ onBeforeUnmount(() => {
 .manifesto__text {
   max-width: 100%;
   min-width: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: calc(10 * var(--manifesto-unit)) calc(16 * var(--manifesto-unit));
+  text-align: center;
   font-family: 'Bricolage Manifesto', var(--font-display);
   font-weight: 500;
   font-size: calc(52 * var(--manifesto-unit));
-  line-height: 1.15;
+  line-height: 1.55;
   letter-spacing: -0.03em;
   font-variation-settings: "opsz" 14, "wdth" 100;
   color: var(--brown-900);
@@ -150,21 +153,8 @@ onBeforeUnmount(() => {
   white-space: nowrap;
 }
 
-.manifesto__group { display: contents; }
-.manifesto__objectif {
-  display: inline-flex;
-  align-items: center;
-  gap: inherit;
-}
-.manifesto__objectif > span { white-space: nowrap; }
-.manifesto__objectif .pill { min-width: 40px; }
-
-/* La photo commence la phrase de l'objectif à toutes les tailles. */
-.manifesto__break {
-  flex-basis: 100%;
-  height: 0;
-  margin-bottom: calc(-10 * var(--manifesto-unit));
-}
+.manifesto__group { display: inline; }
+.manifesto__attached { display: inline-block; white-space: nowrap !important; }
 
 .manifesto__text em {
   font-style: normal;
@@ -184,6 +174,8 @@ onBeforeUnmount(() => {
 }
 
 .pill {
+  display: inline-block;
+  vertical-align: middle;
   height: calc(72 * var(--manifesto-unit));
   border-radius: 999px;
   object-fit: cover;
@@ -265,6 +257,16 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 640px) {
+  .manifesto__attached {
+    display: inline;
+    white-space: normal !important;
+  }
+
+  .manifesto__attached .pill {
+    display: block;
+    margin: 16px auto;
+  }
+
   .manifesto {
     padding-top: 80px;
     padding-bottom: 80px;
@@ -273,17 +275,6 @@ onBeforeUnmount(() => {
   .manifesto__text {
     font-size: 32px;
     gap: 6px 10px;
-  }
-
-  .manifesto__break { margin-bottom: -6px; }
-
-  .manifesto__objectif {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .manifesto__objectif > span {
-    white-space: normal;
   }
 
   .manifesto__text em {

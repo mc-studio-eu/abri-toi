@@ -5,7 +5,7 @@ const etape = (i: number) => process.value.etapes?.[i] ?? { titre: '', texte: ''
 const thermoGradientId = `thermo-${useId()}`
 const thermoStops = [8, 334, 660, 986]
 const temps = [
-  { value: 38, label: 'Ressenti au soleil', left: 90, color: '#b8321a' },
+  { value: 38, label: 'Ressenti au soleil', left: 0, color: '#b8321a' },
   { value: 34, label: 'On étudie l’ombre', left: 354, color: 'var(--orange-500)' },
   { value: 30, label: 'L’ombre se dessine', left: 680, color: '#8c6a44' },
   { value: 26, label: 'Installé · il fait bon', left: 1004, color: 'var(--sage-500)', big: true },
@@ -21,34 +21,33 @@ let cleanupMotion = () => {}
 onMounted(() => {
   const motion = window.matchMedia('(min-width: 1025px) and (prefers-reduced-motion: no-preference)')
   let frame = 0
-  let started = false
-  const stopWaiting = () => {
-    window.removeEventListener('scroll', check)
-    window.removeEventListener('resize', check)
+  const update = () => {
+    frame = 0
+    if (!stepsElement.value || !motion.matches) return
+    const top = stepsElement.value.getBoundingClientRect().top
+    const viewport = window.innerHeight
+    // Les quatre étapes apparaissent pendant leur entrée dans l'écran.
+    // Le remplissage s'arrête avec le scroll et suit aussi le retour en arrière.
+    progress.value = Math.min(1, Math.max(0, (viewport * .85 - top) / (viewport * .45)))
   }
-  const check = () => {
-    if (started || !stepsElement.value || stepsElement.value.getBoundingClientRect().top > window.innerHeight * .85) return
-    started = true
-    stopWaiting()
-    let start: number | undefined
-    const tick = (now: number) => {
-      start ??= now
-      progress.value = Math.min(1, (now - start) / 2800)
-      if (progress.value < 1) frame = requestAnimationFrame(tick)
-    }
-    frame = requestAnimationFrame(tick)
+  const onScroll = () => {
+    if (!frame) frame = requestAnimationFrame(update)
+  }
+  const stopWaiting = () => {
+    window.removeEventListener('scroll', onScroll)
+    window.removeEventListener('resize', onScroll)
   }
   const configure = () => {
     cancelAnimationFrame(frame)
+    frame = 0
     stopWaiting()
-    if (!motion.matches || started) {
+    if (!motion.matches) {
       progress.value = 1
       return
     }
-    progress.value = 0
-    window.addEventListener('scroll', check, { passive: true })
-    window.addEventListener('resize', check)
-    check()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    update()
   }
   motion.addEventListener('change', configure)
   configure()
@@ -66,7 +65,7 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
   <section class="process section">
     <header v-reveal class="process__header">
       <h2 class="process__title">{{ process.titre }}<br />{{ process.titreSuite }}</h2>
-      <p class="process__total"><span class="process__weeks">{{ process.duree }}</span><span class="label-mono process__note">{{ process.note }}</span></p>
+      <p v-if="process.note" class="label-mono process__note">{{ process.note }}</p>
     </header>
 
     <div class="thermo" aria-hidden="true">
@@ -124,12 +123,10 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
 <style scoped>
 .process { display:flex; flex-direction:column; gap:56px; padding-top:160px; padding-bottom:46px; }
 .process__header { display:flex; align-items:flex-end; justify-content:space-between; gap:32px; }
+.process__note { flex:0 1 320px; color:var(--brown-700); text-align:right; }
 .process__title { font-family:var(--font-display); font-weight:500; font-size:72px; line-height:1; letter-spacing:-.03em; }
-.process__total { display:flex; flex-direction:column; align-items:flex-end; gap:4px; white-space:nowrap; }
-.process__weeks { font-family:var(--font-display); font-weight:500; font-size:64px; line-height:1; letter-spacing:-.03em; }
-.process__note { color:var(--brown-700); }
-.thermo { position:relative; width:100%; aspect-ratio:1280 / 100; }.thermo__rule { position:absolute; inset:0; width:100%; height:100%; }
-.thermo__mark { position:absolute; top:0; display:flex; flex-direction:column; white-space:nowrap; }.thermo__value { font-family:var(--font-display); font-weight:500; font-size:36px; line-height:normal; letter-spacing:-.02em; }.thermo__mark--big { top:-4px; }.thermo__mark--big .thermo__value { font-size:44px; }
+.thermo { position:relative; width:100%; height:112px; container-type:inline-size; }.thermo__rule { position:absolute; inset:auto 0 0; width:100%; height:auto; aspect-ratio:1280 / 100; }
+.thermo__mark { position:absolute; bottom:calc(2.96875cqw + 8px); display:flex; flex-direction:column; white-space:nowrap; }.thermo__value { font-family:var(--font-display); font-weight:500; font-size:36px; line-height:normal; letter-spacing:-.02em; }.thermo__mark--big .thermo__value { font-size:44px; }
 .thermo__fill { clip-path:inset(0); }
 .thermo__label { margin-top:-2px; font-family:var(--font-mono); font-weight:500; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--brown-700); }
 .steps { display:flex; gap:97px; margin:0; padding:0; list-style:none; }.step { flex:0 0 240px; min-width:0; display:flex; flex-direction:column; gap:16px; }
@@ -146,7 +143,13 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
 .step__tint { position:absolute; inset:0; background:rgba(127,167,176,.18); mix-blend-mode:soft-light; }
 .step__badge { position:absolute; left:12px; bottom:12px; padding:6px 12px; border-radius:999px; background:var(--sage-500); color:var(--paper); font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; }
 @media(min-width:1025px) and (max-width:1390px) { .steps { gap:32px; } .step { flex:1 1 0; } }
-@media(max-width:1024px) { .process { padding-top:100px; padding-bottom:100px; }.process__title { font-size:52px; }.process__weeks { font-size:44px; }.thermo { display:none; }.steps { flex-wrap:wrap; gap:24px; }.step { flex-basis:calc(50% - 12px); } }
-@media(max-width:640px) { .process__header { flex-direction:column; align-items:flex-start; }.process__title { font-size:40px; }.process__total { align-items:flex-start; max-width:100%; white-space:normal; }.step { flex-basis:100%; } }
+@media(max-width:1024px) { .process { padding-top:100px; padding-bottom:100px; }.process__title { font-size:52px; }.thermo { display:none; }.steps { flex-wrap:wrap; gap:24px; }.step { flex-basis:calc(50% - 12px); }.step__title { min-height:0; }.step__title--conclusion { white-space:normal; } }
+@media(max-width:640px) {
+  .process__header { flex-direction:column; align-items:flex-start; }
+  .process__note { flex-basis:auto; text-align:left; }
+  .process__title { font-size:40px; }
+  .steps { gap:40px; }
+  .step { flex-basis:100%; }
+}
 
 </style>

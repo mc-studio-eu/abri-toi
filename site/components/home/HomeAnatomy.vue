@@ -166,7 +166,7 @@ onBeforeUnmount(() => {
 }
 @media (max-width:900px) {
   .anatomy { gap:36px; }
-  .anatomy__row { display:flex; flex-direction:column-reverse; justify-content:flex-end; gap:16px; }
+  .anatomy__row { display:flex; flex-direction:column-reverse; justify-content:flex-end; gap:28px; }
   .anatomy__view { flex:none; width:100%; aspect-ratio:16 / 9; max-height:300px; }
   .anatomy__copy { flex:none; align-self:stretch; gap:10px; padding:2px 0 2px 16px; }
   .anatomy__title { max-width:none; font-size:22px; }
