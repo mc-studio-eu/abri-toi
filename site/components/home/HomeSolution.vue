@@ -88,6 +88,7 @@ function moveTab(event: KeyboardEvent, index: number) {
 .selector__caption { color:var(--brown-700); }
 .selector__notch { position:absolute; bottom:-14px; left:calc(50% - 12px); display:flex; justify-content:center; align-items:flex-start; width:24px; height:12px; transform:rotate(180deg); }
 @media (max-width:1200px) { .selector__visual { height:340px; } }
+@media (max-width:1200px) { .solution { padding-bottom:24px; } }
 @media (max-width:900px) { .solution { padding-top:80px; } .selector__visual { height:270px; } .selector__copy { padding-inline:12px; gap:14px; } .selector__name { font-size:36px; } .selector__caption { font-size:16px; } .selector__tags { font-size:10px; } }
 @media (max-width:640px) { .selector { grid-template-columns:1fr; } .selector__visual { height:300px; } .selector__option { padding-bottom:28px; } .selector__badge { top:12px; right:12px; } .selector__name { font-size:38px; } .selector__tags { font-size:11px; } }
 </style>

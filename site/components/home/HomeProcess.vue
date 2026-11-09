@@ -144,6 +144,7 @@ const proposalRows = [['2 × Galiléo Banc', 'face à face'], ['Ombre', '12 m²'
 .step__badge { position:absolute; left:12px; bottom:12px; padding:6px 12px; border-radius:999px; background:var(--sage-500); color:var(--paper); font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; }
 @media(min-width:1025px) and (max-width:1390px) { .steps { gap:32px; } .step { flex:1 1 0; } }
 @media(max-width:1024px) { .process { padding-top:100px; padding-bottom:100px; }.process__title { font-size:52px; }.thermo { display:none; }.steps { flex-wrap:wrap; gap:24px; }.step { flex-basis:calc(50% - 12px); }.step__title { min-height:0; }.step__title--conclusion { white-space:normal; } }
+@media(max-width:1200px) { .process { padding-top:48px; } }
 @media(max-width:640px) {
   .process__header { flex-direction:column; align-items:flex-start; }
   .process__note { flex-basis:auto; text-align:left; }
