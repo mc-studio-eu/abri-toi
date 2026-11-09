@@ -26,9 +26,9 @@ onMounted(() => {
     if (!stepsElement.value || !motion.matches) return
     const top = stepsElement.value.getBoundingClientRect().top
     const viewport = window.innerHeight
-    // Les quatre étapes apparaissent pendant leur entrée dans l'écran.
+    // Étaler les quatre étapes sur 70 % de la hauteur de l'écran.
     // Le remplissage s'arrête avec le scroll et suit aussi le retour en arrière.
-    progress.value = Math.min(1, Math.max(0, (viewport * .85 - top) / (viewport * .45)))
+    progress.value = Math.min(1, Math.max(0, (viewport * .85 - top) / (viewport * .70)))
   }
   const onScroll = () => {
     if (!frame) frame = requestAnimationFrame(update)
