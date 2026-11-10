@@ -32,6 +32,12 @@ const libelleGamme = (cle: string) => f.value.gammes.find((gamme) =>
   gamme.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().startsWith(cle),
 ) ?? ''
 
+const gammesAffichees = computed(() => [
+  { valeur: libelleGamme('galileo'), label: 'Galiléo' },
+  { valeur: libelleGamme('fotos'), label: 'Fotos' },
+  { valeur: gammeParDefaut(), label: 'Les deux' },
+].filter((gamme) => gamme.valeur))
+
 const form = reactive({
   profil: f.value.typesClient[0] ?? '',
   prenom: '',
@@ -175,6 +181,16 @@ async function envoyer() {
               </label>
             </div>
 
+            <fieldset class="choix">
+              <legend class="champ__label">Gamme qui vous intéresse</legend>
+              <div class="choix__options">
+                <label v-for="option in gammesAffichees" :key="option.valeur" class="puce">
+                  <input v-model="form.gamme" type="radio" name="gamme" :value="option.valeur" />
+                  <span>{{ option.label }}</span>
+                </label>
+              </div>
+            </fieldset>
+
             <label class="champ">
               <span class="champ__label">Produit concerné</span>
               <select v-model="form.produit" name="produit">
@@ -182,16 +198,6 @@ async function envoyer() {
                 <option v-for="produit in catalogue" :key="produit.slug" :value="produit.slug">{{ produit.fiche?.titre }}</option>
               </select>
             </label>
-
-            <fieldset class="choix">
-              <legend class="champ__label">Gamme qui vous intéresse</legend>
-              <div class="choix__options">
-                <label v-for="option in f.gammes" :key="option" class="puce">
-                  <input v-model="form.gamme" type="radio" name="gamme" :value="option" />
-                  <span>{{ option }}</span>
-                </label>
-              </div>
-            </fieldset>
 
             <div class="ligne">
               <label class="champ">
