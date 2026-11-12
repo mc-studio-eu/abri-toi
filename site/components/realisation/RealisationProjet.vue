@@ -10,6 +10,36 @@ withDefaults(defineProps<{
   galerie?: Img[]
   lien?: { label: string; url: string }
 }>(), { label: 'Fiche projet', titreBalise: 'h2', infos: () => [], galerie: () => [] })
+const visionneuse = ref<HTMLDialogElement | null>(null)
+const imageAgrandie = ref<Img | null>(null)
+const descriptionImage = ref('')
+let restaurerDefilement: (() => void) | undefined
+
+async function agrandir(image: Img, description: string) {
+  imageAgrandie.value = image
+  descriptionImage.value = description
+  await nextTick()
+  if (!visionneuse.value || visionneuse.value.open) return
+  const position = { left: window.scrollX, top: window.scrollY }
+  visionneuse.value.showModal()
+  const style = document.documentElement.style
+  const overflow = style.getPropertyValue('overflow')
+  const priorite = style.getPropertyPriority('overflow')
+  style.setProperty('overflow', 'hidden')
+  restaurerDefilement = () => {
+    style.setProperty('overflow', overflow, priorite)
+    window.scrollTo({ ...position, behavior: 'instant' })
+  }
+}
+function restaurer() {
+  restaurerDefilement?.()
+  restaurerDefilement = undefined
+}
+function fermer() {
+  visionneuse.value?.close()
+  restaurer()
+}
+onBeforeUnmount(restaurer)
 </script>
 
 <template>
@@ -37,9 +67,15 @@ withDefaults(defineProps<{
 
     <ul v-if="galerie?.length" class="projet__galerie" aria-label="Photos de la réalisation">
       <li v-for="(image, i) in galerie.slice(0, 4)" :key="i" v-reveal="i * 90">
+        <button type="button" class="projet__agrandir" :aria-label="`Agrandir la photo ${i + 1} : ${nomProjet}`" @click="agrandir(image, alt(image) || `${nomProjet} — vue ${i + 1}`)">
         <img :src="img(image, 700)" :srcset="imgSrcset(image, 1200)" sizes="(min-width: 1440px) 296px, (max-width: 640px) calc((100vw - 56px) / 2), (max-width: 1024px) calc((100vw - 112px) / 2), calc((100vw - 256px) / 4)" :alt="alt(image) || `${nomProjet} — vue ${i + 1}`" loading="lazy" />
+        </button>
       </li>
     </ul>
+    <dialog ref="visionneuse" class="visionneuse" aria-label="Photo de la réalisation en grand" @close="restaurer" @click.self="fermer">
+      <button type="button" class="visionneuse__fermer" aria-label="Fermer la photo" autofocus @click="fermer">×</button>
+      <img v-if="imageAgrandie" :src="img(imageAgrandie, 2560)" :alt="descriptionImage" class="visionneuse__image" />
+    </dialog>
   </div>
 </template>
 
@@ -126,6 +162,13 @@ withDefaults(defineProps<{
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 32px;
 }
+
+.projet__agrandir { display:block; width:100%; padding:0; border:0; border-radius:12px; background:transparent; cursor:zoom-in; }
+.projet__agrandir:focus-visible { outline:3px solid var(--orange-500); outline-offset:4px; }
+.visionneuse { position:fixed; inset:0; width:100%; max-width:none; height:100%; max-height:none; margin:0; padding:64px 20px 24px; border:0; background:rgba(23,15,13,.94); }
+.visionneuse[open] { display:grid; place-items:center; }
+.visionneuse__image { max-width:100%; max-height:calc(100dvh - 88px); width:auto; height:auto; object-fit:contain; border-radius:8px; }
+.visionneuse__fermer { position:absolute; top:12px; right:16px; width:44px; height:44px; border:0; border-radius:50%; background:var(--paper); color:var(--brown-900); font-size:32px; cursor:pointer; }
 
 .projet__galerie img {
   width: 100%;
